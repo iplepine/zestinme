@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zestinme/core/constants/app_colors.dart';
+import 'package:zestinme/core/models/record.dart';
 import '../../../core/providers/session_provider.dart';
+import '../../../di/injection.dart';
+import '../../happy_record/domain/usecases/get_records_statistics_usecase.dart';
+import '../../happy_record/presentation/home/controllers/home_controller.dart';
+import '../../happy_record/presentation/home/intent/home_intent.dart';
 
 class MainHomeTabPage extends ConsumerStatefulWidget {
   const MainHomeTabPage({super.key});
@@ -13,11 +18,48 @@ class MainHomeTabPage extends ConsumerStatefulWidget {
 
 class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
   int _selectedTabIndex = 0;
+  late final HomeController _homeController;
+  late final GetRecordsStatisticsUseCase _statisticsUseCase;
+
+  @override
+  void initState() {
+    super.initState();
+    _homeController = HomeController();
+    _homeController.addListener(_onStateChanged);
+    _homeController.onIntent(LoadRecentRecords());
+    _statisticsUseCase = Injection.getIt<GetRecordsStatisticsUseCase>();
+  }
+
+  @override
+  void dispose() {
+    _homeController.removeListener(_onStateChanged);
+    _homeController.dispose();
+    super.dispose();
+  }
+
+  void _onStateChanged() {
+    setState(() {});
+  }
+
+  // 통계 계산 함수
+  RecordStatistics _getStatistics() {
+    switch (_selectedTabIndex) {
+      case 0:
+        return _statisticsUseCase.execute(StatisticsPeriod.today);
+      case 1:
+        return _statisticsUseCase.execute(StatisticsPeriod.thisWeek);
+      case 2:
+        return _statisticsUseCase.execute(StatisticsPeriod.thisMonth);
+      default:
+        return _statisticsUseCase.execute(StatisticsPeriod.today);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = ref.watch(isLoggedInProvider);
     final userName = ref.watch(userNameProvider);
+    final homeState = _homeController.state;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -309,24 +351,41 @@ class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
   }
 
   Widget _buildStatsBoxes() {
+    final calculatedStats = _getStatistics();
+    final totalCount = calculatedStats.totalRecords;
+    final goodCount = calculatedStats.goodRecords;
+    final difficultCount = calculatedStats.difficultRecords;
+
     final stats = [
       {
         'label': '총 기록',
-        'count': '0',
-        'color': AppColors.primary.withOpacity(0.05),
-        'textColor': AppColors.mutedForeground,
+        'count': totalCount.toString(),
+        'color': totalCount > 0
+            ? AppColors.primary.withOpacity(0.1)
+            : AppColors.primary.withOpacity(0.05),
+        'textColor': totalCount > 0
+            ? AppColors.primary
+            : AppColors.mutedForeground,
       },
       {
         'label': '좋은 기록',
-        'count': '0',
-        'color': AppColors.primary.withOpacity(0.05),
-        'textColor': AppColors.mutedForeground,
+        'count': goodCount.toString(),
+        'color': goodCount > 0
+            ? AppColors.primary.withOpacity(0.1)
+            : AppColors.primary.withOpacity(0.05),
+        'textColor': goodCount > 0
+            ? AppColors.primary
+            : AppColors.mutedForeground,
       },
       {
         'label': '힘든 기록',
-        'count': '0',
-        'color': AppColors.primary.withOpacity(0.05),
-        'textColor': AppColors.mutedForeground,
+        'count': difficultCount.toString(),
+        'color': difficultCount > 0
+            ? AppColors.destructive.withOpacity(0.1)
+            : AppColors.primary.withOpacity(0.05),
+        'textColor': difficultCount > 0
+            ? AppColors.destructive
+            : AppColors.mutedForeground,
       },
     ];
 
@@ -368,6 +427,13 @@ class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
   }
 
   Widget _buildEmptyState() {
+    final stats = _getStatistics();
+    final hasRecords = stats.totalRecords > 0;
+
+    if (hasRecords) {
+      return const SizedBox.shrink(); // 기록이 있으면 빈 상태를 숨김
+    }
+
     return Column(
       children: [
         // 레몬 아이콘
@@ -388,7 +454,7 @@ class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '오늘 기록이 없습니다',
+              _getEmptyStateText(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: AppColors.fontWeightMedium,
                 color: AppColors.foreground,
@@ -408,6 +474,19 @@ class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
         ),
       ],
     );
+  }
+
+  String _getEmptyStateText() {
+    switch (_selectedTabIndex) {
+      case 0:
+        return '오늘 기록이 없습니다';
+      case 1:
+        return '이번 주 기록이 없습니다';
+      case 2:
+        return '이번 달 기록이 없습니다';
+      default:
+        return '기록이 없습니다';
+    }
   }
 
   Widget _buildSecondaryActionLink() {

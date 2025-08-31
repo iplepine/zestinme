@@ -7,6 +7,7 @@ import '../features/happy_record/data/repositories/record_repository_impl.dart';
 import '../features/happy_record/domain/repositories/record_repository.dart';
 import '../features/happy_record/domain/usecases/add_record_usecase.dart';
 import '../features/happy_record/domain/usecases/get_recent_records_usecase.dart';
+import '../features/happy_record/domain/usecases/get_records_statistics_usecase.dart';
 import '../features/sleep_record/data/models/sleep_record_dto.dart';
 import '../features/sleep_record/data/repositories/sleep_record_repository_impl.dart';
 import '../features/sleep_record/domain/repositories/sleep_record_repository.dart';
@@ -53,6 +54,9 @@ class Injection {
     );
     _getIt.registerSingleton<AddRecordUseCase>(
       AddRecordUseCase(_getIt<RecordRepository>()),
+    );
+    _getIt.registerSingleton<GetRecordsStatisticsUseCase>(
+      GetRecordsStatisticsUseCase(_getIt<RecordRepository>()),
     );
     _getIt.registerSingleton<AddSleepRecordUseCase>(
       AddSleepRecordUseCase(_getIt<SleepRecordRepository>()),
