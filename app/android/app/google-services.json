@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "380611916279",
+    "project_id": "zestinme-8f1bf",
+    "storage_bucket": "zestinme-8f1bf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380611916279:android:aa62d79e16f10fa7acfef2",
+        "android_client_info": {
+          "package_name": "com.jyoon.zestinme"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfGeQtAEQQocZKMfxUXvoBPBRHUs-WcGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/providers/session_provider.dart';
+import '../../../anger/presentation/test_firebase_page.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -181,6 +182,27 @@ class SettingsPage extends ConsumerWidget {
                         subtitle: '서비스 이용 약관',
                         onTap: () {
                           // 이용약관 페이지로 이동
+                        },
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Firebase 테스트 (개발용)
+                  _SettingsSection(
+                    title: '개발자 도구',
+                    items: [
+                      _SettingsItem(
+                        icon: Icons.cloud,
+                        title: 'Firebase 연결 테스트',
+                        subtitle: 'Firebase 서비스 연결 상태 확인',
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const TestFirebasePage(),
+                            ),
+                          );
                         },
                       ),
                     ],

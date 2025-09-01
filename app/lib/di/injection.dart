@@ -24,6 +24,9 @@ import '../features/sleep_record/domain/usecases/add_sleep_record_usecase.dart';
 import '../features/sleep_record/domain/usecases/delete_sleep_record_usecase.dart';
 import '../features/sleep_record/domain/usecases/get_sleep_records_usecase.dart';
 import '../features/sleep_record/domain/usecases/update_sleep_record_usecase.dart';
+import '../core/services/firebase_service.dart';
+import '../features/anger/data/question_bank_loader.dart';
+import '../features/anger/data/coach_repository.dart';
 
 /// 의존성 주입 설정
 class Injection {
@@ -31,6 +34,9 @@ class Injection {
 
   /// 의존성 초기화
   static Future<void> init() async {
+    // Firebase 초기화
+    await FirebaseService.instance.initialize();
+
     // Hive 초기화 및 어댑터 등록
     await Hive.initFlutter();
     // Happy Record Adapters
@@ -104,6 +110,24 @@ class Injection {
     );
     _getIt.registerSingleton<DeleteSleepRecordUseCase>(
       DeleteSleepRecordUseCase(_getIt<SleepRecordRepository>()),
+    );
+
+    // Firebase 서비스 등록
+    _getIt.registerSingleton<FirebaseService>(FirebaseService.instance);
+
+    // 코칭 관련 서비스 등록
+    _getIt.registerSingleton<QuestionBankLoader>(
+      QuestionBankLoader(
+        remoteConfig: FirebaseService.instance.remoteConfig,
+        firestore: FirebaseService.instance.firestore,
+      ),
+    );
+
+    _getIt.registerSingleton<CoachRepository>(
+      CoachRepository(
+        firestore: FirebaseService.instance.firestore,
+        userId: 'anonymous_user', // 실제 구현에서는 Firebase Auth에서 가져옴
+      ),
     );
   }
 

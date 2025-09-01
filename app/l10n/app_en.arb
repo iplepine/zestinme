@@ -1,0 +1,40 @@
+{
+  "@@locale": "en",
+  "appTitle": "ZestInMe",
+  
+  "coaching": {
+    "answerNow": "Answer now",
+    "tonight": "Tonight",
+    "skip": "Skip",
+    "previous": "Previous",
+    "next": "Next",
+    "finish": "Finish",
+    "deepCoaching": "Deep Coaching",
+    "enterAnswer": "Type your answer...",
+    "enterDetailedAnswer": "Type your detailed answer...",
+    "helpText": "Express yourself freely. There are no right answers.",
+    "errorSaving": "An error occurred while saving.",
+    "progress": "Progress"
+  },
+  
+  "categories": {
+    "calm": "Calm",
+    "reappraise": "Reappraise",
+    "needs": "Needs",
+    "boundaries": "Boundaries",
+    "pattern": "Pattern",
+    "plan": "Plan"
+  },
+  
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close"
+  }
+}

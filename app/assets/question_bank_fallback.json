@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "categories": ["Calm", "Reappraise", "Needs", "Boundaries", "Pattern", "Plan"],
+  "questions": [
+    {
+      "category": "Calm",
+      "questionKey": "calm.body_signal.v1",
+      "type": "quick",
+      "text_ko": "지금 몸에서 가장 강한 신호는 하나만 고르세요.",
+      "text_en": "Pick the strongest body signal right now.",
+      "placeholders": [],
+      "conditions": {"minIntensity": 7},
+      "cooldownDays": 14,
+      "weight": 1.0
+    },
+    {
+      "category": "Calm",
+      "questionKey": "calm.breathing_focus.v1",
+      "type": "quick",
+      "text_ko": "숨을 들이마시고 내쉬는 데 집중해보세요. 몇 초가 걸리나요?",
+      "text_en": "Focus on your breath. How many seconds does it take to inhale and exhale?",
+      "placeholders": [],
+      "conditions": {"minIntensity": 6},
+      "cooldownDays": 7,
+      "weight": 1.2
+    },
+    {
+      "category": "Reappraise",
+      "questionKey": "reappraise.perspective_shift.v1",
+      "type": "deep",
+      "text_ko": "이 상황을 다른 관점에서 바라본다면 어떻게 보일까요?",
+      "text_en": "How might this situation look from a different perspective?",
+      "placeholders": [],
+      "conditions": {"minIntensity": 5},
+      "cooldownDays": 14,
+      "weight": 1.3
+    },
+    {
+      "category": "Reappraise",
+      "questionKey": "reappraise.bigger_picture.v1",
+      "type": "deep",
+      "text_ko": "1년 후에 이 상황을 돌아본다면 어떤 생각이 들까요?",
+      "text_en": "Looking back at this situation in a year, what would you think?",
+      "placeholders": [],
+      "conditions": {},
+      "cooldownDays": 21,
+      "weight": 1.1
+    },
+    {
+      "category": "Needs",
+      "questionKey": "needs.underlying_need.v1",
+      "type": "deep",
+      "text_ko": "이 감정 뒤에는 어떤 욕구가 숨어있을까요?",
+      "text_en": "What underlying need might be behind this emotion?",
+      "placeholders": [],
+      "conditions": {"minIntensity": 4},
+      "cooldownDays": 14,
+      "weight": 1.4
+    },
+    {
+      "category": "Needs",
+      "questionKey": "needs.self_compassion.v1",
+      "type": "quick",
+      "text_ko": "지금 자신에게 어떤 말을 해주고 싶나요?",
+      "text_en": "What would you like to say to yourself right now?",
+      "placeholders": [],
+      "conditions": {},
+      "cooldownDays": 7,
+      "weight": 1.2
+    },
+    {
+      "category": "Boundaries",
+      "questionKey": "boundaries.assertive_sentence.v1",
+      "type": "deep",
+      "text_ko": "예의 있게 단호한 한 문장을 만들어보세요.",
+      "text_en": "Write one polite, assertive sentence.",
+      "placeholders": [],
+      "conditions": {"tagsAny": ["work_meeting"]},
+      "cooldownDays": 14,
+      "weight": 1.0
+    },
+    {
+      "category": "Boundaries",
+      "questionKey": "boundaries.limits_setting.v1",
+      "type": "deep",
+      "text_ko": "앞으로 비슷한 상황에서 어떤 경계를 설정하겠습니까?",
+      "text_en": "What boundaries will you set for similar situations in the future?",
+      "placeholders": [],
+      "conditions": {},
+      "cooldownDays": 21,
+      "weight": 1.3
+    },
+    {
+      "category": "Pattern",
+      "questionKey": "pattern.recurring_trigger.v1",
+      "type": "deep",
+      "text_ko": "이런 감정이 자주 생기는 패턴이 있나요? 언제부터 시작되었나요?",
+      "text_en": "Is there a pattern to when this emotion occurs? When did it start?",
+      "placeholders": [],
+      "conditions": {"minIntensity": 1, "maxIntensity": 4},
+      "cooldownDays": 30,
+      "weight": 1.5
+    },
+    {
+      "category": "Pattern",
+      "questionKey": "pattern.halt_check.v1",
+      "type": "quick",
+      "text_ko": "HALT 체크: 지금 배고픈가요(Hungry)? 화난가요(Angry)? 외로운가요(Lonely)? 피곤한가요(Tired)?",
+      "text_en": "HALT check: Are you Hungry, Angry, Lonely, or Tired right now?",
+      "placeholders": [],
+      "conditions": {"tagsAny": ["sleep_debt"]},
+      "cooldownDays": 7,
+      "weight": 1.4
+    },
+    {
+      "category": "Plan",
+      "questionKey": "plan.if_then_when.v1",
+      "type": "quick",
+      "text_ko": "만약 {trigger}라면, 즉시 무엇을 하시겠어요? 한 문장으로.",
+      "text_en": "If {trigger}, what will you do immediately? One sentence.",
+      "placeholders": ["trigger"],
+      "conditions": {},
+      "cooldownDays": 7,
+      "weight": 1.2
+    },
+    {
+      "category": "Plan",
+      "questionKey": "plan.coping_strategy.v1",
+      "type": "deep",
+      "text_ko": "앞으로 이런 상황이 생기면 어떤 대처 방법을 사용하겠습니까?",
+      "text_en": "What coping strategy will you use when this situation occurs again?",
+      "placeholders": [],
+      "conditions": {},
+      "cooldownDays": 14,
+      "weight": 1.3
+    },
+    {
+      "category": "Plan",
+      "questionKey": "plan.support_system.v1",
+      "type": "deep",
+      "text_ko": "이런 상황에서 도움을 받을 수 있는 사람이나 리소스가 있나요?",
+      "text_en": "Who or what resources can you turn to for help in this situation?",
+      "placeholders": [],
+      "conditions": {"minIntensity": 6},
+      "cooldownDays": 21,
+      "weight": 1.1
+    }
+  ]
+}
