@@ -3,11 +3,20 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../features/happy_record/data/models/record_dto.dart';
 import '../features/happy_record/data/models/record_location_dto.dart';
 import '../features/happy_record/data/models/record_photo_dto.dart';
+import '../features/happy_record/data/models/challenge_dto.dart';
+import '../features/happy_record/data/models/challenge_progress_dto.dart';
+import '../features/happy_record/data/models/completed_challenge_dto.dart';
 import '../features/happy_record/data/repositories/record_repository_impl.dart';
+import '../features/happy_record/data/repositories/challenge_repository_impl.dart';
 import '../features/happy_record/domain/repositories/record_repository.dart';
+import '../features/happy_record/domain/repositories/challenge_repository.dart';
 import '../features/happy_record/domain/usecases/add_record_usecase.dart';
 import '../features/happy_record/domain/usecases/get_recent_records_usecase.dart';
 import '../features/happy_record/domain/usecases/get_records_statistics_usecase.dart';
+import '../features/happy_record/domain/usecases/get_available_challenges_usecase.dart';
+import '../features/happy_record/domain/usecases/get_active_challenges_usecase.dart';
+import '../features/happy_record/domain/usecases/get_completed_challenges_usecase.dart';
+import '../features/happy_record/domain/usecases/start_challenge_usecase.dart';
 import '../features/sleep_record/data/models/sleep_record_dto.dart';
 import '../features/sleep_record/data/repositories/sleep_record_repository_impl.dart';
 import '../features/sleep_record/domain/repositories/sleep_record_repository.dart';
@@ -39,10 +48,24 @@ class Injection {
 
     final happyRecordBox = await Hive.openBox<RecordDto>('records');
     final sleepRecordBox = await Hive.openBox<SleepRecordDto>('sleep_records');
+    final challengeBox = await Hive.openBox<ChallengeDto>('challenges');
+    final challengeProgressBox = await Hive.openBox<ChallengeProgressDto>(
+      'challenge_progress',
+    );
+    final completedChallengeBox = await Hive.openBox<CompletedChallengeDto>(
+      'completed_challenges',
+    );
 
     // Repository 등록
     _getIt.registerSingleton<RecordRepository>(
       RecordRepositoryImpl(happyRecordBox),
+    );
+    _getIt.registerSingleton<ChallengeRepository>(
+      ChallengeRepositoryImpl(
+        challengeBox: challengeBox,
+        progressBox: challengeProgressBox,
+        completedBox: completedChallengeBox,
+      ),
     );
     _getIt.registerSingleton<SleepRecordRepository>(
       SleepRecordRepositoryImpl(sleepRecordBox),
@@ -57,6 +80,18 @@ class Injection {
     );
     _getIt.registerSingleton<GetRecordsStatisticsUseCase>(
       GetRecordsStatisticsUseCase(_getIt<RecordRepository>()),
+    );
+    _getIt.registerSingleton<GetAvailableChallengesUseCase>(
+      GetAvailableChallengesUseCase(_getIt<ChallengeRepository>()),
+    );
+    _getIt.registerSingleton<GetActiveChallengesUseCase>(
+      GetActiveChallengesUseCase(_getIt<ChallengeRepository>()),
+    );
+    _getIt.registerSingleton<GetCompletedChallengesUseCase>(
+      GetCompletedChallengesUseCase(_getIt<ChallengeRepository>()),
+    );
+    _getIt.registerSingleton<StartChallengeUseCase>(
+      StartChallengeUseCase(_getIt<ChallengeRepository>()),
     );
     _getIt.registerSingleton<AddSleepRecordUseCase>(
       AddSleepRecordUseCase(_getIt<SleepRecordRepository>()),

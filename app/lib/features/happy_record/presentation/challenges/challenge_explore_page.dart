@@ -1,74 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../domain/models/challenge_progress.dart';
+import '../../../../di/injection.dart';
 import '../../domain/usecases/get_available_challenges_usecase.dart';
 
-class ChallengeExplorePage extends StatefulWidget {
+class ChallengeExplorePage extends ConsumerStatefulWidget {
   const ChallengeExplorePage({super.key});
 
   @override
-  State<ChallengeExplorePage> createState() => _ChallengeExplorePageState();
+  ConsumerState<ChallengeExplorePage> createState() =>
+      _ChallengeExplorePageState();
 }
 
-class _ChallengeExplorePageState extends State<ChallengeExplorePage> {
+class _ChallengeExplorePageState extends ConsumerState<ChallengeExplorePage> {
   String _selectedCategory = '전체';
   final List<String> _categories = ['전체', '감정 관리', '습관 형성', '자기계발', '건강', '관계'];
   late final GetAvailableChallengesUseCase _getAvailableChallengesUseCase;
-  late List<ChallengeExploreItem> _availableChallenges;
+  List<ChallengeExploreItem> _availableChallenges = [];
 
   @override
   void initState() {
     super.initState();
-    _getAvailableChallengesUseCase = GetAvailableChallengesUseCase();
+    _getAvailableChallengesUseCase =
+        Injection.getIt<GetAvailableChallengesUseCase>();
     _loadAvailableChallenges();
   }
 
   void _loadAvailableChallenges() {
-    // 현재 진행 중인 챌린지 목록 (dummy data)
-    final activeChallenges = [
-      ChallengeProgress(
-        id: '1',
-        title: '매일 감정 기록하기',
-        description: '30일 동안 매일 감정을 기록하는 챌린지',
-        progress: 0.7,
-        todayTask: '오늘의 감정을 기록해보세요',
-        startDate: DateTime.now().subtract(const Duration(days: 21)),
-      ),
-      ChallengeProgress(
-        id: '2',
-        title: '감사 일기 쓰기',
-        description: '매일 감사한 일 3가지를 기록하기',
-        progress: 0.4,
-        todayTask: '오늘 감사한 일을 찾아보세요',
-        startDate: DateTime.now().subtract(const Duration(days: 12)),
-      ),
-    ];
-    
-    _availableChallenges = _getAvailableChallengesUseCase(activeChallenges);
+    setState(() {
+      _availableChallenges = _getAvailableChallengesUseCase.execute();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
-      appBar: AppBar(
-        title: const Text(
-          '챌린지 탐색',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: theme.colorScheme.background,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-      ),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           children: [
+            // 헤더
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '챌린지 탐색',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             // 카테고리 필터
             Container(
               height: 50,
@@ -79,30 +69,56 @@ class _ChallengeExplorePageState extends State<ChallengeExplorePage> {
                 itemBuilder: (context, index) {
                   final category = _categories[index];
                   final isSelected = _selectedCategory == category;
-                  
-                  return Container(
-                    margin: EdgeInsets.only(
-                      right: index < _categories.length - 1 ? 8 : 0,
-                    ),
-                    child: FilterChip(
-                      label: Text(category),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        setState(() {
-                          _selectedCategory = category;
-                        });
-                      },
-                      backgroundColor: theme.colorScheme.surface,
-                      selectedColor: theme.colorScheme.primaryContainer,
-                      checkmarkColor: theme.colorScheme.primary,
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        right: index < _categories.length - 1 ? 12 : 0,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(
+                                  context,
+                                ).colorScheme.outline.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          category,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: isSelected
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.onSurface,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
+                        ),
+                      ),
                     ),
                   );
                 },
               ),
             ),
-            
-            const SizedBox(height: 16),
-            
+
+            const SizedBox(height: 20),
+
             // 챌린지 목록
             Expanded(
               child: ListView.builder(
@@ -113,7 +129,14 @@ class _ChallengeExplorePageState extends State<ChallengeExplorePage> {
                   return _ChallengeExploreCard(
                     challenge: challenge,
                     onTap: () {
-                      context.push('/challenge-detail', extra: challenge);
+                      // 챌린지 상세 페이지 대신 챌린지 시작 페이지로 이동
+                      // TODO: 챌린지 시작 로직 구현
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${challenge.title} 챌린지를 시작합니다!'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
                     },
                   );
                 },
@@ -129,10 +152,10 @@ class _ChallengeExplorePageState extends State<ChallengeExplorePage> {
     if (_selectedCategory == '전체') {
       return _availableChallenges;
     }
-    
-    return _availableChallenges.where((challenge) => 
-      challenge.category == _selectedCategory
-    ).toList();
+
+    return _availableChallenges
+        .where((challenge) => challenge.category == _selectedCategory)
+        .toList();
   }
 }
 
@@ -140,20 +163,17 @@ class _ChallengeExploreCard extends StatelessWidget {
   final ChallengeExploreItem challenge;
   final VoidCallback onTap;
 
-  const _ChallengeExploreCard({
-    required this.challenge,
-    required this.onTap,
-  });
+  const _ChallengeExploreCard({required this.challenge, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
@@ -174,11 +194,8 @@ class _ChallengeExploreCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(
-                  challenge.emoji,
-                  style: const TextStyle(fontSize: 32),
-                ),
-                const SizedBox(width: 12),
+                Text(challenge.emoji, style: const TextStyle(fontSize: 32)),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,119 +209,63 @@ class _ChallengeExploreCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         challenge.description,
-                        style: theme.textTheme.bodySmall?.copyWith(
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onSurface.withOpacity(0.7),
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            
-            // 태그들
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                _TagChip(
-                  label: challenge.category,
-                  color: theme.colorScheme.primary,
-                ),
-                _TagChip(
-                  label: challenge.duration,
-                  color: Colors.blue,
-                ),
-                _TagChip(
-                  label: challenge.difficulty,
-                  color: _getDifficultyColor(challenge.difficulty),
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: 12),
-            
-            // 참여자 수와 시작 버튼
+            const SizedBox(height: 16),
             Row(
               children: [
-                Icon(
-                  Icons.people,
-                  size: 16,
-                  color: theme.colorScheme.onSurface.withOpacity(0.5),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    challenge.difficulty,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.secondary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    challenge.duration,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.secondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const Spacer(),
                 Text(
-                  '${challenge.participants}명 참여 중',
+                  '${challenge.participants}명 참여',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withOpacity(0.5),
                   ),
                 ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: onTap,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
-                    foregroundColor: theme.colorScheme.onPrimary,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text('시작하기'),
-                ),
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Color _getDifficultyColor(String difficulty) {
-    switch (difficulty) {
-      case '쉬움':
-        return Colors.green;
-      case '보통':
-        return Colors.orange;
-      case '어려움':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
-}
-
-class _TagChip extends StatelessWidget {
-  final String label;
-  final Color color;
-
-  const _TagChip({
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 1,
-        ),
-      ),
-      child: Text(
-        label,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: color,
-          fontWeight: FontWeight.w500,
         ),
       ),
     );
