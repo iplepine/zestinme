@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zestinme/features/sleep_record/domain/models/sleep_record.dart';
 import 'package:zestinme/features/sleep_record/presentation/controller/sleep_home_controller.dart';
 import 'package:zestinme/features/sleep_record/presentation/sleep_record_page.dart';
+import 'package:zestinme/features/sleep_record/presentation/sleep_guide_page.dart';
 import 'package:zestinme/features/sleep_record/presentation/home/widgets/sleep_animated_button.dart';
 import 'package:zestinme/features/sleep_record/presentation/home/widgets/sleep_drag_handler.dart';
 import 'package:zestinme/features/sleep_record/presentation/home/widgets/sleep_home_content.dart';
@@ -259,41 +260,64 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SleepGuidePage()),
+              );
+            },
+            tooltip: '수면기록 가이드',
+          ),
+        ],
       ),
       body: Stack(
         children: [
           // --- 기본 UI ---
           Positioned.fill(
             child: SafeArea(
-              child: state.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                data: (records) => SleepHomeContent(
-                  records: records,
-                  onBarLongPressed: (record) {
-                    _navigateToRecordPage(context, ref, record);
-                  },
-                ),
-                error: (message) => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error_outline,
-                        size: 64,
-                        color: Colors.red,
+              child: Column(
+                children: [
+                  // 시간대별 CTA 버튼
+                  _buildTimeBasedCTA(),
+
+                  // 메인 콘텐츠
+                  Expanded(
+                    child: state.when(
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      data: (records) => SleepHomeContent(
+                        records: records,
+                        onBarLongPressed: (record) {
+                          _navigateToRecordPage(context, ref, record);
+                        },
                       ),
-                      const SizedBox(height: 16),
-                      Text('오류가 발생했습니다: $message'),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => ref
-                            .read(sleepHomeControllerProvider.notifier)
-                            .fetchRecords(),
-                        child: const Text('다시 시도'),
+                      error: (message) => Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.error_outline,
+                              size: 64,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(height: 16),
+                            Text('오류가 발생했습니다: $message'),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () => ref
+                                  .read(sleepHomeControllerProvider.notifier)
+                                  .fetchRecords(),
+                              child: const Text('다시 시도'),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
@@ -339,5 +363,168 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
         ref.read(sleepHomeControllerProvider.notifier).fetchRecords();
       }
     });
+  }
+
+  Widget _buildTimeBasedCTA() {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    // 시간대에 따른 CTA 결정
+    String title;
+    String subtitle;
+    IconData icon;
+    Color color;
+    VoidCallback onTap;
+
+    if (hour >= 22 || hour < 6) {
+      // 밤 시간대 (22시-6시)
+      title = '🌙 취침 준비';
+      subtitle = '잠들기 전 기록하기';
+      icon = Icons.nightlight_round;
+      color = Colors.indigo;
+      onTap = () {
+        // 밤 모드로 기록 페이지 열기
+        final sleepTime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          now.hour,
+          now.minute,
+        ).add(const Duration(minutes: 10));
+        final initialRecord = SleepRecord(
+          id: UniqueKey().toString(),
+          sleepTime: sleepTime,
+          wakeTime: sleepTime, // 임시값
+          freshness: 5,
+          sleepSatisfaction: 5,
+          disruptionFactors: '',
+          createdAt: now,
+          fatigue: null,
+          content: null,
+        );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SleepRecordPage(initialRecord: initialRecord),
+          ),
+        ).then((result) {
+          if (result == true) {
+            ref.read(sleepHomeControllerProvider.notifier).fetchRecords();
+          }
+        });
+      };
+    } else if (hour >= 6 && hour < 10) {
+      // 아침 시간대 (6시-10시)
+      title = '🛌 아침 체크인';
+      subtitle = '기상 후 컨디션 기록';
+      icon = Icons.wb_sunny;
+      color = Colors.orange;
+      onTap = () {
+        // 아침 모드로 기록 페이지 열기
+        final wakeTime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          now.hour,
+          now.minute,
+        );
+        final sleepTime = wakeTime.subtract(const Duration(hours: 8));
+        final initialRecord = SleepRecord(
+          id: UniqueKey().toString(),
+          sleepTime: sleepTime,
+          wakeTime: wakeTime,
+          freshness: 5,
+          sleepSatisfaction: 5,
+          disruptionFactors: '',
+          createdAt: now,
+          fatigue: null,
+          content: null,
+        );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SleepRecordPage(initialRecord: initialRecord),
+          ),
+        ).then((result) {
+          if (result == true) {
+            ref.read(sleepHomeControllerProvider.notifier).fetchRecords();
+          }
+        });
+      };
+    } else {
+      // 낮 시간대
+      title = '📊 수면 기록';
+      subtitle = '수면 패턴 확인하기';
+      icon = Icons.analytics;
+      color = Colors.blue;
+      onTap = () {
+        // 가이드 페이지 열기
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SleepGuidePage()),
+        );
+      };
+    }
+
+    return Container(
+      margin: const EdgeInsets.all(16),
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: color.withOpacity(0.3)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: color, size: 28),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: color,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.arrow_forward_ios, color: color, size: 16),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

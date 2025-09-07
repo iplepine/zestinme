@@ -6,6 +6,7 @@ import '../domain/models/sleep_record.dart';
 import '../domain/usecases/add_sleep_record_usecase.dart';
 import '../domain/usecases/delete_sleep_record_usecase.dart';
 import '../domain/usecases/update_sleep_record_usecase.dart';
+import 'sleep_guide_page.dart';
 
 class SleepRecordPage extends StatefulWidget {
   final SleepRecord? initialRecord;
@@ -235,7 +236,7 @@ class _SleepRecordPageState extends State<SleepRecordPage> {
         // 홈 화면으로 돌아가서 리스트 갱신
         Navigator.pop(context, true);
       }
-    } catch (e, stack) {
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
@@ -278,6 +279,16 @@ class _SleepRecordPageState extends State<SleepRecordPage> {
           _isNightMode ? '잠든 시간 기록' : (_isUpdateMode ? '수면 기록 편집' : '수면 기록하기'),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SleepGuidePage()),
+              );
+            },
+            tooltip: '수면기록 가이드',
+          ),
           if (_isUpdateMode)
             IconButton(
               icon: const Icon(Icons.delete_outline),

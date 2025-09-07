@@ -37,6 +37,16 @@ class ChallengeRecommendationWidget extends ConsumerWidget {
     // 임시로 더미 데이터 사용 (실제 데이터 연동은 나중에 구현)
     final availableChallenges = <ChallengeExploreItem>[
       ChallengeExploreItem(
+        id: 'sleep',
+        title: '수면 패턴 개선하기',
+        description: '규칙적인 수면으로 컨디션 향상하기',
+        category: '건강 관리',
+        duration: '30일',
+        difficulty: '보통',
+        participants: 2100,
+        emoji: '🌙',
+      ),
+      ChallengeExploreItem(
         id: '1',
         title: '매일 감정 기록하기',
         description: '30일 동안 매일 감정을 기록하는 챌린지',
@@ -115,8 +125,13 @@ class ChallengeRecommendationWidget extends ConsumerWidget {
                 child: _RecommendedChallengeCard(
                   challenge: challenge,
                   onTap: () {
-                    // 추천 챌린지를 시작하는 로직을 여기에 추가할 수 있습니다
-                    context.push('/challenge-explore');
+                    if (challenge.id == 'sleep') {
+                      // 수면 챌린지인 경우 수면 기록 화면으로 이동
+                      context.push('/sleep-record');
+                    } else {
+                      // 다른 챌린지인 경우 기존 로직
+                      context.push('/challenge-explore');
+                    }
                   },
                 ),
               );
