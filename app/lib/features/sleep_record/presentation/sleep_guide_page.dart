@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'sleep_record_page.dart';
 
 class SleepGuidePage extends StatefulWidget {
   const SleepGuidePage({super.key});
@@ -52,7 +53,11 @@ class _SleepGuidePageState extends State<SleepGuidePage> {
     await prefs.setBool('morning_checkin', _morningCheckin);
 
     if (mounted) {
-      Navigator.of(context).pop(true);
+      // 수면 기록 페이지로 이동
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const SleepRecordPage()),
+      );
     }
   }
 
