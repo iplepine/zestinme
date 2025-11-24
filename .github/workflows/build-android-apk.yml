@@ -29,12 +29,18 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'   # ✅ flutter-version 제거
-          cache: true         # (선택) pub 캐시
+          channel: 'stable'   # flutter-version은 빼고 채널만 사용
+          cache: true
 
       - name: Get Flutter dependencies
         working-directory: ./app
         run: flutter pub get
+
+      # ✅ 코드 생성 (freezed / json_serializable / hive_generator 등)
+      - name: Generate code (build_runner)
+        working-directory: ./app
+        run: |
+          flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build Android Release APK
         working-directory: ./app
