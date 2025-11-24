@@ -185,7 +185,7 @@ class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
                 const Icon(Icons.login, size: 16),
                 const SizedBox(width: 4),
                 Text(
-                  '로그인',
+                  'log',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontWeight: AppColors.fontWeightMedium,
                   ),

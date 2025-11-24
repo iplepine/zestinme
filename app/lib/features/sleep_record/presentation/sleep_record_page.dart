@@ -9,6 +9,8 @@ import '../domain/usecases/delete_sleep_record_usecase.dart';
 import '../domain/usecases/update_sleep_record_usecase.dart';
 import 'sleep_guide_page.dart';
 import 'widgets/date_time_selection_widget.dart';
+import 'widgets/circular_time_picker.dart';
+import 'widgets/dual_time_picker.dart';
 
 // 수면 기록용 색상 팔레트
 class SleepColors {
@@ -393,16 +395,22 @@ class _SleepRecordPageState extends State<SleepRecordPage> {
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              // 잠든 시간 선택
+              // 통합 시간 선택 시계
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: SleepColors.muted,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: SleepColors.border),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: SleepColors.border, width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: SleepColors.primary.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
@@ -413,15 +421,15 @@ class _SleepRecordPageState extends State<SleepRecordPage> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
-                            Icons.bedtime,
+                            Icons.schedule,
                             color: SleepColors.primary,
                             size: 20,
                           ),
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          '잠든 시간',
-                          style: Theme.of(context).textTheme.titleSmall
+                          '수면 시간 설정',
+                          style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: SleepColors.foreground,
@@ -429,65 +437,40 @@ class _SleepRecordPageState extends State<SleepRecordPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    DateTimeSelectionWidget(
-                      selectedDateTime: _sleepDateTime,
-                      onDateTimeChanged: (DateTime newDateTime) {
-                        setState(() {
-                          _sleepDateTime = newDateTime;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              // 일어난 시간 선택
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: SleepColors.muted,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: SleepColors.border),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: SleepColors.accent.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.wb_sunny,
-                            color: SleepColors.accent,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          '일어난 시간',
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: SleepColors.foreground,
-                              ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    DateTimeSelectionWidget(
-                      selectedDateTime: _wakeDateTime,
-                      onDateTimeChanged: _isNightMode
-                          ? null
-                          : (DateTime newDateTime) {
-                              setState(() {
-                                _wakeDateTime = newDateTime;
-                              });
-                            },
+                    const SizedBox(height: 20),
+                    Center(
+                      child: DualTimePicker(
+                        sleepTime: _sleepDateTime,
+                        wakeTime: _wakeDateTime,
+                        onSleepTimeChanged: (DateTime newTime) {
+                          setState(() {
+                            _sleepDateTime = DateTime(
+                              _sleepDateTime.year,
+                              _sleepDateTime.month,
+                              _sleepDateTime.day,
+                              newTime.hour,
+                              newTime.minute,
+                            );
+                          });
+                        },
+                        onWakeTimeChanged: _isNightMode
+                            ? null
+                            : (DateTime newTime) {
+                                setState(() {
+                                  _wakeDateTime = DateTime(
+                                    _wakeDateTime.year,
+                                    _wakeDateTime.month,
+                                    _wakeDateTime.day,
+                                    newTime.hour,
+                                    newTime.minute,
+                                  );
+                                });
+                              },
+                        isNightMode: _isNightMode,
+                        title: '수면 시간',
+                        primaryColor: SleepColors.primary,
+                        accentColor: SleepColors.accent,
+                      ),
                     ),
                   ],
                 ),
@@ -506,7 +489,7 @@ class _SleepRecordPageState extends State<SleepRecordPage> {
 
               // 수면 시간 요약 카드
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -516,72 +499,141 @@ class _SleepRecordPageState extends State<SleepRecordPage> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: SleepColors.primary.withValues(alpha: 0.3),
+                    width: 2,
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: SleepColors.primary,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        Icons.schedule,
-                        color: SleepColors.primaryForeground,
-                        size: 24,
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: SleepColors.primary.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '예상 수면 시간',
-                            style: Theme.of(context).textTheme.titleSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: SleepColors.foreground,
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: SleepColors.primary,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: SleepColors.primary.withValues(
+                                  alpha: 0.3,
                                 ),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            _getSleepDuration().isEmpty
-                                ? '시간을 선택해주세요'
-                                : _getSleepDuration(),
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: SleepColors.primary,
+                          child: Icon(
+                            Icons.schedule,
+                            color: SleepColors.primaryForeground,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '예상 수면 시간',
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: SleepColors.foreground,
+                                    ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                _getSleepDuration().isEmpty
+                                    ? '시간을 선택해주세요'
+                                    : _getSleepDuration(),
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: SleepColors.primary,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (_getSleepDuration().isNotEmpty) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: SleepColors.primary,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: SleepColors.primary.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
                                 ),
+                              ],
+                            ),
+                            child: Text(
+                              _getSleepDuration().contains('7시간') ||
+                                      _getSleepDuration().contains('8시간') ||
+                                      _getSleepDuration().contains('9시간')
+                                  ? '👍'
+                                  : _getSleepDuration().contains('6시간') ||
+                                        _getSleepDuration().contains('10시간')
+                                  ? '👌'
+                                  : '⚠️',
+                              style: const TextStyle(fontSize: 20),
+                            ),
                           ),
                         ],
-                      ),
+                      ],
                     ),
                     if (_getSleepDuration().isNotEmpty) ...[
+                      const SizedBox(height: 12),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
+                          horizontal: 12,
+                          vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: SleepColors.primary,
+                          color: SleepColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Text(
-                          _getSleepDuration().contains('7시간') ||
-                                  _getSleepDuration().contains('8시간') ||
-                                  _getSleepDuration().contains('9시간')
-                              ? '👍'
-                              : _getSleepDuration().contains('6시간') ||
-                                    _getSleepDuration().contains('10시간')
-                              ? '👌'
-                              : '⚠️',
-                          style: const TextStyle(fontSize: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              color: SleepColors.primary,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              _getSleepDuration().contains('7시간') ||
+                                      _getSleepDuration().contains('8시간') ||
+                                      _getSleepDuration().contains('9시간')
+                                  ? '최적의 수면 시간입니다!'
+                                  : _getSleepDuration().contains('6시간') ||
+                                        _getSleepDuration().contains('10시간')
+                                  ? '양호한 수면 시간입니다.'
+                                  : '수면 시간을 조절해보세요.',
+                              style: TextStyle(
+                                color: SleepColors.primary,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
