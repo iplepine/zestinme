@@ -29,8 +29,8 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
-          channel: 'stable'
+          channel: 'stable'   # ✅ flutter-version 제거
+          cache: true         # (선택) pub 캐시
 
       - name: Get Flutter dependencies
         working-directory: ./app
@@ -46,4 +46,3 @@ jobs:
           name: android-release-apk
           path: app/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 2
-
