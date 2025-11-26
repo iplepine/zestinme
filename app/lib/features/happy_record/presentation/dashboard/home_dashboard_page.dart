@@ -4,6 +4,8 @@ import 'package:zestinme/core/localization/app_localizations.dart';
 
 import '../../domain/models/challenge_progress.dart';
 import '../../domain/models/emotion_record.dart';
+import '../../domain/usecases/get_active_challenges_usecase.dart';
+import '../../../../di/injection.dart';
 
 class HomeDashboardPage extends StatefulWidget {
   const HomeDashboardPage({super.key});
@@ -13,43 +15,38 @@ class HomeDashboardPage extends StatefulWidget {
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> {
-  // Dummy data for testing
-  late List<ChallengeProgress> _challenges;
-  late EmotionRecord? _todayEmotion;
-  late String _coachingQuestion;
+  List<ChallengeProgress> _challenges = [];
+  EmotionRecord? _todayEmotion;
+  bool _isLoading = true;
+
+  final GetActiveChallengesUseCase _getActiveChallengesUseCase =
+      Injection.getIt<GetActiveChallengesUseCase>();
 
   @override
   void initState() {
     super.initState();
-    _loadDummyData();
+    _loadData();
   }
 
-  void _loadDummyData() {
-    // Dummy challenges
-    _challenges = [
-      ChallengeProgress(
-        id: '1',
-        title: '매일 감정 기록하기',
-        description: '30일 동안 매일 감정을 기록하는 챌린지',
-        progress: 0.4, // 12/30 = 40%
-        todayTask: '오늘의 감정을 기록해보세요',
-        startDate: DateTime.now().subtract(const Duration(days: 18)),
-      ),
-      ChallengeProgress(
-        id: '2',
-        title: '감사 일기 쓰기',
-        description: '매일 감사한 일 3가지를 기록하기',
-        progress: 0.6,
-        todayTask: '오늘 감사한 일을 찾아보세요',
-        startDate: DateTime.now().subtract(const Duration(days: 12)),
-      ),
-    ];
+  void _loadData() {
+    setState(() {
+      _isLoading = true;
+    });
 
-    // Dummy today emotion (null for no record, or actual record)
-    _todayEmotion = null; // 오늘 기록 없음
-
-    // Dummy coaching question
-    _coachingQuestion = '오늘 고마웠던 순간은?';
+    try {
+      // 실제 활성 챌린지 데이터를 불러옵니다
+      _challenges = _getActiveChallengesUseCase.execute();
+      
+      // TODO: 오늘의 감정 기록 불러오기 구현 필요
+      _todayEmotion = null;
+    } catch (e) {
+      // 에러 발생 시 빈 리스트로 설정
+      _challenges = [];
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _onRecordEmotion() {
@@ -67,6 +64,15 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,

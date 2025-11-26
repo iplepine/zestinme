@@ -90,7 +90,7 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
         initialRecord = SleepRecord(
           id: UniqueKey().toString(),
           sleepTime: sleepTime,
-          wakeTime: sleepTime, // 임시값, 사용자가 나중에 설정
+          wakeTime: sleepTime, // 초기값으로 설정, 사용자가 기록 페이지에서 수정 가능
           freshness: 5,
           sleepSatisfaction: 5,
           disruptionFactors: '',
@@ -394,7 +394,7 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
         final initialRecord = SleepRecord(
           id: UniqueKey().toString(),
           sleepTime: sleepTime,
-          wakeTime: sleepTime, // 임시값
+          wakeTime: sleepTime, // 초기값으로 설정, 사용자가 기록 페이지에서 수정 가능
           freshness: 5,
           sleepSatisfaction: 5,
           disruptionFactors: '',
