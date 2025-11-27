@@ -1,85 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../domain/usecases/get_available_challenges_usecase.dart';
+import '../../../../../di/injection.dart';
 
-// ChallengeExploreItem 클래스를 직접 정의
-class ChallengeExploreItem {
-  final String id;
-  final String title;
-  final String description;
-  final String category;
-  final String duration;
-  final String difficulty;
-  final int participants;
-  final String emoji;
-
-  ChallengeExploreItem({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.category,
-    required this.duration,
-    required this.difficulty,
-    required this.participants,
-    required this.emoji,
-  });
-}
-
-class ChallengeRecommendationWidget extends ConsumerWidget {
+class ChallengeRecommendationWidget extends ConsumerStatefulWidget {
   final VoidCallback? onMoreTap;
 
   const ChallengeRecommendationWidget({super.key, this.onMoreTap});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChallengeRecommendationWidget> createState() =>
+      _ChallengeRecommendationWidgetState();
+}
+
+class _ChallengeRecommendationWidgetState
+    extends ConsumerState<ChallengeRecommendationWidget> {
+  List<ChallengeExploreItem> _availableChallenges = [];
+  bool _isLoading = true;
+
+  final GetAvailableChallengesUseCase _getAvailableChallengesUseCase =
+      Injection.getIt<GetAvailableChallengesUseCase>();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadChallenges();
+  }
+
+  void _loadChallenges() {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // 실제 사용 가능한 챌린지 데이터를 불러옵니다
+      _availableChallenges = _getAvailableChallengesUseCase.execute();
+      
+      // 수면 챌린지를 추가합니다 (수면 기록 기능과 연동)
+      _availableChallenges.insert(
+        0,
+        ChallengeExploreItem(
+          id: 'sleep',
+          title: '수면 패턴 개선하기',
+          description: '규칙적인 수면으로 컨디션 향상하기',
+          category: '건강 관리',
+          duration: '30일',
+          difficulty: '보통',
+          participants: 2100,
+          emoji: '🌙',
+        ),
+      );
+    } catch (e) {
+      // 에러 발생 시 빈 리스트로 설정
+      _availableChallenges = [];
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // 임시로 더미 데이터 사용 (실제 데이터 연동은 나중에 구현)
-    final availableChallenges = <ChallengeExploreItem>[
-      ChallengeExploreItem(
-        id: 'sleep',
-        title: '수면 패턴 개선하기',
-        description: '규칙적인 수면으로 컨디션 향상하기',
-        category: '건강 관리',
-        duration: '30일',
-        difficulty: '보통',
-        participants: 2100,
-        emoji: '🌙',
-      ),
-      ChallengeExploreItem(
-        id: '1',
-        title: '매일 감정 기록하기',
-        description: '30일 동안 매일 감정을 기록하는 챌린지',
-        category: '감정 관리',
-        duration: '30일',
-        difficulty: '쉬움',
-        participants: 1250,
-        emoji: '📝',
-      ),
-      ChallengeExploreItem(
-        id: '2',
-        title: '감사 일기 쓰기',
-        description: '매일 감사한 일 3가지를 기록하기',
-        category: '습관 형성',
-        duration: '21일',
-        difficulty: '보통',
-        participants: 890,
-        emoji: '🙏',
-      ),
-      ChallengeExploreItem(
-        id: '3',
-        title: '긍정적 사고 연습',
-        description: '부정적인 상황에서 긍정적 관점 찾기',
-        category: '자기계발',
-        duration: '14일',
-        difficulty: '어려움',
-        participants: 567,
-        emoji: '✨',
-      ),
-    ];
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
     // 상위 3개만 추천으로 표시
-    final recommendedChallenges = availableChallenges.take(3).toList();
+    final recommendedChallenges = _availableChallenges.take(3).toList();
+
+    if (recommendedChallenges.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,9 +92,9 @@ class ChallengeRecommendationWidget extends ConsumerWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              if (onMoreTap != null)
+              if (widget.onMoreTap != null)
                 TextButton(
-                  onPressed: onMoreTap,
+                  onPressed: widget.onMoreTap,
                   child: Text(
                     '더보기',
                     style: theme.textTheme.bodySmall?.copyWith(
