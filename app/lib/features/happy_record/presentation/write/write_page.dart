@@ -103,17 +103,6 @@ class _WritePageState extends State<WritePage> {
               ),
               const SizedBox(height: 32),
 
-              // 감정 선택 섹션
-              EmotionSelectionWidget(
-                selectedEmotion: _selectedEmotion,
-                onEmotionSelected: (int emotionIndex) {
-                  setState(() {
-                    _selectedEmotion = emotionIndex;
-                  });
-                },
-              ),
-              const SizedBox(height: 32),
-
               // 경험 기록 섹션
               Text(
                 '좋았던 경험을 한 줄로 적어보세요',
@@ -159,6 +148,17 @@ class _WritePageState extends State<WritePage> {
                 maxLines: 3,
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? '경험을 입력하세요' : null,
+              ),
+              const SizedBox(height: 32),
+
+              // 감정 선택 섹션
+              EmotionSelectionWidget(
+                selectedEmotion: _selectedEmotion,
+                onEmotionSelected: (int emotionIndex) {
+                  setState(() {
+                    _selectedEmotion = emotionIndex;
+                  });
+                },
               ),
               const SizedBox(height: 40),
 
