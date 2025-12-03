@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zestinme/core/constants/app_colors.dart';
-import 'package:zestinme/core/models/record.dart';
 import '../../../core/providers/session_provider.dart';
 import '../../../di/injection.dart';
 import '../../happy_record/domain/usecases/get_records_statistics_usecase.dart';
@@ -16,50 +15,53 @@ class MainHomeTabPage extends ConsumerStatefulWidget {
   ConsumerState<MainHomeTabPage> createState() => _MainHomeTabPageState();
 }
 
-class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
-  int _selectedTabIndex = 0;
+class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage>
+    with WidgetsBindingObserver {
   late final HomeController _homeController;
-  late final GetRecordsStatisticsUseCase _statisticsUseCase;
+
+  bool _isPageVisible = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _homeController = HomeController();
     _homeController.addListener(_onStateChanged);
     _homeController.onIntent(LoadRecentRecords());
-    _statisticsUseCase = Injection.getIt<GetRecordsStatisticsUseCase>();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _homeController.removeListener(_onStateChanged);
     _homeController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // 앱이 포그라운드로 돌아올 때 갱신
+    if (state == AppLifecycleState.resumed && _isPageVisible) {
+      _refreshData();
+    }
   }
 
   void _onStateChanged() {
     setState(() {});
   }
 
-  // 통계 계산 함수
-  RecordStatistics _getStatistics() {
-    switch (_selectedTabIndex) {
-      case 0:
-        return _statisticsUseCase.execute(StatisticsPeriod.today);
-      case 1:
-        return _statisticsUseCase.execute(StatisticsPeriod.thisWeek);
-      case 2:
-        return _statisticsUseCase.execute(StatisticsPeriod.thisMonth);
-      default:
-        return _statisticsUseCase.execute(StatisticsPeriod.today);
-    }
+  void _refreshData() {
+    // 최근 기록 갱신
+    _homeController.onIntent(LoadRecentRecords());
+    // 통계는 build 메서드에서 매번 계산되므로 setState만 호출하면 됨
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = ref.watch(isLoggedInProvider);
     final userName = ref.watch(userNameProvider);
-    final homeState = _homeController.state;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -80,9 +82,6 @@ class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
               _buildMainActionButton(),
 
               const SizedBox(height: 24),
-
-              // 기록 요약 섹션
-              _buildRecordSummarySection(),
 
               const SizedBox(height: 16),
 
@@ -164,7 +163,10 @@ class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text('로그인 페이지를 불러올 수 없습니다.'),
+                    content: const Text(
+                      '로그인 페이지를 불러올 수 없습니다.',
+                      style: TextStyle(color: AppColors.destructiveForeground),
+                    ),
                     backgroundColor: AppColors.destructive,
                     behavior: SnackBarBehavior.floating,
                   ),
@@ -205,13 +207,24 @@ class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           try {
-            context.push('/write');
+            _isPageVisible = false;
+            final result = await context.push('/write');
+            _isPageVisible = true;
+
+            // 저장 성공 시 (result == true) 데이터 갱신
+            if (result == true) {
+              _refreshData();
+            }
           } catch (e) {
+            _isPageVisible = true;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: const Text('페이지를 불러올 수 없습니다.'),
+                content: const Text(
+                  '페이지를 불러올 수 없습니다.',
+                  style: TextStyle(color: AppColors.destructiveForeground),
+                ),
                 backgroundColor: AppColors.destructive,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -246,259 +259,27 @@ class _MainHomeTabPageState extends ConsumerState<MainHomeTabPage> {
     );
   }
 
-  Widget _buildRecordSummarySection() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.muted, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 제목
-          Text(
-            '기록 요약',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: AppColors.fontWeightMedium,
-              color: AppColors.foreground,
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // 탭바
-          _buildTabBar(),
-
-          const SizedBox(height: 20),
-
-          // 통계 박스들
-          _buildStatsBoxes(),
-
-          const SizedBox(height: 30),
-
-          // 빈 상태 표시
-          _buildEmptyState(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTabBar() {
-    final tabs = [
-      {'label': '오늘', 'icon': Icons.access_time},
-      {'label': '이번 주', 'icon': Icons.calendar_today},
-      {'label': '이번 달', 'icon': Icons.show_chart},
-    ];
-
-    return Row(
-      children: tabs.asMap().entries.map((entry) {
-        final index = entry.key;
-        final tab = entry.value;
-        final isSelected = index == _selectedTabIndex;
-
-        return Expanded(
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                _selectedTabIndex = index;
-              });
-            },
-            child: Container(
-              margin: EdgeInsets.only(right: index < tabs.length - 1 ? 8 : 0),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.primary
-                    : AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: isSelected
-                      ? AppColors.primary
-                      : AppColors.primary.withOpacity(0.3),
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    tab['icon'] as IconData,
-                    size: 16,
-                    color: isSelected
-                        ? AppColors.primaryForeground
-                        : AppColors.foreground,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    tab['label'] as String,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: AppColors.fontWeightMedium,
-                      color: isSelected
-                          ? AppColors.primaryForeground
-                          : AppColors.foreground,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildStatsBoxes() {
-    final calculatedStats = _getStatistics();
-    final totalCount = calculatedStats.totalRecords;
-    final goodCount = calculatedStats.goodRecords;
-    final difficultCount = calculatedStats.difficultRecords;
-
-    final stats = [
-      {
-        'label': '총 기록',
-        'count': totalCount.toString(),
-        'color': totalCount > 0
-            ? AppColors.primary.withOpacity(0.1)
-            : AppColors.primary.withOpacity(0.05),
-        'textColor': totalCount > 0
-            ? AppColors.primary
-            : AppColors.mutedForeground,
-      },
-      {
-        'label': '좋은 기록',
-        'count': goodCount.toString(),
-        'color': goodCount > 0
-            ? AppColors.primary.withOpacity(0.1)
-            : AppColors.primary.withOpacity(0.05),
-        'textColor': goodCount > 0
-            ? AppColors.primary
-            : AppColors.mutedForeground,
-      },
-      {
-        'label': '힘든 기록',
-        'count': difficultCount.toString(),
-        'color': difficultCount > 0
-            ? AppColors.destructive.withOpacity(0.1)
-            : AppColors.primary.withOpacity(0.05),
-        'textColor': difficultCount > 0
-            ? AppColors.destructive
-            : AppColors.mutedForeground,
-      },
-    ];
-
-    return Row(
-      children: stats.map((stat) {
-        return Expanded(
-          child: Container(
-            margin: EdgeInsets.only(right: stat == stats.last ? 0 : 8),
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-            decoration: BoxDecoration(
-              color: stat['color'] as Color,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  stat['count'] as String,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: AppColors.fontWeightMedium,
-                    color: stat['textColor'] as Color,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  stat['label'] as String,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.mutedForeground,
-                    fontWeight: AppColors.fontWeightMedium,
-                    fontSize: 11,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    final stats = _getStatistics();
-    final hasRecords = stats.totalRecords > 0;
-
-    if (hasRecords) {
-      return const SizedBox.shrink(); // 기록이 있으면 빈 상태를 숨김
-    }
-
-    return Column(
-      children: [
-        // 레몬 아이콘
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(Icons.emoji_nature, color: AppColors.primary, size: 40),
-        ),
-
-        const SizedBox(height: 16),
-
-        // 빈 상태 텍스트
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _getEmptyStateText(),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: AppColors.fontWeightMedium,
-                color: AppColors.foreground,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 4),
-
-        Text(
-          '첫 기록을 남겨보세요!',
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: AppColors.mutedForeground),
-        ),
-      ],
-    );
-  }
-
-  String _getEmptyStateText() {
-    switch (_selectedTabIndex) {
-      case 0:
-        return '오늘 기록이 없습니다';
-      case 1:
-        return '이번 주 기록이 없습니다';
-      case 2:
-        return '이번 달 기록이 없습니다';
-      default:
-        return '기록이 없습니다';
-    }
-  }
-
   Widget _buildSecondaryActionLink() {
     return Center(
       child: TextButton(
-        onPressed: () {
+        onPressed: () async {
           try {
-            context.push('/difficult');
+            _isPageVisible = false;
+            final result = await context.push('/difficult');
+            _isPageVisible = true;
+
+            // 저장 성공 시 (result == true) 데이터 갱신
+            if (result == true) {
+              _refreshData();
+            }
           } catch (e) {
+            _isPageVisible = true;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: const Text('페이지를 불러올 수 없습니다.'),
+                content: const Text(
+                  '페이지를 불러올 수 없습니다.',
+                  style: TextStyle(color: AppColors.destructiveForeground),
+                ),
                 backgroundColor: AppColors.destructive,
                 behavior: SnackBarBehavior.floating,
               ),

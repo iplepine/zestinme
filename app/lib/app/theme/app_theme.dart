@@ -472,6 +472,14 @@ class AppTheme {
           fontWeight: FontWeight.w500,
         ),
       ),
+
+      // 스낵바 테마
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: darkScheme.primary,
+        contentTextStyle: TextStyle(color: darkScheme.onPrimary),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
     );
   }
 }

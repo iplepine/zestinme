@@ -23,9 +23,10 @@ class _HomeView extends StatefulWidget {
   State<_HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<_HomeView> {
+class _HomeViewState extends State<_HomeView> with WidgetsBindingObserver {
   late final HomeController _controller;
   bool _shouldScrollToTop = false;
+  bool _isPageVisible = true;
 
   // --- 명언 ---
   late final QuoteService _quoteService;
@@ -43,6 +44,7 @@ class _HomeViewState extends State<_HomeView> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _controller = HomeController();
     _controller.addListener(_onStateChanged);
     _controller.onIntent(LoadRecentRecords());
@@ -64,22 +66,41 @@ class _HomeViewState extends State<_HomeView> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.removeListener(_onStateChanged);
     _controller.dispose();
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // 앱이 포그라운드로 돌아올 때 갱신
+    if (state == AppLifecycleState.resumed && _isPageVisible) {
+      _refreshData();
+    }
+  }
+
   void _onStateChanged() => setState(() {});
 
-  void _goToWritePage(BuildContext context, int score) {
-    context.push('/write', extra: score).then((result) {
-      if (result == true) {
-        setState(() {
-          _shouldScrollToTop = true;
-        });
-        _controller.onIntent(LoadRecentRecords());
-      }
-    });
+  void _refreshData() {
+    _controller.onIntent(LoadRecentRecords());
+  }
+
+  void _goToWritePage(BuildContext context, int score) async {
+    _isPageVisible = false;
+    final result = await context.push('/write', extra: score);
+    _isPageVisible = true;
+    
+    // 저장 성공 시 (result == true) 홈 화면 갱신
+    if (result == true) {
+      // 상태 업데이트 및 데이터 갱신
+      setState(() {
+        _shouldScrollToTop = true;
+      });
+      // 최신 기록을 다시 로드
+      _refreshData();
+    }
   }
 
   // --- Gesture Handling ---
