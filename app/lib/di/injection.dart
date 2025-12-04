@@ -27,6 +27,7 @@ import '../features/sleep_record/domain/usecases/update_sleep_record_usecase.dar
 import '../core/services/firebase_service.dart';
 import '../features/anger/data/question_bank_loader.dart';
 import '../features/anger/data/coach_repository.dart';
+import '../core/services/local_db_service.dart';
 
 /// 의존성 주입 설정
 class Injection {
@@ -61,6 +62,11 @@ class Injection {
     final completedChallengeBox = await Hive.openBox<CompletedChallengeDto>(
       'completed_challenges',
     );
+
+    // Isar 초기화
+    final localDbService = LocalDbService();
+    await localDbService.init();
+    _getIt.registerSingleton<LocalDbService>(localDbService);
 
     // Repository 등록
     _getIt.registerSingleton<RecordRepository>(

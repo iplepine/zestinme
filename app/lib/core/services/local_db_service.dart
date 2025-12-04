@@ -1,13 +1,18 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:zestinme/core/models/emotion_record.dart';
+import 'package:zestinme/features/onboarding/data/models/onboarding_data_model.dart';
 
 class LocalDbService {
   late Isar _isar;
+  Isar get isar => _isar;
 
   Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
-    _isar = await Isar.open([EmotionRecordSchema], directory: dir.path);
+    _isar = await Isar.open([
+      EmotionRecordSchema,
+      OnboardingDataModelSchema,
+    ], directory: dir.path);
   }
 
   // Create

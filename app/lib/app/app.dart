@@ -12,8 +12,10 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
 
+    final router = ref.watch(goRouterProvider);
+
     return MaterialApp.router(
-      routerConfig: AppRouter.router,
+      routerConfig: router,
       title: 'ZestInMe',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
