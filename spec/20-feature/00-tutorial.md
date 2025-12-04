@@ -23,7 +23,8 @@
 *   **Visual:** 자욱한 안개, 희미한 선착장 등불, 어두운 바다. UI 버튼 없음.
 *   **Audio:** 잔잔한 파도 소리, 멀리서 들리는 뱃고동 (White Noise).
 *   **Interaction:** 화면 중앙에 낚싯대가 놓여 있음.
-*   **Prompt:** "안개를 걷어내려면 낚싯대를 당기세요." (Fade-in/out text)
+*   **Prompt:** "안개를 걷어내려면 낚싯대를 **아래로** 당기세요." (Fade-in/out text)
+*   **Visual Cue:** 텍스트 아래에 아래쪽 화살표(⬇️) 애니메이션을 추가하여 드래그 방향을 명확히 지시함.
 
 ### Scene 1: 정체성 확인 (Identity)
 *   **Action:** 사용자가 화면을 아래로 당겨(Swipe Down) 낚싯줄을 던짐.

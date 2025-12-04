@@ -43,15 +43,32 @@ class _SceneVoidState extends State<SceneVoid> {
                   .fade(duration: 3000.ms, begin: 0.5, end: 0.8),
         ),
 
-        // Prompt Text
+        // Prompt Text & Visual Cue
         Center(
           child:
-              Text(
-                    "안개를 걷어내려면 낚싯대를 당기세요",
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 16,
-                    ),
+              Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "안개를 걷어내려면 낚싯대를 아래로 당기세요",
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.white.withOpacity(0.5),
+                            size: 32,
+                          )
+                          .animate(
+                            onPlay: (controller) =>
+                                controller.repeat(reverse: true),
+                          )
+                          .moveY(begin: 0, end: 10, duration: 1000.ms)
+                          .fade(begin: 0.2, end: 0.8),
+                    ],
                   )
                   .animate(
                     onPlay: (controller) => controller.repeat(reverse: true),
