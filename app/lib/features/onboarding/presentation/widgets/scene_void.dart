@@ -3,285 +3,355 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 
 class SceneVoid extends StatefulWidget {
-  final VoidCallback onFishingComplete;
+  final VoidCallback
+  onCleaningComplete; // Renamed from onFishingComplete for Gardening consistency
 
-  const SceneVoid({super.key, required this.onFishingComplete});
+  const SceneVoid({super.key, required this.onCleaningComplete});
 
   @override
   State<SceneVoid> createState() => _SceneVoidState();
 }
 
-class _SceneVoidState extends State<SceneVoid> with TickerProviderStateMixin {
-  double _dragDistance = 0.0;
-  bool _isFishing = false;
-  bool _showSplash = false;
+class _SceneVoidState extends State<SceneVoid> {
+  // User input points for visual drawing
+  final List<Offset> _cleanedPoints = [];
 
-  late AnimationController _rodController;
-  late Animation<double> _rodAnimation;
+  // Logic: Grid points inside the pot to measure coverage
+  final List<Offset> _potTargetPoints = [];
+  final Set<int> _hitIndices =
+      {}; // Indices of target points that have been cleaned
+
+  bool _isCleaned = false;
+  double _cleanedRatio = 0.0;
+
+  // Pot Dimensions (Must match PotPainter)
+  final double _wTop = 160;
+  final double _wBottom = 120;
+  final double _h = 160;
 
   @override
   void initState() {
     super.initState();
-    _rodController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-    _rodAnimation = Tween<double>(begin: 0, end: 0).animate(
-      CurvedAnimation(parent: _rodController, curve: Curves.elasticOut),
-    );
+    // Defer grid generation until we know the center, but here we assumes fixed size 300x400 for the stack.
+    // The center of the SizedBox(300, 400) is (150, 200).
+    _generatePotGrid(const Offset(150, 200));
   }
 
-  @override
-  void dispose() {
-    _rodController.dispose();
-    super.dispose();
+  void _generatePotGrid(Offset center) {
+    _potTargetPoints.clear();
+    final path = Path();
+    path.moveTo(center.dx - _wTop / 2, center.dy - _h / 2);
+    path.lineTo(center.dx + _wTop / 2, center.dy - _h / 2);
+    path.lineTo(center.dx + _wBottom / 2, center.dy + _h / 2);
+    path.lineTo(center.dx - _wBottom / 2, center.dy + _h / 2);
+    path.close();
+
+    // Generate grid points bounding box
+    // Top-Left: (center.dx - wTop/2, center.dy - h/2)
+    // Grid spacing: 10px (dense enough for 95% accuracy)
+    const double step = 10.0;
+
+    for (double y = center.dy - _h / 2; y <= center.dy + _h / 2; y += step) {
+      for (
+        double x = center.dx - _wTop / 2;
+        x <= center.dx + _wTop / 2;
+        x += step
+      ) {
+        final point = Offset(x, y);
+        if (path.contains(point)) {
+          _potTargetPoints.add(point);
+        }
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Background: Dark Sea
-        Container(color: const Color(0xFF0A101C)),
-
-        // Fog Effect
-        Positioned.fill(
-          child:
-              Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.grey.withOpacity(0.3),
-                          Colors.black.withOpacity(0.8),
-                        ],
-                      ),
-                    ),
-                  )
-                  .animate(
-                    onPlay: (controller) => controller.repeat(reverse: true),
-                  )
-                  .fade(duration: 3000.ms, begin: 0.5, end: 0.8),
-        ),
-
-        // Splash Effect
-        if (_showSplash)
-          Center(
-            child:
-                Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.8),
-                          width: 2,
-                        ),
-                      ),
-                    )
-                    .animate()
-                    .scale(
-                      duration: 600.ms,
-                      begin: Offset.zero,
-                      end: const Offset(2, 2),
-                    )
-                    .fadeOut(duration: 600.ms),
-          ),
-
-        if (_showSplash)
-          Center(
-            child:
-                Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.5),
-                      ),
-                    )
-                    .animate()
-                    .scale(
-                      duration: 400.ms,
-                      begin: Offset.zero,
-                      end: const Offset(1.5, 1.5),
-                    )
-                    .fadeOut(duration: 400.ms),
-          ),
-
-        // Prompt Text & Visual Cue
-        if (!_isFishing)
-          Center(
-            child:
-                Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "안개를 걷어내려면 낚싯대를 아래로 당기세요",
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.white.withOpacity(0.5),
-                              size: 32,
-                            )
-                            .animate(
-                              onPlay: (controller) =>
-                                  controller.repeat(reverse: true),
-                            )
-                            .moveY(begin: 0, end: 10, duration: 1000.ms)
-                            .fade(begin: 0.2, end: 0.8),
-                      ],
-                    )
-                    .animate(
-                      onPlay: (controller) => controller.repeat(reverse: true),
-                    )
-                    .fade(duration: 2000.ms),
-          ),
-
-        // Fishing Rod Interaction Area
-        GestureDetector(
-          onVerticalDragUpdate: (details) {
-            if (_isFishing) return;
-            setState(() {
-              _dragDistance += details.delta.dy;
-            });
-          },
-          onVerticalDragEnd: (details) {
-            if (_isFishing) return;
-            if (_dragDistance > 150) {
-              _startFishing();
-            } else {
-              // Snap back if not pulled enough
-              _animateRodBack();
-            }
-          },
-          child: Container(
-            color: Colors.transparent,
-            width: double.infinity,
-            height: double.infinity,
-            child: AnimatedBuilder(
-              animation: _rodController,
-              builder: (context, child) {
-                return CustomPaint(
-                  painter: FishingRodPainter(
-                    dragDistance: _isFishing
-                        ? _rodAnimation.value
-                        : _dragDistance,
-                  ),
-                );
-              },
+    return Scaffold(
+      backgroundColor: const Color(0xFF1E1E2C), // Darker soil/night color
+      body: Stack(
+        children: [
+          // Background - Subtle texture?
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: RadialGradient(
+                  colors: [Color(0xFF2C2C3E), Color(0xFF111116)],
+                  radius: 1.5,
+                  center: Alignment.center,
+                ),
+              ),
             ),
           ),
-        ),
-      ],
+
+          // Central Interaction Area
+          Center(
+            child: SizedBox(
+              width: 300,
+              height: 400,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // 1. The Clean Pot (Underneath)
+                  CustomPaint(
+                    size: const Size(200, 250),
+                    painter: PotPainter(),
+                  ),
+
+                  // Label that appears clearly on the pot
+                  if (_cleanedRatio > 0.3)
+                    Positioned(
+                      bottom: 80,
+                      child: AnimatedOpacity(
+                        opacity: (_cleanedRatio - 0.3).clamp(0.0, 1.0),
+                        duration: 500.ms,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(4),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            "MY MIND",
+                            style: TextStyle(
+                              fontFamily: 'Courier',
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2.0,
+                              color: Colors.brown[800],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  // 2. The Dust Layer (On Top)
+                  GestureDetector(
+                    onPanUpdate: (details) {
+                      if (_isCleaned) return;
+
+                      setState(() {
+                        // Add visual point
+                        _cleanedPoints.add(details.localPosition);
+
+                        // Check collision with Pot Grid
+                        // Cleaning radius = 25.0 (matches DustPainter eraser)
+                        const double cleaningRadius = 25.0;
+
+                        for (int i = 0; i < _potTargetPoints.length; i++) {
+                          if (!_hitIndices.contains(i)) {
+                            if ((_potTargetPoints[i] - details.localPosition)
+                                    .distance <
+                                cleaningRadius) {
+                              _hitIndices.add(i);
+                            }
+                          }
+                        }
+
+                        // Update Ratio
+                        if (_potTargetPoints.isNotEmpty) {
+                          _cleanedRatio =
+                              _hitIndices.length / _potTargetPoints.length;
+                        }
+                      });
+
+                      // Haptic density check (Visual only)
+                      if (_cleanedPoints.length % 5 == 0) {
+                        HapticFeedback.selectionClick();
+                      }
+
+                      // Check for completion (98%)
+                      if (_cleanedRatio >= 0.98 && !_isCleaned) {
+                        _finishCleaning();
+                      }
+                    },
+                    child: CustomPaint(
+                      size: const Size(300, 400),
+                      painter: DustPainter(cleanedPoints: _cleanedPoints),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Instructions
+          if (!_isCleaned)
+            Positioned(
+              bottom: 100,
+              left: 0,
+              right: 0,
+              child: Column(
+                children: [
+                  Text(
+                    "오래된 화분이 놓여있습니다.\n먼지를 닦아주세요.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.6),
+                      fontSize: 16,
+                      height: 1.5,
+                    ),
+                  ).animate().fade().moveY(begin: 10, end: 0),
+                  const SizedBox(height: 20),
+                  Icon(Icons.touch_app, color: Colors.white24, size: 32)
+                      .animate(onPlay: (c) => c.repeat(reverse: true))
+                      .moveX(begin: -10, end: 10, duration: 1000.ms),
+                ],
+              ),
+            ),
+
+          // Transition Overlay or Success Message
+          if (_isCleaned)
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "화분이 깨끗해졌습니다!",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const CircularProgressIndicator(color: Colors.greenAccent),
+                  ],
+                ),
+              ).animate().fade().scale(),
+            ),
+        ],
+      ),
     );
   }
 
-  void _animateRodBack() {
-    _rodAnimation = Tween<double>(begin: _dragDistance, end: 0).animate(
-      CurvedAnimation(parent: _rodController, curve: Curves.elasticOut),
-    );
-
-    _rodController.forward(from: 0).then((_) {
-      setState(() {
-        _dragDistance = 0;
-      });
-    });
-  }
-
-  void _startFishing() async {
+  void _finishCleaning() {
     setState(() {
-      _isFishing = true;
+      _isCleaned = true;
     });
-
-    // 1. Rod Snaps Back (Cast)
-    HapticFeedback.mediumImpact();
-    _animateRodBack();
-
-    // 2. Wait for line to hit water
-    await Future.delayed(const Duration(milliseconds: 400));
-
-    // 3. Splash Effect
     HapticFeedback.heavyImpact();
-    setState(() {
-      _showSplash = true;
+    Future.delayed(const Duration(seconds: 2), () {
+      widget.onCleaningComplete();
     });
-
-    // 4. Wait for splash to finish and transition
-    await Future.delayed(const Duration(seconds: 2));
-    widget.onFishingComplete();
   }
 }
 
-class FishingRodPainter extends CustomPainter {
-  final double dragDistance;
+// -----------------------------------------------------------------------------
+// PAINTERS
+// -----------------------------------------------------------------------------
 
-  FishingRodPainter({required this.dragDistance});
+class PotPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Draw a simple terracotta pot
+    final paint = Paint()
+      ..color =
+          const Color(0xFF8D6E63) // Terracotta
+      ..style = PaintingStyle.fill;
+
+    final center = Offset(size.width / 2, size.height / 2);
+
+    // Pot body (Trapezoid)
+    final path = Path();
+    double wTop = 160;
+    double wBottom = 120;
+    double h = 160;
+
+    path.moveTo(center.dx - wTop / 2, center.dy - h / 2);
+    path.lineTo(center.dx + wTop / 2, center.dy - h / 2);
+    path.lineTo(center.dx + wBottom / 2, center.dy + h / 2);
+    path.lineTo(center.dx - wBottom / 2, center.dy + h / 2);
+    path.close();
+
+    canvas.drawPath(path, paint);
+
+    // Pot Rim
+    final rimPaint = Paint()
+      ..color =
+          const Color(0xFF795548) // Darker
+      ..style = PaintingStyle.fill;
+
+    double rimH = 30;
+    double rimW = 180;
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: Offset(center.dx, center.dy - h / 2),
+          width: rimW,
+          height: rimH,
+        ),
+        const Radius.circular(4),
+      ),
+      rimPaint,
+    );
+
+    // Shadow/Highlight roughly
+    final highlight = Paint()
+      ..color = Colors.white.withOpacity(0.1)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawPath(
+      Path()..addRect(
+        Rect.fromLTWH(center.dx - wTop / 2, center.dy - h / 2, 20, h),
+      ),
+      highlight,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class DustPainter extends CustomPainter {
+  final List<Offset> cleanedPoints;
+
+  DustPainter({required this.cleanedPoints});
 
   @override
   void paint(Canvas canvas, Size size) {
-    // 1. Configuration
-    final tension = dragDistance.clamp(0.0, 300.0);
-    final maxBend = 100.0; // Maximum pixels the tip bends down
-    final bendAmount = (tension / 300.0) * maxBend;
+    // Save layer to apply composite operation (destination-out for erasing)
+    canvas.saveLayer(Rect.fromLTWH(0, 0, size.width, size.height), Paint());
 
-    // Rod properties
-    final rodColor = const Color(0xFF8D6E63); // Wood brown
+    // 1. Draw full dust layer
+    final dustPaint = Paint()
+      ..color = Colors.grey.withOpacity(0.9)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
 
-    // 2. Define Points
-    // Handle starts off-screen bottom-right
-    final handleStart = Offset(size.width * 1.2, size.height * 1.2);
-    // Rod base (visible start) - aiming towards center-top
-    final defaultTip = Offset(size.width * 0.5, size.height * 0.4);
+    // Rough "Dust" cloud shape covering the pot area
+    // Just a big circle/rect for now
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), dustPaint);
 
-    // Calculate bent tip position
-    // The tip moves down and slightly in as it bends
-    final bentTip = Offset(defaultTip.dx, defaultTip.dy + bendAmount);
+    // 2. Erase the cleaned points
+    final eraser = Paint()
+      ..blendMode = BlendMode
+          .clear // Clear pixels
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 30.0;
 
-    // Control point for the rod's curve
-    // As tension increases, the control point moves to create a sharper curve
-    final controlPoint = Offset(
-      size.width * 0.65,
-      size.height * 0.6 + (bendAmount * 0.5),
-    );
+    for (var point in cleanedPoints) {
+      canvas.drawCircle(point, 25.0, eraser);
+    }
 
-    // 3. Draw Rod (Tapered)
-    final rodPaint = Paint()
-      ..color = rodColor
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
-
-    final rodPath = Path();
-    rodPath.moveTo(handleStart.dx, handleStart.dy);
-    rodPath.quadraticBezierTo(
-      controlPoint.dx,
-      controlPoint.dy,
-      bentTip.dx,
-      bentTip.dy,
-    );
-
-    canvas.drawPath(rodPath, rodPaint);
-
-    // 4. Draw Fishing Line
-    // Line goes from bentTip to the water (or drag point)
-    final lineStart = bentTip;
-    final lineEnd = Offset(size.width / 2, size.height);
-
-    final linePaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.6)
-      ..strokeWidth = 1.0;
-
-    canvas.drawLine(lineStart, lineEnd, linePaint);
+    canvas.restore();
   }
 
   @override
-  bool shouldRepaint(covariant FishingRodPainter oldDelegate) {
-    return oldDelegate.dragDistance != dragDistance;
-  }
+  bool shouldRepaint(DustPainter old) =>
+      old.cleanedPoints.length != cleanedPoints.length;
 }

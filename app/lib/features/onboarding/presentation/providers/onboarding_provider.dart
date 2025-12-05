@@ -37,8 +37,8 @@ class OnboardingViewModel extends _$OnboardingViewModel {
   OnboardingState build() {
     return const OnboardingState(
       nickname: '',
-      waveHeight: 0.5,
-      skyBrightness: 0.5,
+      waterLevel: 0.5,
+      sunlightLevel: 0.5,
       arousalScore: 5,
       valenceScore: 5,
       activeModuleId: '',
@@ -48,26 +48,26 @@ class OnboardingViewModel extends _$OnboardingViewModel {
   void setNickname(String nickname) {
     state = OnboardingState(
       nickname: nickname,
-      waveHeight: state.waveHeight,
-      skyBrightness: state.skyBrightness,
+      waterLevel: state.waterLevel,
+      sunlightLevel: state.sunlightLevel,
       arousalScore: state.arousalScore,
       valenceScore: state.valenceScore,
       activeModuleId: state.activeModuleId,
     );
   }
 
-  void updateWeather({double? waveHeight, double? skyBrightness}) {
-    final newWaveHeight = waveHeight ?? state.waveHeight;
-    final newSkyBrightness = skyBrightness ?? state.skyBrightness;
+  void updateEnvironment({double? waterLevel, double? sunlightLevel}) {
+    final newWaterLevel = waterLevel ?? state.waterLevel;
+    final newSunlightLevel = sunlightLevel ?? state.sunlightLevel;
 
     // Map 0.0-1.0 to 1-9
-    final arousal = (newWaveHeight * 8 + 1).round();
-    final valence = (newSkyBrightness * 8 + 1).round();
+    final arousal = (newWaterLevel * 8 + 1).round();
+    final valence = (newSunlightLevel * 8 + 1).round();
 
     state = OnboardingState(
       nickname: state.nickname,
-      waveHeight: newWaveHeight,
-      skyBrightness: newSkyBrightness,
+      waterLevel: newWaterLevel,
+      sunlightLevel: newSunlightLevel,
       arousalScore: arousal,
       valenceScore: valence,
       activeModuleId: state.activeModuleId,
@@ -77,8 +77,8 @@ class OnboardingViewModel extends _$OnboardingViewModel {
   void selectModule(String moduleId) {
     state = OnboardingState(
       nickname: state.nickname,
-      waveHeight: state.waveHeight,
-      skyBrightness: state.skyBrightness,
+      waterLevel: state.waterLevel,
+      sunlightLevel: state.sunlightLevel,
       arousalScore: state.arousalScore,
       valenceScore: state.valenceScore,
       activeModuleId: moduleId,
@@ -89,8 +89,8 @@ class OnboardingViewModel extends _$OnboardingViewModel {
     await ref.read(completeOnboardingProvider).call(state);
     state = OnboardingState(
       nickname: state.nickname,
-      waveHeight: state.waveHeight,
-      skyBrightness: state.skyBrightness,
+      waterLevel: state.waterLevel,
+      sunlightLevel: state.sunlightLevel,
       arousalScore: state.arousalScore,
       valenceScore: state.valenceScore,
       activeModuleId: state.activeModuleId,

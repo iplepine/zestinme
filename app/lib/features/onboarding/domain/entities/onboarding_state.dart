@@ -1,7 +1,7 @@
 class OnboardingState {
   final String nickname;
-  final double waveHeight;
-  final double skyBrightness;
+  final double waterLevel; // formerly waveHeight (Arousal)
+  final double sunlightLevel; // formerly skyBrightness (Valence)
   final int arousalScore;
   final int valenceScore;
   final String activeModuleId;
@@ -9,8 +9,8 @@ class OnboardingState {
 
   const OnboardingState({
     required this.nickname,
-    required this.waveHeight,
-    required this.skyBrightness,
+    required this.waterLevel,
+    required this.sunlightLevel,
     required this.arousalScore,
     required this.valenceScore,
     required this.activeModuleId,

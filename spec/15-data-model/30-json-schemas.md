@@ -6,7 +6,7 @@
 ```json
 {
   "quest_id": "quest_anger_management_01",
-  "title": "용암 식히기 (Cooling the Lava)",
+  "title": "가시 다듬기 (Pruning the Thorns)",
   "category": "CBT_Intervention",
   "trigger_condition": {
     "sam_valence_max": 3,
@@ -16,21 +16,21 @@
   "steps": [
     {
       "step_id": "breath_work",
-      "type": "interaction_mic_blow",
+      "type": "interaction_long_press",
       "duration_sec": 15,
-      "instruction": "마이크에 천천히 숨을 불어넣어 물고기를 식혀주세요."
+      "instruction": "화분의 가시 부분을 꾹 눌러서 부드럽게 만들어주세요."
     },
     {
       "step_id": "cognitive_reframing",
       "type": "journal_input",
-      "prompt": "상대방의 입장에서 이 상황을 한 문장으로 다시 써보세요.",
+      "prompt": "이 가시(화남)가 나를 보호하려 했던 이유는 무엇인가요?",
       "min_length": 20
     }
   ],
   "rewards": {
     "xp": 150,
-    "item_drop": "obsidian_scale",
-    "vibe_shift": "calm_ocean"
+    "item_drop": "golden_shears",
+    "vibe_shift": "warm_sunset"
   }
 }
 ```
@@ -57,8 +57,34 @@
       }
     },
     "game_metadata": {
-      "bait_type": "text_lure_v2",
-      "caught_item_id": "fish_volcanic_eel"
+      "nutrient_type": "liquid_fertilizer_v2",
+      "growth_impact": {
+        "hydration": +10,
+        "leaf_health": +5
+      },
+      "spawned_event": "new_bud_appeared"
+    }
+  }
+}
+```
+
+## 3. Plant State Schema (New)
+화분 상태 저장을 위한 스키마입니다.
+
+```json
+{
+  "plant_state": {
+    "plant_id": "user_main_pot_01",
+    "species": "moon_flower_hybrid",
+    "stage": "sprout",
+    "health_stats": {
+      "hydration": 80.5,
+      "sunlight_exposure": 45.2,
+      "love_level": 12
+    },
+    "visual_genes": {
+      "color_palette": ["#FF5733", "#C70039"],
+      "leaf_shape": "round"
     }
   }
 }

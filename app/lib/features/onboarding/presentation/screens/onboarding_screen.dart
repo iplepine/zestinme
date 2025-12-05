@@ -30,7 +30,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     switch (_currentScene) {
       case 0:
         return SceneVoid(
-          onFishingComplete: () {
+          onCleaningComplete: () {
             setState(() {
               _currentScene = 1;
             });

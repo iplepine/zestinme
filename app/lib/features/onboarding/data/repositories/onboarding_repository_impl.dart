@@ -13,8 +13,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     final model = OnboardingDataModel()
       ..nickname = state.nickname
       ..createdAt = DateTime.now()
-      ..waveHeight = state.waveHeight
-      ..skyBrightness = state.skyBrightness
+      ..waterLevel = state.waterLevel
+      ..sunlightLevel = state.sunlightLevel
       ..arousalScore = state.arousalScore
       ..valenceScore = state.valenceScore
       ..activeModuleId = state.activeModuleId

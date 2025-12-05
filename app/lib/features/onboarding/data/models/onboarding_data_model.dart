@@ -12,8 +12,8 @@ class OnboardingDataModel {
   late DateTime createdAt;
 
   // Visual Metaphor State
-  late double waveHeight; // Arousal
-  late double skyBrightness; // Valence
+  late double waterLevel; // Arousal (Water amount)
+  late double sunlightLevel; // Valence (Sunlight amount)
 
   // Derived SAM Scores
   late int arousalScore;

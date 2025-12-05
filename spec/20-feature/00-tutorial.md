@@ -1,105 +1,79 @@
-# 1.0 Onboarding: The Foggy Dock
+# 1.0 Onboarding: The Void Garden
 
 | Attribute | Value |
 | :--- | :--- |
-| **Version** | 1.0 |
-| **Status** | Draft |
-| **Date** | 2025-12-04 |
+| **Version** | 2.0 |
+| **Status** | Spec Updated |
+| **Date** | 2025-12-06 |
 | **Author** | Mind-Angler Committee |
 | **Related** | `spec/15-data-model/30-json-schemas.md` |
 
 ## 1. 기획 의도 (Design Intent)
 
-> **🎣 Planner Flow:**
-> "사용자의 첫 진입은 '숙제'가 아니라 '발견'이어야 합니다. 전통적인 회원가입 폼(Form)을 제거하고, 낚시라는 행위를 통해 자신의 정체성을 건져 올리는 경험을 제공합니다."
+> **Dr. Mind:**
+> "우리의 마음은 정원과 같습니다. 오래 돌보지 않으면 잡초가 무성해지지만, 다시 관심을 주면 언제든 싹이 틔어납니다."
 
-*   **No Forms, Just Play:** 텍스트 필드와 약관 동의 버튼으로 도배된 화면 대신, 낚시 게임 메타포를 통해 자연스럽게 계정을 생성합니다.
-*   **Immersion First:** 앱 실행 즉시 시각/청각적 요소를 통해 '치료적 공간(Safe Space)'에 진입했음을 알립니다.
-*   **Assessment as Gameplay:** 심리 검사(Mood Tracking)를 '날씨 조절'이라는 게임 메커니즘으로 치환하여 거부감을 낮추고 몰입감을 높입니다.
+*   **Nurturing over Hunting:** 낚시(사냥)에서 양육(가드닝)으로의 전환. 공격적인 행위 대신 부드러운 터치(쓰다듬기, 물주기)를 유도합니다.
+*   **Restoration:** '낡고 방치된 화분'을 발견하고 닦아내는 행위를 통해, 자신의 마음을 다시 돌보겠다는 **서약(Commitment)**을 은유합니다.
 
 ## 2. 시퀀스 상세 흐름 (User Flow)
 
-### Scene 0: 초기 상태 (The Void)
-*   **Visual:** 자욱한 안개, 희미한 선착장 등불, 어두운 바다. UI 버튼 없음.
-*   **Audio:** 잔잔한 파도 소리, 멀리서 들리는 뱃고동 (White Noise).
-*   **Interaction:** 화면 중앙에 낚싯대가 놓여 있음.
-*   **Prompt:** "안개를 걷어내려면 낚싯대를 **아래로** 당기세요." (Fade-in/out text)
-*   **Visual Cue:** 텍스트 아래에 아래쪽 화살표(⬇️) 애니메이션을 추가하여 드래그 방향을 명확히 지시함.
+### Scene 0: 초기 상태 (The Neglected Pot)
+*   **Visual:** 칠흑 같은 어둠 속, 덩그러니 놓인 낡은 화분 하나. 먼지가 쌓여 있고 표면이 흐릿함.
+*   **Audio:** 고요한 적막, 아주 미세한 바람 소리.
+*   **Prompt:** "오랫동안 비어있던 화분이네요." (Fade-in)
+*   **Interaction:** 화분을 터치하거나 문지르는 제스처 유도.
 
 ### Scene 1: 정체성 확인 (Identity)
-*   **Action:** 사용자가 화면을 아래로 당겨(Swipe Down) 낚싯줄을 던짐.
-*   **Event:** 낚싯줄이 팽팽해지고, 물 밖으로 '낡은 명찰' 아이템이 올라옴.
-    *   **Feedback:** "낡은 명찰을 건져올렸습니다!"라는 문구가 잠시 나타남.
-    > **🧠 Dr. Neuro:** "불확실한 보상(Variable Ratio Reinforcement)의 첫 단계입니다. 당기는 행위에 대한 즉각적인 시각/촉각 피드백이 도파민을 자극합니다."
-*   **UI Overlay:** 명찰 이미지 위에 텍스트 입력 필드가 자연스럽게 오버레이 됨.
-*   **Question:** "글씨가 물에 번져 흐릿하네요. 뭐라고 적혀 있었나요?"
-*   **Input:** 사용자 닉네임 입력 -> 엔터 -> 명찰이 깨끗해지며 인벤토리로 수납.
+*   **Action:** 사용자가 화분의 먼지를 문질러서 닦아냄 (Scratch card effect).
+*   **Event:** 먼지가 걷히며 화분의 '이름표'가 드러남.
+    *   **Feedback:** "이름표가 있네요. 누구의 화분인가요?"
+*   **Input:** 사용자 닉네임 입력 (키보드 호출).
+*   **Outcome:** 입력 완료 시 화분이 깨끗해지고, 희미한 빛이 들어오기 시작함.
 
-### Scene 2: 날씨 조율 (Baseline Assessment)
-*   **Transition:** 이름을 입력하면 안개가 50% 걷히고, 하늘과 수평선이 드러남.
+### Scene 2: 환경 조성 (Environment / Baseline)
+*   **Transition:** 빛이 조금 들어오며 화분 주변의 풍경이 희미하게 보임.
 *   **Metaphor (SAM Scale 변형):**
-    *   **파도 (Arousal):** 화면 하단 슬라이더로 파도의 거칠기 조절. (왼쪽: 잔잔함/이완 ↔ 오른쪽: 폭풍우/각성)
-    *   **하늘 (Valence):** 화면 우측 슬라이더로 시간/밝기 조절. (위: 화창한 낮/긍정 ↔ 아래: 어두운 밤/우울)
-*   **Question:** "오늘 당신의 바다는 어떤 모습인가요?"
-*   **Visual Feedback:** 슬라이더 조작에 따라 배경 그래픽(Rive 또는 Shader)이 실시간으로 반응.
-    > **❤️ Dr. Mind:** "자신의 감정을 언어로 정의하기 전에, 이미지로 투사(Projection)하는 과정은 방어 기제를 낮추고 솔직한 상태를 드러내게 돕습니다."
+    *   **빛의 양 (Valence):** 화면 우측 슬라이더(해 높이). (위: 따스한 햇살 ↔ 아래: 차분한 달빛)
+    *   **물의 양 (Arousal):** 화면 하단 슬라이더(수분). (왼쪽: 건조함/차분 ↔ 오른쪽: 촉촉함/생기)
+*   **Question:** "지금 이 화분에는 무엇이 필요한가요?"
+*   **Visual Feedback:** 빛과 물의 양에 따라 흙의 질감과 주변 조명이 실시간 변화.
 
-### Scene 3: 목표 설정 (Goal Setting)
-*   **Event:** 날씨가 확정되면, 먼 바다에서 '유리병' 하나가 떠내려와 선착장에 걸림.
-*   **Interaction:** 유리병을 탭 하여 개봉 (뚜껑 따는 사운드 효과).
-*   **Selection:** 3장의 '지도 조각' 중 하나를 선택.
-    1.  **🌙 깊은 잠의 섬:** 수면 효율 개선 (Sleep tracking)
-    2.  **🔥 식지 않는 화산:** 분노 조절 (Anger management)
-    3.  **💎 잃어버린 보물:** 가치관 탐구 (Value discovery)
-*   **Outcome:** 선택한 목표에 따라 해당 모듈의 '튜토리얼 퀘스트' 시작.
+### Scene 3: 씨앗 심기 (Goal Setting / Seeding)
+*   **Event:** 환경이 조성되면, 3가지 씨앗 중 하나를 선택하여 심음.
+    1.  **🌙 달맞이꽃 씨앗:** 수면 관리 (Deep Sleep)
+    2.  **🌵 선인장 돌보기:** 분노/스트레스 관리 (Anger)
+    3.  **🌻 해바라기 씨앗:** 긍정/행복 찾기 (Happiness)
+*   **Interaction:** 씨앗을 드래그하여 화분 흙에 심음.
+*   **Outcome:** 싹이 트는 애니메이션과 함께 메인 홈(정원)으로 진입.
 
 ## 3. 데이터 요구사항 (Data Schema)
-
-> **🏗️ Architect Spec:**
-> "초기 데이터는 로컬 DB(Isar)에 우선 저장되며, 추후 동기화 시 JSON 형태로 변환됩니다."
 
 ```json
 {
   "user_profile": {
-    "nickname": "String (Input from Scene 1)",
+    "nickname": "String",
     "created_at": "Timestamp"
   },
-  "initial_assessment": {
-    "visual_metaphor_state": {
-      "wave_height": "Float (0.0 ~ 1.0) // Arousal",
-      "sky_brightness": "Float (0.0 ~ 1.0) // Valence"
+  "initial_garden_state": {
+    "environment": {
+      "sunlight_level": "Float (0.0 ~ 1.0) // Valence",
+      "water_level": "Float (0.0 ~ 1.0) // Arousal"
     },
-    "sam_score_derived": {
-      "arousal_score": "Integer (1-9 mapped from wave_height)",
-      "valence_score": "Integer (1-9 mapped from sky_brightness)"
+    "planted_seed": {
+      "type": "String ('moon_flower' | 'cactus' | 'sunflower')",
+      "planted_at": "Timestamp"
     }
-  },
-  "quest_state": {
-    "active_module_id": "String (Selected Card ID: 'sleep' | 'anger' | 'value')",
-    "tutorial_completed": true
   }
 }
 ```
 
 ## 4. 구현 가이드 (Technical Notes)
 
-> **🏗️ Architect Spec:**
-> "Flutter 환경에 맞춰 최적화된 라이브러리와 패턴을 사용합니다."
+### 4.1 Visuals
+*   **Pot Interaction:** `CustomPainter`로 화분과 먼지(Dust) 레이어를 그림. 사용자의 드래그 좌표에 따라 먼지 레이어의 투명도(Alpha)를 지워나가는 방식.
+*   **Grow Animation:** 씨앗을 심었을 때, `rive` 또는 절차적 애니메이션으로 작은 새싹이 올라오는 연출 필수.
 
-### 4.1 Animation & Visuals
-*   **Library:** `flutter_animate` 또는 `rive` 사용.
-    *   안개(Fog) 효과: `ShaderMask`와 `AnimationController`를 활용한 커스텀 쉐이더 또는 Rive 애니메이션.
-    *   투명도/위치 제어: `AnimatedOpacity`, `AnimatedPositioned` 등 암시적 애니메이션 위젯 활용 권장.
-
-### 4.2 Gestures
-*   **Fishing Action:** `GestureDetector`의 `onVerticalDragUpdate` 및 `onVerticalDragEnd`를 사용하여 낚싯대 투척 동작 구현.
-    *   Pull-to-refresh와 유사한 물리 감각(Elastic effect)을 위해 `PhysicsSimulation` 고려.
-
-### 4.3 Haptics
-*   **Feedback:** `HapticFeedback` (flutter/services) 사용.
-    *   낚시 성공 시: `HapticFeedback.heavyImpact()`
-    *   명찰 닦을 때: `HapticFeedback.selectionClick()` (연속적 피드백)
-
-### 4.4 Asset Management
-*   **Caching:** `cached_network_image` (원격 이미지일 경우) 또는 `precacheImage` (로컬 에셋)를 사용하여 초기 진입 시 로딩 딜레이 방지.
-*   **Background:** 고해상도 배경은 메모리 최적화를 위해 적절한 압축 포맷(WebP 등) 사용.
+### 4.2 Haptics
+*   **Rubbing:** 먼지를 닦을 때 미세한 진동 (`HapticFeedback.selectionClick`)을 연속적으로 주어 '사각거리는' 느낌 구현.
+*   **Planting:** 씨앗이 흙에 닿을 때 묵직한 진동 (`heavyImpact`).

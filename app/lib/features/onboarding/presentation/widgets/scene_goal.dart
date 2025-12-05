@@ -17,13 +17,18 @@ class SceneGoal extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "어디로 항해를 시작할까요?",
+              "어떤 씨앗을 심을까요?",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ).animate().fadeIn().moveY(begin: 20, end: 0),
+            const SizedBox(height: 16),
+            const Text(
+              "마음의 정체성에 맞는 씨앗을 골라주세요.",
+              style: TextStyle(color: Colors.white70, fontSize: 16),
+            ).animate().fadeIn(delay: 200.ms),
             const SizedBox(height: 40),
 
             Wrap(
@@ -35,25 +40,25 @@ class SceneGoal extends ConsumerWidget {
                   context,
                   ref,
                   "sleep",
-                  "🌙 깊은 잠의 섬",
-                  "수면 효율 개선",
+                  "🌙 달맞이꽃",
+                  "깊은 잠과 휴식",
                   Colors.indigo,
                 ),
                 _buildCard(
                   context,
                   ref,
                   "anger",
-                  "🔥 식지 않는 화산",
-                  "분노 조절",
-                  Colors.redAccent,
+                  "🌵 선인장",
+                  "감정의 가시 다듬기",
+                  Colors.green,
                 ),
                 _buildCard(
                   context,
                   ref,
-                  "value",
-                  "💎 잃어버린 보물",
-                  "가치관 탐구",
-                  Colors.teal,
+                  "happiness",
+                  "🌻 해바라기",
+                  "긍정과 가치 찾기",
+                  Colors.amber,
                 ),
               ],
             ),
@@ -84,16 +89,23 @@ class SceneGoal extends ConsumerWidget {
         decoration: BoxDecoration(
           color: color.withOpacity(0.2),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.5)),
+          border: Border.all(color: color.withOpacity(0.8), width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.3),
+              blurRadius: 15,
+              offset: Offset(0, 5),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               title.split(' ')[0], // Icon
-              style: const TextStyle(fontSize: 40),
+              style: const TextStyle(fontSize: 50),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Text(
               title.split(' ').sublist(1).join(' '), // Text
               textAlign: TextAlign.center,
@@ -108,7 +120,7 @@ class SceneGoal extends ConsumerWidget {
               subtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withOpacity(0.8),
                 fontSize: 12,
               ),
             ),
