@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zestinme/features/onboarding/presentation/providers/onboarding_provider.dart';
 
-class SceneWeather extends ConsumerWidget {
-  final VoidCallback onWeatherSet;
+class SceneEnvironment extends ConsumerWidget {
+  final VoidCallback onEnvironmentSet;
 
-  const SceneWeather({super.key, required this.onWeatherSet});
+  const SceneEnvironment({super.key, required this.onEnvironmentSet});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -13,7 +13,7 @@ class SceneWeather extends ConsumerWidget {
 
     return Stack(
       children: [
-        // Dynamic Background based on state
+        // Dynamic Background (Simplified visualization for onboarding)
         AnimatedContainer(
           duration: const Duration(milliseconds: 500),
           decoration: BoxDecoration(
@@ -22,7 +22,9 @@ class SceneWeather extends ConsumerWidget {
               end: Alignment.bottomCenter,
               colors: [
                 _getSkyColor(state.sunlightLevel),
-                _getSoilColor(state.waterLevel),
+                _getSoilColor(
+                  state.humidityLevel,
+                ), // Humidity affects visual "wetness"
               ],
             ),
           ),
@@ -33,7 +35,7 @@ class SceneWeather extends ConsumerWidget {
             children: [
               const SizedBox(height: 40),
               const Text(
-                "지금 이 화분에는\n무엇이 필요한가요?",
+                "식물이 자랄\n환경을 조성해주세요.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -43,69 +45,48 @@ class SceneWeather extends ConsumerWidget {
               ),
               const Spacer(),
 
-              // Sunlight Slider (Valence)
-              Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Icon(
-                      Icons.nightlight_round,
-                      color: Colors.white,
-                    ), // Moon
-                  ),
-                  Expanded(
-                    child: Slider(
-                      value: state.sunlightLevel,
-                      onChanged: (value) {
-                        ref
-                            .read(onboardingViewModelProvider.notifier)
-                            .updateEnvironment(sunlightLevel: value);
-                      },
-                      activeColor: Colors.amber,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Icon(Icons.wb_sunny, color: Colors.amber), // Sun
-                  ),
-                ],
+              // 1. Sunlight (Valence)
+              _buildSliderRow(
+                context,
+                iconStart: Icons.nightlight_round,
+                iconEnd: Icons.wb_sunny,
+                label: "일조량 (기분)",
+                value: state.sunlightLevel,
+                color: Colors.amber,
+                onChanged: (v) => ref
+                    .read(onboardingViewModelProvider.notifier)
+                    .updateEnvironment(sunlightLevel: v),
               ),
-              const Text("빛의 양 (기분)", style: TextStyle(color: Colors.white70)),
 
-              const SizedBox(height: 20),
-
-              // Water Slider (Arousal)
-              Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Icon(
-                      Icons.water_drop_outlined,
-                      color: Colors.white,
-                    ), // Dry
-                  ),
-                  Expanded(
-                    child: Slider(
-                      value: state.waterLevel,
-                      onChanged: (value) {
-                        ref
-                            .read(onboardingViewModelProvider.notifier)
-                            .updateEnvironment(waterLevel: value);
-                      },
-                      activeColor: Colors.blueAccent,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Icon(Icons.shower, color: Colors.blueAccent), // Wet
-                  ),
-                ],
+              // 2. Temperature (Arousal)
+              _buildSliderRow(
+                context,
+                iconStart: Icons.ac_unit,
+                iconEnd: Icons.local_fire_department,
+                label: "온도 (에너지)",
+                value: state.temperatureLevel,
+                color: Colors.orangeAccent,
+                onChanged: (v) => ref
+                    .read(onboardingViewModelProvider.notifier)
+                    .updateEnvironment(temperatureLevel: v),
               ),
-              const Text("물의 양 (에너지)", style: TextStyle(color: Colors.white70)),
+
+              // 3. Humidity (Immersion)
+              _buildSliderRow(
+                context,
+                iconStart: Icons.water_drop_outlined,
+                iconEnd: Icons.water_drop,
+                label: "습도 (몰입도)",
+                value: state.humidityLevel,
+                color: Colors.blueAccent,
+                onChanged: (v) => ref
+                    .read(onboardingViewModelProvider.notifier)
+                    .updateEnvironment(humidityLevel: v),
+              ),
 
               const SizedBox(height: 40),
               ElevatedButton(
-                onPressed: onWeatherSet,
+                onPressed: onEnvironmentSet,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white.withOpacity(0.2),
                   foregroundColor: Colors.white,
@@ -121,8 +102,47 @@ class SceneWeather extends ConsumerWidget {
     );
   }
 
+  Widget _buildSliderRow(
+    BuildContext context, {
+    required IconData iconStart,
+    required IconData iconEnd,
+    required String label,
+    required double value,
+    required Color color,
+    required Function(double) onChanged,
+  }) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Icon(iconStart, color: Colors.white70),
+            ),
+            Expanded(
+              child: Slider(
+                value: value,
+                onChanged: onChanged,
+                activeColor: color,
+                inactiveColor: Colors.white24,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Icon(iconEnd, color: color),
+            ),
+          ],
+        ),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
+        ),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+
   Color _getSkyColor(double brightness) {
-    // 0.0 = Night (Dark Blue) -> 1.0 = Sunny (Bright Blue)
     return Color.lerp(
       const Color(0xFF0A101C), // Night
       const Color(0xFF4FC3F7), // Day
@@ -130,12 +150,11 @@ class SceneWeather extends ConsumerWidget {
     )!;
   }
 
-  Color _getSoilColor(double moisture) {
-    // 0.0 = Dry (Sand) -> 1.0 = Wet (Rich Earth)
+  Color _getSoilColor(double humidity) {
     return Color.lerp(
-      const Color(0xFFD7CCC8), // Sand
-      const Color(0xFF3E2723), // Dark Earth
-      moisture,
+      const Color(0xFFE0E0E0), // Dry/Mist
+      const Color(0xFF263238), // Wet/Dark
+      humidity,
     )!;
   }
 }

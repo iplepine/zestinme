@@ -33,3 +33,10 @@
     *   **JSON Schema:** 확장 가능한 데이터 구조 정의.
     *   **NLP Pipeline:** 로컬 기반 감정 분석 및 키워드 추출.
     *   **Security:** 개인정보 암호화 및 비식별화 처리.
+
+## 5. 🌿 Prof. Bloom (식물생태학 전문가)
+*   **Role:** 식물 생장 알고리즘 및 환경 생태계 설계.
+*   **Key Concepts:**
+    *   **Environmental Niche (환경 적소):** 특정 환경(빛, 온도, 습도)의 조합에 따라 결정되는 식생.
+    *   **Phenotypic Plasticity (표현형 가소성):** 같은 종이라도 환경 변수에 따라 잎의 크기, 색상, 개화 시기가 달라짐.
+    *   **Ecological Succession (생태 천이):** 황무지가 숲이 되듯, 마음의 정원도 단계적으로 성숙해짐.

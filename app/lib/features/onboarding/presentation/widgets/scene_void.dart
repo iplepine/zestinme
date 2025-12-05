@@ -93,9 +93,10 @@ class _SceneVoidState extends State<SceneVoid> {
                 alignment: Alignment.center,
                 children: [
                   // 1. The Clean Pot (Underneath)
-                  CustomPaint(
-                    size: const Size(200, 250),
-                    painter: PotPainter(),
+                  Image.asset(
+                    'assets/images/pots/pot_1.png',
+                    width: 200,
+                    fit: BoxFit.contain,
                   ),
 
                   // Label that appears clearly on the pot
@@ -254,69 +255,6 @@ class _SceneVoidState extends State<SceneVoid> {
 // -----------------------------------------------------------------------------
 // PAINTERS
 // -----------------------------------------------------------------------------
-
-class PotPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Draw a simple terracotta pot
-    final paint = Paint()
-      ..color =
-          const Color(0xFF8D6E63) // Terracotta
-      ..style = PaintingStyle.fill;
-
-    final center = Offset(size.width / 2, size.height / 2);
-
-    // Pot body (Trapezoid)
-    final path = Path();
-    double wTop = 160;
-    double wBottom = 120;
-    double h = 160;
-
-    path.moveTo(center.dx - wTop / 2, center.dy - h / 2);
-    path.lineTo(center.dx + wTop / 2, center.dy - h / 2);
-    path.lineTo(center.dx + wBottom / 2, center.dy + h / 2);
-    path.lineTo(center.dx - wBottom / 2, center.dy + h / 2);
-    path.close();
-
-    canvas.drawPath(path, paint);
-
-    // Pot Rim
-    final rimPaint = Paint()
-      ..color =
-          const Color(0xFF795548) // Darker
-      ..style = PaintingStyle.fill;
-
-    double rimH = 30;
-    double rimW = 180;
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromCenter(
-          center: Offset(center.dx, center.dy - h / 2),
-          width: rimW,
-          height: rimH,
-        ),
-        const Radius.circular(4),
-      ),
-      rimPaint,
-    );
-
-    // Shadow/Highlight roughly
-    final highlight = Paint()
-      ..color = Colors.white.withOpacity(0.1)
-      ..style = PaintingStyle.fill;
-
-    canvas.drawPath(
-      Path()..addRect(
-        Rect.fromLTWH(center.dx - wTop / 2, center.dy - h / 2, 20, h),
-      ),
-      highlight,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
 
 class DustPainter extends CustomPainter {
   final List<Offset> cleanedPoints;

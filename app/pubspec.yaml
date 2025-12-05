@@ -107,6 +107,7 @@ flutter:
   assets:
     - assets/question_bank_fallback.json
     - assets/images/
+    - assets/images/pots/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

@@ -45,8 +45,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           },
         );
       case 2:
-        return SceneWeather(
-          onWeatherSet: () {
+        return SceneEnvironment(
+          onEnvironmentSet: () {
             setState(() {
               _currentScene = 3;
             });

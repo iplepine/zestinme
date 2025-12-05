@@ -57,7 +57,7 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
                           ),
                           const SizedBox(height: 16),
                           const Text(
-                            "화분의 먼지 속에서 이름을 발견했습니다.",
+                            "어렸을 때 쓴 내 이름을 발견했습니다.",
                             style: TextStyle(
                               color: Colors.brown,
                               fontWeight: FontWeight.bold,
@@ -68,7 +68,7 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
                           const Divider(color: Colors.brown),
                           const SizedBox(height: 16),
                           const Text(
-                            "오래되어 글씨가 희미하네요.\n뭐라고 적혀 있었나요?",
+                            "오래되어 글씨가 희미하네요.\n뭐라고 적혀 있나요?",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.black87,

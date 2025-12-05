@@ -13,11 +13,13 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     final model = OnboardingDataModel()
       ..nickname = state.nickname
       ..createdAt = DateTime.now()
-      ..waterLevel = state.waterLevel
+      ..temperatureLevel = state.temperatureLevel
       ..sunlightLevel = state.sunlightLevel
+      ..humidityLevel = state.humidityLevel
       ..arousalScore = state.arousalScore
       ..valenceScore = state.valenceScore
       ..activeModuleId = state.activeModuleId
+      ..assignedPlantId = state.assignedPlantId
       ..tutorialCompleted = true;
 
     await _dataSource.saveOnboardingData(model);
@@ -26,5 +28,23 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   @override
   Future<bool> checkOnboardingStatus() async {
     return await _dataSource.isOnboardingCompleted();
+  }
+
+  @override
+  Future<OnboardingState?> getOnboardingState() async {
+    final data = await _dataSource.getOnboardingData();
+    if (data == null) return null;
+
+    return OnboardingState(
+      nickname: data.nickname,
+      temperatureLevel: data.temperatureLevel,
+      sunlightLevel: data.sunlightLevel,
+      humidityLevel: data.humidityLevel,
+      arousalScore: data.arousalScore,
+      valenceScore: data.valenceScore,
+      activeModuleId: data.activeModuleId,
+      assignedPlantId: data.assignedPlantId,
+      isCompleted: data.tutorialCompleted,
+    );
   }
 }

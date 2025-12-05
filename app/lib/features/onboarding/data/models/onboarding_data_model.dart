@@ -12,8 +12,9 @@ class OnboardingDataModel {
   late DateTime createdAt;
 
   // Visual Metaphor State
-  late double waterLevel; // Arousal (Water amount)
-  late double sunlightLevel; // Valence (Sunlight amount)
+  late double temperatureLevel; // Arousal (Temperature)
+  late double sunlightLevel; // Valence (Sunlight)
+  late double humidityLevel; // Immersion (Humidity)
 
   // Derived SAM Scores
   late int arousalScore;
@@ -22,4 +23,7 @@ class OnboardingDataModel {
   // Quest State
   late String activeModuleId;
   late bool tutorialCompleted;
+
+  // Gardening State
+  int? assignedPlantId;
 }

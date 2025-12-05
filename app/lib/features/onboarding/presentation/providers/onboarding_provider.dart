@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zestinme/core/services/local_db_service.dart';
 import 'package:zestinme/di/injection.dart';
+import 'package:zestinme/features/garden/domain/services/plant_service.dart';
 import 'package:zestinme/features/onboarding/data/datasources/onboarding_local_datasource.dart';
 import 'package:zestinme/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:zestinme/features/onboarding/domain/entities/onboarding_state.dart';
@@ -37,8 +38,9 @@ class OnboardingViewModel extends _$OnboardingViewModel {
   OnboardingState build() {
     return const OnboardingState(
       nickname: '',
-      waterLevel: 0.5,
+      temperatureLevel: 0.5,
       sunlightLevel: 0.5,
+      humidityLevel: 0.5,
       arousalScore: 5,
       valenceScore: 5,
       activeModuleId: '',
@@ -48,52 +50,96 @@ class OnboardingViewModel extends _$OnboardingViewModel {
   void setNickname(String nickname) {
     state = OnboardingState(
       nickname: nickname,
-      waterLevel: state.waterLevel,
+      temperatureLevel: state.temperatureLevel,
       sunlightLevel: state.sunlightLevel,
+      humidityLevel: state.humidityLevel,
       arousalScore: state.arousalScore,
       valenceScore: state.valenceScore,
       activeModuleId: state.activeModuleId,
+      assignedPlantId: state.assignedPlantId,
     );
   }
 
-  void updateEnvironment({double? waterLevel, double? sunlightLevel}) {
-    final newWaterLevel = waterLevel ?? state.waterLevel;
+  void updateEnvironment({
+    double? temperatureLevel,
+    double? sunlightLevel,
+    double? humidityLevel,
+  }) {
+    final newTempLevel = temperatureLevel ?? state.temperatureLevel;
     final newSunlightLevel = sunlightLevel ?? state.sunlightLevel;
+    final newHumidityLevel = humidityLevel ?? state.humidityLevel;
 
     // Map 0.0-1.0 to 1-9
-    final arousal = (newWaterLevel * 8 + 1).round();
+    // Temperature -> Arousal
+    // Sunlight -> Valence
+    final arousal = (newTempLevel * 8 + 1).round();
     final valence = (newSunlightLevel * 8 + 1).round();
 
     state = OnboardingState(
       nickname: state.nickname,
-      waterLevel: newWaterLevel,
+      temperatureLevel: newTempLevel,
       sunlightLevel: newSunlightLevel,
+      humidityLevel: newHumidityLevel,
       arousalScore: arousal,
       valenceScore: valence,
       activeModuleId: state.activeModuleId,
+      assignedPlantId: state.assignedPlantId,
     );
   }
 
   void selectModule(String moduleId) {
     state = OnboardingState(
       nickname: state.nickname,
-      waterLevel: state.waterLevel,
+      temperatureLevel: state.temperatureLevel,
       sunlightLevel: state.sunlightLevel,
+      humidityLevel: state.humidityLevel,
       arousalScore: state.arousalScore,
       valenceScore: state.valenceScore,
       activeModuleId: moduleId,
+      assignedPlantId: state.assignedPlantId,
     );
   }
 
   Future<void> complete() async {
-    await ref.read(completeOnboardingProvider).call(state);
+    // 1. Assign Plant based on Environment
+    // Sunlight: 0.0-1.0 -> 0-100,000 Lux
+    // Temperature: 0.0-1.0 -> 0-40 C
+    // Humidity: 0.0-1.0 -> 0-100 %
+    final lux = state.sunlightLevel * 100000;
+    final temperature = state.temperatureLevel * 40;
+    final humidity = state.humidityLevel * 100;
+
+    final assignedPlant = PlantService().assignPlant(
+      lux: lux,
+      temp: temperature,
+      humidity: humidity,
+    );
+
+    // 2. Update local state with plant ID
     state = OnboardingState(
       nickname: state.nickname,
-      waterLevel: state.waterLevel,
+      temperatureLevel: state.temperatureLevel,
       sunlightLevel: state.sunlightLevel,
+      humidityLevel: state.humidityLevel,
       arousalScore: state.arousalScore,
       valenceScore: state.valenceScore,
       activeModuleId: state.activeModuleId,
+      assignedPlantId: assignedPlant.id,
+    );
+
+    // 3. Persist to DB
+    await ref.read(completeOnboardingProvider).call(state);
+
+    // 4. Mark as completed locally to trigger navigation
+    state = OnboardingState(
+      nickname: state.nickname,
+      temperatureLevel: state.temperatureLevel,
+      sunlightLevel: state.sunlightLevel,
+      humidityLevel: state.humidityLevel,
+      arousalScore: state.arousalScore,
+      valenceScore: state.valenceScore,
+      activeModuleId: state.activeModuleId,
+      assignedPlantId: assignedPlant.id,
       isCompleted: true,
     );
   }
