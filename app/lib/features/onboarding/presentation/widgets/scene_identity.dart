@@ -133,7 +133,7 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
 
   void _submitName(String name) {
     HapticFeedback.selectionClick();
-    ref.read(onboardingControllerProvider.notifier).setNickname(name);
+    ref.read(onboardingViewModelProvider.notifier).setNickname(name);
     widget.onNameSubmitted();
   }
 }

@@ -32,7 +32,7 @@ CompleteOnboarding completeOnboarding(CompleteOnboardingRef ref) {
 }
 
 @riverpod
-class OnboardingController extends _$OnboardingController {
+class OnboardingViewModel extends _$OnboardingViewModel {
   @override
   OnboardingState build() {
     return const OnboardingState(

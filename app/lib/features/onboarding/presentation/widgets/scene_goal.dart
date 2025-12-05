@@ -73,8 +73,8 @@ class SceneGoal extends ConsumerWidget {
   ) {
     return GestureDetector(
       onTap: () {
-        ref.read(onboardingControllerProvider.notifier).selectModule(id);
-        ref.read(onboardingControllerProvider.notifier).complete();
+        ref.read(onboardingViewModelProvider.notifier).selectModule(id);
+        ref.read(onboardingViewModelProvider.notifier).complete();
         onGoalSelected();
       },
       child: Container(

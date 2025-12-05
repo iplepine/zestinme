@@ -9,7 +9,7 @@ class SceneWeather extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(onboardingControllerProvider);
+    final state = ref.watch(onboardingViewModelProvider);
 
     return Stack(
       children: [
@@ -54,7 +54,7 @@ class SceneWeather extends ConsumerWidget {
                       value: state.skyBrightness,
                       onChanged: (value) {
                         ref
-                            .read(onboardingControllerProvider.notifier)
+                            .read(onboardingViewModelProvider.notifier)
                             .updateWeather(skyBrightness: value);
                       },
                     ),
@@ -78,7 +78,7 @@ class SceneWeather extends ConsumerWidget {
                       value: state.waveHeight,
                       onChanged: (value) {
                         ref
-                            .read(onboardingControllerProvider.notifier)
+                            .read(onboardingViewModelProvider.notifier)
                             .updateWeather(waveHeight: value);
                       },
                     ),
