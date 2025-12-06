@@ -35,7 +35,7 @@ class SceneEnvironment extends ConsumerWidget {
             children: [
               const SizedBox(height: 40),
               const Text(
-                "식물이 자랄\n환경을 조성해주세요.",
+                "당신의\n마음 날씨는 어떤가요?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -50,7 +50,7 @@ class SceneEnvironment extends ConsumerWidget {
                 context,
                 iconStart: Icons.nightlight_round,
                 iconEnd: Icons.wb_sunny,
-                label: "일조량 (기분)",
+                label: "오늘의 기분",
                 value: state.sunlightLevel,
                 color: Colors.amber,
                 onChanged: (v) => ref
@@ -63,7 +63,7 @@ class SceneEnvironment extends ConsumerWidget {
                 context,
                 iconStart: Icons.ac_unit,
                 iconEnd: Icons.local_fire_department,
-                label: "온도 (에너지)",
+                label: "나의 에너지",
                 value: state.temperatureLevel,
                 color: Colors.orangeAccent,
                 onChanged: (v) => ref
@@ -76,7 +76,7 @@ class SceneEnvironment extends ConsumerWidget {
                 context,
                 iconStart: Icons.water_drop_outlined,
                 iconEnd: Icons.water_drop,
-                label: "습도 (몰입도)",
+                label: "감정의 몰입도",
                 value: state.humidityLevel,
                 color: Colors.blueAccent,
                 onChanged: (v) => ref
@@ -92,7 +92,7 @@ class SceneEnvironment extends ConsumerWidget {
                   foregroundColor: Colors.white,
                   minimumSize: const Size(200, 50),
                 ),
-                child: const Text("환경 조성 완료"),
+                child: const Text("준비되었습니다"),
               ),
               const SizedBox(height: 40),
             ],

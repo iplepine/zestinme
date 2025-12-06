@@ -17,8 +17,10 @@ GoRouter goRouter(GoRouterRef ref) {
   return GoRouter(
     initialLocation: '/',
     redirect: (context, state) async {
-      final checkStatus = ref.read(checkOnboardingStatusProvider);
-      final isCompleted = await checkStatus.call();
+      // DEBUG: Always force onboarding
+      // final checkStatus = ref.read(checkOnboardingStatusProvider);
+      // final isCompleted = await checkStatus.call();
+      const isCompleted = false; // Forced for debug
 
       if (!isCompleted && state.matchedLocation != '/onboarding') {
         return '/onboarding';

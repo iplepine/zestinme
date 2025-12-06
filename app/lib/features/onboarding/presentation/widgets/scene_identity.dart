@@ -57,7 +57,7 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
                           ),
                           const SizedBox(height: 16),
                           const Text(
-                            "어렸을 때 쓴 내 이름을 발견했습니다.",
+                            "이 화분의 주인은...",
                             style: TextStyle(
                               color: Colors.brown,
                               fontWeight: FontWeight.bold,
@@ -68,7 +68,7 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
                           const Divider(color: Colors.brown),
                           const SizedBox(height: 16),
                           const Text(
-                            "오래되어 글씨가 희미하네요.\n뭐라고 적혀 있나요?",
+                            "누구의 마음인가요?",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.black87,

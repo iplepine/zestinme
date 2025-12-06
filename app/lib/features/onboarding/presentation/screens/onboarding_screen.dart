@@ -53,8 +53,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           },
         );
       case 3:
-        return SceneGoal(
-          onGoalSelected: () {
+        return SceneEncounter(
+          onEncounterComplete: () {
             context.go('/'); // Navigate to Home
           },
         );

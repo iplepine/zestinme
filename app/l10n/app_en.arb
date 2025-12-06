@@ -36,5 +36,35 @@
     "delete": "Delete",
     "edit": "Edit",
     "close": "Close"
+  },
+
+  "onboarding": {
+    "step1Title": "At this moment,\nwhat is the name of your heart?",
+    "step2Title": "Where did that '{emotion}' come from?",
+    "@step2Title": {
+      "placeholders": {
+        "emotion": { "type": "String" },
+        "particle": { "type": "String" }
+      }
+    },
+    "step2Subtitle": "Write briefly, it will become a mind seed.",
+    "hint": "Situation or reason...",
+    "submit": "Plant Mind",
+    "instructionTitle": "Your '{emotion}' will now\ngrow in this pot.",
+    "@instructionTitle": {
+      "placeholders": {
+        "emotion": { "type": "String" },
+        "particle": { "type": "String" }
+      }
+    },
+    "instructionSubtitle": "The honest heart you wrote\nis the only nutrient to bloom this child.",
+    "finish": "Grow Together",
+    "emotions": {
+      "joy": "Joy",
+      "sadness": "Sadness",
+      "anger": "Anger",
+      "anxiety": "Anxiety",
+      "peace": "Peace"
+    }
   }
 }

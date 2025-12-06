@@ -36,5 +36,35 @@
     "delete": "삭제",
     "edit": "편집",
     "close": "닫기"
+  },
+  
+  "onboarding": {
+    "step1Title": "지금 이 순간,\n당신의 마음은 어떤 이름인가요?",
+    "step2Title": "그 '{emotion}'{particle}\n어디에서 시작되었나요?",
+    "@step2Title": {
+      "placeholders": {
+        "emotion": { "type": "String" },
+        "particle": { "type": "String" }
+      }
+    },
+    "step2Subtitle": "짧게 적어주시면, 마음의 씨앗이 됩니다.",
+    "hint": "이유나 상황을 적어주세요...",
+    "submit": "마음 담기",
+    "instructionTitle": "당신의 '{emotion}'{particle} 이제\n이 화분 속에서 자라날 것입니다.",
+    "@instructionTitle": {
+      "placeholders": {
+        "emotion": { "type": "String" },
+        "particle": { "type": "String" }
+      }
+    },
+    "instructionSubtitle": "솔직하게 적어주신 그 마음이\n이 아이를 꽃피우게 할 유일한 영양분입니다.",
+    "finish": "함께 키워가기",
+    "emotions": {
+      "joy": "기쁨",
+      "sadness": "슬픔",
+      "anger": "화남",
+      "anxiety": "불안",
+      "peace": "평온"
+    }
   }
 }

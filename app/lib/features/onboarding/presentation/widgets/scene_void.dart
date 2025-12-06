@@ -32,8 +32,7 @@ class _SceneVoidState extends State<SceneVoid> {
   @override
   void initState() {
     super.initState();
-    // Defer grid generation until we know the center, but here we assumes fixed size 300x400 for the stack.
-    // The center of the SizedBox(300, 400) is (150, 200).
+    // Center of SizedBox(300, 400) is (150, 200).
     _generatePotGrid(const Offset(150, 200));
   }
 
@@ -194,7 +193,7 @@ class _SceneVoidState extends State<SceneVoid> {
               child: Column(
                 children: [
                   Text(
-                    "오래된 화분이 놓여있습니다.\n먼지를 닦아주세요.",
+                    "오랫동안 방치된 화분을 찾았습니다...\n먼지가 많이 쌓여있네요.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.6),
