@@ -2,41 +2,35 @@
   "@@locale": "ko",
   "appTitle": "ZestInMe",
   
-  "coaching": {
-    "answerNow": "지금 답변하기",
-    "tonight": "오늘 밤에",
-    "skip": "건너뛰기",
-    "previous": "이전",
-    "next": "다음",
-    "finish": "완료",
-    "deepCoaching": "심화 코칭",
-    "enterAnswer": "답변을 입력해주세요...",
-    "enterDetailedAnswer": "자세한 답변을 입력해주세요...",
-    "helpText": "마음껏 표현해보세요. 정답은 없습니다.",
-    "errorSaving": "저장 중 오류가 발생했습니다.",
-    "progress": "진행률"
-  },
+  "coaching_answerNow": "지금 답변하기",
+  "coaching_tonight": "오늘 밤에",
+  "coaching_skip": "건너뛰기",
+  "coaching_previous": "이전",
+  "coaching_next": "다음",
+  "coaching_finish": "완료",
+  "coaching_deepCoaching": "심화 코칭",
+  "coaching_enterAnswer": "답변을 입력해주세요...",
+  "coaching_enterDetailedAnswer": "자세한 답변을 입력해주세요...",
+  "coaching_helpText": "마음껏 표현해보세요. 정답은 없습니다.",
+  "coaching_errorSaving": "저장 중 오류가 발생했습니다.",
+  "coaching_progress": "진행률",
   
-  "categories": {
-    "calm": "진정",
-    "reappraise": "재평가",
-    "needs": "욕구",
-    "boundaries": "경계",
-    "pattern": "패턴",
-    "plan": "계획"
-  },
+  "categories_calm": "진정",
+  "categories_reappraise": "재평가",
+  "categories_needs": "욕구",
+  "categories_boundaries": "경계",
+  "categories_pattern": "패턴",
+  "categories_plan": "계획",
   
-  "common": {
-    "loading": "로딩 중...",
-    "error": "오류",
-    "success": "성공",
-    "cancel": "취소",
-    "confirm": "확인",
-    "save": "저장",
-    "delete": "삭제",
-    "edit": "편집",
-    "close": "닫기"
-  },
+  "common_loading": "로딩 중...",
+  "common_error": "오류",
+  "common_success": "성공",
+  "common_cancel": "취소",
+  "common_confirm": "확인",
+  "common_save": "저장",
+  "common_delete": "삭제",
+  "common_edit": "편집",
+  "common_close": "닫기",
   
   "sunlight": "햇빛",
   "water": "수분",
@@ -44,36 +38,63 @@
   "giveWaterButton": "물 주기",
   "pruneButton": "가지치기",
 
-  "onboarding": {
-    "step1Title": "지금 이 순간,\n당신의 마음은 어떤 이름인가요?",
-    "step2Title": "그 '{emotion}'{particle}\n어디에서 시작되었나요?",
-    "@step2Title": {
-      "placeholders": {
-        "emotion": { "type": "String" },
-        "particle": { "type": "String" }
-      }
-    },
-    "step2Subtitle": "짧게 적어주시면, 마음의 씨앗이 됩니다.",
-    "hint": "이유나 상황을 적어주세요...",
-    "submit": "마음 담기",
-    "instructionTitle": "당신의 '{emotion}'{particle} 이 화분 속에서\n새로운 생명으로 피어납니다.",
-    "@instructionTitle": {
-      "placeholders": {
-        "emotion": { "type": "String" },
-        "particle": { "type": "String" }
-      }
-    },
-    "instructionSubtitle": "솔직하게 적어주신 그 마음이\n이 아이를 꽃피우게 할 유일한 영양분입니다.",
-    "onboarding_finish": "함께 키워가기",
-    "onboarding_transition_planted": "마음의 씨앗이 무사히 심어졌습니다.",
-    "onboarding_transition_entering": "이제, 당신만의 안식처로 안내합니다.",
-    "finish": "함께 키워가기",
-    "emotions": {
-      "joy": "기쁨",
-      "sadness": "슬픔",
-      "anger": "화남",
-      "anxiety": "불안",
-      "peace": "평온"
+  "onboarding_step1Title": "지금 이 순간,\n당신의 마음은 어떤 이름인가요?",
+  "onboarding_step2Title": "그 '{emotion}'{particle}\n어디에서 시작되었나요?",
+  "@onboarding_step2Title": {
+    "placeholders": {
+      "emotion": { "type": "String" },
+      "particle": { "type": "String" }
     }
-  }
+  },
+  "onboarding_step2Subtitle": "짧게 적어주시면, 마음의 씨앗이 됩니다.",
+  "onboarding_hint": "이유나 상황을 적어주세요...",
+  "onboarding_submit": "마음 담기",
+  "onboarding_instructionTitle": "당신의 '{emotion}'{particle} 이 화분 속에서\n새로운 생명으로 피어납니다.",
+  "@onboarding_instructionTitle": {
+    "placeholders": {
+      "emotion": { "type": "String" },
+      "particle": { "type": "String" }
+    }
+  },
+  "onboarding_instructionSubtitle": "솔직하게 적어주신 그 마음이\n이 아이를 꽃피우게 할 유일한 영양분입니다.",
+  "onboarding_finish": "함께 키워가기",
+  "onboarding_transition_planted": "마음의 씨앗이 무사히 심어졌습니다.",
+  "onboarding_transition_entering": "이제, 당신만의 안식처로 안내합니다.",
+  "onboarding_emotions_joy": "기쁨",
+  "onboarding_emotions_sadness": "슬픔",
+  "onboarding_emotions_anger": "화남",
+  "onboarding_emotions_anxiety": "불안",
+  "onboarding_emotions_peace": "평온",
+
+  "seeding_instruction": "지금 당신의 마음은 어디에 있나요?",
+  "seeding_promptTags": "이 감정은 마치...",
+  "seeding_promptNote": "어떤 상황인지 기록해주세요...",
+  "seeding_buttonPlant": "씨앗 심기",
+  "seeding_messagePlanted": "마음의 씨앗을 심었습니다! 🌱",
+
+  "seeding_mood_neutral": "평온",
+  "seeding_mood_energized": "활기참!",
+  "seeding_mood_stressed": "스트레스!",
+  "seeding_mood_calm": "차분함",
+  "seeding_mood_tired": "지침...",
+  "seeding_mood_angry": "화남",
+  "seeding_mood_anxious": "불안",
+  "seeding_mood_annoyed": "짜증",
+  "seeding_mood_excited": "신남",
+  "seeding_mood_joyful": "기쁨",
+  "seeding_mood_passionate": "열정",
+  "seeding_mood_surprised": "놀람",
+  "seeding_mood_relieved": "안도",
+  "seeding_mood_grateful": "감사",
+  "seeding_mood_peaceful": "평화",
+  "seeding_mood_depressed": "우울",
+  "seeding_mood_sad": "슬픔",
+  "seeding_mood_bored": "지루함",
+  "seeding_mood_focused": "집중",
+  "seeding_mood_melancholy": "멜랑꼴리",
+
+  "seeding_quadrant_energized": "활기참",
+  "seeding_quadrant_calm": "차분함",
+  "seeding_quadrant_tired": "지침",
+  "seeding_quadrant_stress": "스트레스"
 }

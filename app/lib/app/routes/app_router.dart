@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/emotion_write/presentation/screens/emotion_write_screen.dart';
+
 import '../../features/seeding/presentation/screens/seeding_screen.dart';
 import '../../features/dev/presentation/screens/dev_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
@@ -27,7 +27,6 @@ GoRouter goRouter(GoRouterRef ref) {
       final allowedRoutes = [
         '/dev',
         '/seeding',
-        '/write',
         '/history',
         '/login',
         '/old-home',
@@ -62,10 +61,7 @@ GoRouter goRouter(GoRouterRef ref) {
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
       ),
-      GoRoute(
-        path: '/write',
-        builder: (context, state) => const EmotionWriteScreen(),
-      ),
+
       GoRoute(
         path: '/history',
         builder: (context, state) => const HistoryScreen(),

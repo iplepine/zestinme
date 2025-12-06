@@ -1,4 +1,7 @@
+import 'package:get_it/get_it.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../../../core/models/emotion_record.dart';
+import '../../../../core/services/local_db_service.dart';
 
 part 'seeding_provider.g.dart';
 
@@ -9,11 +12,19 @@ class SeedingState {
   final bool isDragging;
   final bool isPlanted;
 
+  // New Fields for Logic
+  final List<String> selectedTags;
+  final String note;
+  final bool isSaving;
+
   const SeedingState({
     this.valence = 0.0,
     this.arousal = 0.0,
     this.isDragging = false,
     this.isPlanted = false,
+    this.selectedTags = const [],
+    this.note = '',
+    this.isSaving = false,
   });
 
   SeedingState copyWith({
@@ -21,12 +32,18 @@ class SeedingState {
     double? arousal,
     bool? isDragging,
     bool? isPlanted,
+    List<String>? selectedTags,
+    String? note,
+    bool? isSaving,
   }) {
     return SeedingState(
       valence: valence ?? this.valence,
       arousal: arousal ?? this.arousal,
       isDragging: isDragging ?? this.isDragging,
       isPlanted: isPlanted ?? this.isPlanted,
+      selectedTags: selectedTags ?? this.selectedTags,
+      note: note ?? this.note,
+      isSaving: isSaving ?? this.isSaving,
     );
   }
 }
@@ -39,7 +56,6 @@ class SeedingNotifier extends _$SeedingNotifier {
   }
 
   /// Updates the coordinates based on normalized input
-  /// [x] and [y] should be normalized values between -1.0 and 1.0
   void updateCoordinates(double x, double y) {
     // Clamp values to ensure they stay within -1.0 to 1.0
     final clampedX = x.clamp(-1.0, 1.0);
@@ -58,5 +74,71 @@ class SeedingNotifier extends _$SeedingNotifier {
 
   void reset() {
     state = const SeedingState();
+  }
+
+  // --- New Logic ---
+
+  void toggleTag(String tag) {
+    final currentTags = List<String>.from(state.selectedTags);
+    if (currentTags.contains(tag)) {
+      currentTags.remove(tag);
+    } else {
+      if (currentTags.length < 3) {
+        currentTags.add(tag);
+      }
+    }
+    state = state.copyWith(selectedTags: currentTags);
+  }
+
+  void updateNote(String note) {
+    state = state.copyWith(note: note);
+  }
+
+  Future<void> saveRecord() async {
+    state = state.copyWith(isSaving: true);
+
+    try {
+      final record = EmotionRecord()
+        ..timestamp = DateTime.now()
+        ..valence = state.valence
+        ..arousal = state.arousal
+        ..emotionLabel = state.selectedTags.isNotEmpty
+            ? state.selectedTags.first
+            : 'Untitled'
+        ..detailedNote = state.note
+        ..status = EmotionRecordStatus.caught;
+
+      // Save using LocalDbService via GetIt
+      final db = GetIt.I<LocalDbService>();
+      await db.saveEmotionRecord(record);
+    } catch (e) {
+      // Handle error (simple print for now)
+      print("Error saving record: $e");
+    } finally {
+      state = state.copyWith(isSaving: false);
+    }
+  }
+
+  // Recommended Tags based on Quadrant
+  List<String> getRecommendedTags() {
+    if (state.valence.abs() < 0.2 && state.arousal.abs() < 0.2) {
+      return ['Neutral', 'Okay', 'So-so'];
+    }
+
+    if (state.arousal > 0) {
+      // Top
+      if (state.valence > 0) {
+        return ['Excited', 'Joyful', 'Passionate', 'Surprised']; // Top-Right
+      } else {
+        return ['Angry', 'Anxious', 'Annoyed', 'Stress']; // Top-Left
+      }
+    } else {
+      // Bottom
+      if (state.valence > 0) {
+        return ['Calm', 'Relieved', 'Grateful', 'Peaceful']; // Bottom-Right
+      } else {
+        return ['Depressed', 'Tired', 'Sad', 'Bored']; // Bottom-Left
+      }
+    }
   }
 }

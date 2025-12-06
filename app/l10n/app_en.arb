@@ -2,41 +2,35 @@
   "@@locale": "en",
   "appTitle": "ZestInMe",
   
-  "coaching": {
-    "answerNow": "Answer now",
-    "tonight": "Tonight",
-    "skip": "Skip",
-    "previous": "Previous",
-    "next": "Next",
-    "finish": "Finish",
-    "deepCoaching": "Deep Coaching",
-    "enterAnswer": "Type your answer...",
-    "enterDetailedAnswer": "Type your detailed answer...",
-    "helpText": "Express yourself freely. There are no right answers.",
-    "errorSaving": "An error occurred while saving.",
-    "progress": "Progress"
-  },
+  "coaching_answerNow": "Answer now",
+  "coaching_tonight": "Tonight",
+  "coaching_skip": "Skip",
+  "coaching_previous": "Previous",
+  "coaching_next": "Next",
+  "coaching_finish": "Finish",
+  "coaching_deepCoaching": "Deep Coaching",
+  "coaching_enterAnswer": "Type your answer...",
+  "coaching_enterDetailedAnswer": "Type your detailed answer...",
+  "coaching_helpText": "Express yourself freely. There are no right answers.",
+  "coaching_errorSaving": "An error occurred while saving.",
+  "coaching_progress": "Progress",
   
-  "categories": {
-    "calm": "Calm",
-    "reappraise": "Reappraise",
-    "needs": "Needs",
-    "boundaries": "Boundaries",
-    "pattern": "Pattern",
-    "plan": "Plan"
-  },
+  "categories_calm": "Calm",
+  "categories_reappraise": "Reappraise",
+  "categories_needs": "Needs",
+  "categories_boundaries": "Boundaries",
+  "categories_pattern": "Pattern",
+  "categories_plan": "Plan",
   
-  "common": {
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "save": "Save",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close"
-  },
+  "common_loading": "Loading...",
+  "common_error": "Error",
+  "common_success": "Success",
+  "common_cancel": "Cancel",
+  "common_confirm": "Confirm",
+  "common_save": "Save",
+  "common_delete": "Delete",
+  "common_edit": "Edit",
+  "common_close": "Close",
 
   "sunlight": "Sunlight",
   "water": "Water",
@@ -53,36 +47,63 @@
   "home_question_tired": "Are you pushing yourself too hard?",
   "home_question_happy": "Who do you want to share this joy with?",
 
-  "onboarding": {
-    "step1Title": "At this moment,\nwhat is the name of your heart?",
-    "step2Title": "Where did that '{emotion}' come from?",
-    "@step2Title": {
-      "placeholders": {
-        "emotion": { "type": "String" },
-        "particle": { "type": "String" }
-      }
-    },
-    "step2Subtitle": "Write briefly, it will become a mind seed.",
-    "hint": "Situation or reason...",
-    "submit": "Plant Mind",
-    "instructionTitle": "Your '{emotion}' will now\nbloom into new life here.",
-    "@instructionTitle": {
-      "placeholders": {
-        "emotion": { "type": "String" },
-        "particle": { "type": "String" }
-      }
-    },
-    "instructionSubtitle": "The honest heart you wrote\nis the only nutrient to bloom this child.",
-    "finish": "Grow Together",
-    "onboarding_finish": "Grow Together",
-    "onboarding_transition_planted": "The mind seed has been planted safely.",
-    "onboarding_transition_entering": "Now, guiding you to your sanctuary.",
-    "emotions": {
-      "joy": "Joy",
-      "sadness": "Sadness",
-      "anger": "Anger",
-      "anxiety": "Anxiety",
-      "peace": "Peace"
+  "onboarding_step1Title": "At this moment,\nwhat is the name of your heart?",
+  "onboarding_step2Title": "Where did that '{emotion}' come from?",
+  "@onboarding_step2Title": {
+    "placeholders": {
+      "emotion": { "type": "String" },
+      "particle": { "type": "String" }
     }
-  }
+  },
+  "onboarding_step2Subtitle": "Write briefly, it will become a mind seed.",
+  "onboarding_hint": "Situation or reason...",
+  "onboarding_submit": "Plant Mind",
+  "onboarding_instructionTitle": "Your '{emotion}' will now\nbloom into new life here.",
+  "@onboarding_instructionTitle": {
+    "placeholders": {
+      "emotion": { "type": "String" },
+      "particle": { "type": "String" }
+    }
+  },
+  "onboarding_instructionSubtitle": "The honest heart you wrote\nis the only nutrient to bloom this child.",
+  "onboarding_finish": "Grow Together",
+  "onboarding_transition_planted": "The mind seed has been planted safely.",
+  "onboarding_transition_entering": "Now, guiding you to your sanctuary.",
+  "onboarding_emotions_joy": "Joy",
+  "onboarding_emotions_sadness": "Sadness",
+  "onboarding_emotions_anger": "Anger",
+  "onboarding_emotions_anxiety": "Anxiety",
+  "onboarding_emotions_peace": "Peace",
+  
+  "seeding_instruction": "Where is your heart?",
+  "seeding_promptTags": "This feeling is...",
+  "seeding_promptNote": "Add a note (context)...",
+  "seeding_buttonPlant": "Plant Seed",
+  "seeding_messagePlanted": "Seed planted! 🌱",
+
+  "seeding_mood_neutral": "Neutral",
+  "seeding_mood_energized": "Energized!",
+  "seeding_mood_stressed": "Stressed!",
+  "seeding_mood_calm": "Calm",
+  "seeding_mood_tired": "Tired...",
+  "seeding_mood_angry": "Angry",
+  "seeding_mood_anxious": "Anxious",
+  "seeding_mood_annoyed": "Annoyed",
+  "seeding_mood_excited": "Excited",
+  "seeding_mood_joyful": "Joyful",
+  "seeding_mood_passionate": "Passionate",
+  "seeding_mood_surprised": "Surprised",
+  "seeding_mood_relieved": "Relieved",
+  "seeding_mood_grateful": "Grateful",
+  "seeding_mood_peaceful": "Peaceful",
+  "seeding_mood_depressed": "Depressed",
+  "seeding_mood_sad": "Sad",
+  "seeding_mood_bored": "Bored",
+  "seeding_mood_focused": "Focused",
+  "seeding_mood_melancholy": "Melancholy",
+
+  "seeding_quadrant_energized": "Energized",
+  "seeding_quadrant_calm": "Calm",
+  "seeding_quadrant_tired": "Tired",
+  "seeding_quadrant_stress": "Stressed"
 }
