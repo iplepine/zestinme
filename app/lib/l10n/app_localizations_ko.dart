@@ -179,7 +179,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboarding_emotions_peace => '평온';
 
   @override
-  String get seeding_instruction => '지금 당신의 마음은 어디에 있나요?';
+  String get seeding_instruction => '지금 당신의 마음은\n어디에 있나요?';
 
   @override
   String get seeding_promptTags => '이 감정은 마치...';

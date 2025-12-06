@@ -66,7 +66,7 @@
   "onboarding_emotions_anxiety": "불안",
   "onboarding_emotions_peace": "평온",
 
-  "seeding_instruction": "지금 당신의 마음은 어디에 있나요?",
+  "seeding_instruction": "지금 당신의 마음은\n어디에 있나요?",
   "seeding_promptTags": "이 감정은 마치...",
   "seeding_promptNote": "어떤 상황인지 기록해주세요...",
   "seeding_buttonPlant": "씨앗 심기",

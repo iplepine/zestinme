@@ -130,23 +130,30 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
               // 4. Instruction Text (Fade out when dragging)
               if (!seedingState.isDragging && !seedingState.isPlanted)
                 Positioned(
-                  top: constraints.maxHeight * 0.2,
+                  top:
+                      constraints.maxHeight *
+                      0.25, // Moved down slightly as requested
                   left: 0,
                   right: 0,
-                  child: Text(
-                    l10n.seeding_instruction,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w300,
-                      shadows: [
-                        Shadow(
-                          offset: Offset(0, 2),
-                          blurRadius: 4,
-                          color: AppColors.seedingTextShadow,
-                        ),
-                      ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                    ), // Increased padding
+                    child: Text(
+                      l10n.seeding_instruction,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w300,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(0, 2),
+                            blurRadius: 4,
+                            color: AppColors.seedingTextShadow,
+                          ),
+                        ],
+                      ),
                     ),
                   ).animate().fadeIn(duration: 800.ms),
                 ),
@@ -172,14 +179,14 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
                               seedingState.valence,
                               constraints.maxWidth,
                             ).dx -
-                            24, // 24 is half size
+                            30, // 30 is half size (60/2)
                         top:
                             _calculateSeedPosition(
                               seedingState.arousal,
                               constraints.maxHeight,
                               isY: true,
                             ).dy -
-                            24,
+                            30,
                         child:
                             _buildSeedIcon(seedingState.arousal, pulseDuration)
                                 .animate(
@@ -302,7 +309,8 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.8),
+              // Increased opacity and used dark grey for better contrast
+              color: const Color(0xFF1E1E1E).withValues(alpha: 0.95),
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(30),
               ),
@@ -321,9 +329,9 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
                 Text(
                   l10n.seeding_promptTags,
                   style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    color: Colors.white, // Increased from white70
+                    fontSize: 20, // Slightly larger
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -340,18 +348,25 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
                             .read(seedingNotifierProvider.notifier)
                             .toggleTag(tag);
                       },
-                      backgroundColor: Colors.white10,
-                      selectedColor: AppColors.seedingSun, // Energetic Yellow
+                      // Use Transparent background for unselected state to avoid "White on White" issue
+                      backgroundColor: Colors.transparent,
+                      selectedColor: AppColors.seedingSun,
                       checkmarkColor: Colors.black,
                       labelStyle: TextStyle(
                         color: isSelected ? Colors.black : Colors.white,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                         side: BorderSide(
                           color: isSelected
                               ? Colors.transparent
-                              : Colors.white24,
+                              : Colors.white.withValues(
+                                  alpha: 0.5,
+                                ), // Visible white border
+                          width: 1.5,
                         ),
                       ),
                     );
@@ -365,9 +380,13 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: l10n.seeding_promptNote,
-                    hintStyle: const TextStyle(color: Colors.white38),
+                    // Much brighter hint text
+                    hintStyle: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.6),
+                    ),
                     filled: true,
-                    fillColor: Colors.white10,
+                    // Brighter input field background
+                    fillColor: Colors.white.withValues(alpha: 0.1),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide.none,
