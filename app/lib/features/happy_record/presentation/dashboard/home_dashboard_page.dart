@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zestinme/core/localization/app_localizations.dart';
+import 'widgets/environment_gauge.dart';
 
 import '../../domain/models/challenge_progress.dart';
 import '../../domain/models/emotion_record.dart';
@@ -15,7 +16,9 @@ class HomeDashboardPage extends StatefulWidget {
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> {
+  // ignore: unused_field
   List<ChallengeProgress> _challenges = [];
+  // ignore: unused_field
   EmotionRecord? _todayEmotion;
   bool _isLoading = true;
 
@@ -36,7 +39,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
     try {
       // 실제 활성 챌린지 데이터를 불러옵니다
       _challenges = _getActiveChallengesUseCase.execute();
-      
+
       // TODO: 오늘의 감정 기록 불러오기 구현 필요
       _todayEmotion = null;
     } catch (e) {
@@ -67,351 +70,233 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
 
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: const Color(0xFF1E1E2C), // Dark theme for gardening
         body: const Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(color: Colors.greenAccent),
         ),
       );
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 인사말 섹션
-              _buildGreetingSection(l10n),
-
-              const SizedBox(height: 30),
-
-              // 감정 기록하기 버튼
-              _buildEmotionRecordButton(l10n),
-
-              const SizedBox(height: 30),
-
-              // 이번 주 통계
-              _buildWeeklyStats(l10n),
-
-              const SizedBox(height: 30),
-
-              // 오늘의 질문
-              _buildDailyQuestion(l10n),
-
-              const SizedBox(height: 30),
-
-              // 진행 중인 챌린지 카드
-              _buildActiveChallengeCard(l10n),
-
-              const SizedBox(height: 30),
-
-              // 더 많은 챌린지 보기 버튼
-              _buildMoreChallengesButton(l10n),
-            ],
+      backgroundColor: const Color(0xFF1E1E2C),
+      body: Stack(
+        children: [
+          // Background Gradient
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: RadialGradient(
+                  colors: [Color(0xFF2C3E50), Color(0xFF111116)],
+                  radius: 1.5,
+                  center: Alignment.topCenter,
+                ),
+              ),
+            ),
           ),
-        ),
+
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 40),
+              child: Column(
+                children: [
+                  // 1. Main Plant Visual Area (Top ~40% of screen)
+                  _buildPlantVisualArea(),
+
+                  // 2. Gardening Dashboard (Bottom Sheet style)
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(32),
+                      border: Border.all(color: Colors.white10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Environment Gauges
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            EnvironmentGauge(
+                              icon: Icons.wb_sunny_rounded,
+                              color: Colors.amber,
+                              label: l10n.sunlight,
+                              value: 0.8, // Todo: Real Data
+                              valueLabel: "Good",
+                            ),
+                            EnvironmentGauge(
+                              icon: Icons.water_drop_rounded,
+                              color: Colors.blue,
+                              label: l10n.water,
+                              value: 0.4, // Todo: Real Data
+                              valueLabel: "Thirsty",
+                            ),
+                            EnvironmentGauge(
+                              icon: Icons.thermostat_rounded,
+                              color: Colors.orange,
+                              label: l10n.temperature,
+                              value: 0.6, // Todo: Real Data
+                              valueLabel: "24°C",
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 32),
+
+                        // Main Action: Care (Log Emotion)
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton.icon(
+                            onPressed: _onRecordEmotion,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.greenAccent.shade700,
+                              foregroundColor: Colors.white,
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            icon: const Icon(Icons.water_drop, size: 24),
+                            label: Text(
+                              l10n.giveWaterButton, // "Give Water"
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Secondary Actions Row
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: _onAnswerCoachingQuestion,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white70,
+                                  side: BorderSide(color: Colors.white24),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                icon: const Icon(
+                                  Icons.content_cut_rounded,
+                                  size: 20,
+                                ),
+                                label: Text(l10n.pruneButton),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: _onMoreChallenges,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white70,
+                                  side: BorderSide(color: Colors.white24),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                icon: const Icon(Icons.spa_rounded, size: 20),
+                                label: Text("Details"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildGreetingSection(AppLocalizations l10n) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.goodMorning,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.recordEmotionToday,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEmotionRecordButton(AppLocalizations l10n) {
+  Widget _buildPlantVisualArea() {
     return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: _onRecordEmotion,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          foregroundColor: Theme.of(context).colorScheme.onPrimary,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        icon: const Icon(Icons.add, size: 24),
-        label: Text(
-          l10n.recordEmotionButton,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWeeklyStats(AppLocalizations l10n) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      height: 400,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Text(
-            l10n.weeklyStats,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.weeklyStatsInsight,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDailyQuestion(AppLocalizations l10n) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.question_mark_rounded,
-                color: Theme.of(context).colorScheme.primary,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                l10n.dailyQuestion,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.primary,
+          // Aura / Glow
+          Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.greenAccent.withOpacity(0.1),
+                  blurRadius: 100,
+                  spreadRadius: 20,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            '"${l10n.dailyQuestionText}"',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface,
+              ],
             ),
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: _onAnswerCoachingQuestion,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.primary,
-                side: BorderSide(color: Theme.of(context).colorScheme.primary),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              icon: const Icon(Icons.edit, size: 16),
-              label: Text(l10n.answerButton),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildActiveChallengeCard(AppLocalizations l10n) {
-    if (_challenges.isEmpty) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          // Pot
+          Positioned(
+            bottom: 40,
+            child: Image.asset(
+              'assets/images/pots/pot_1.png',
+              width: 240, // Slightly larger than onboarding (200) for presence
+              fit: BoxFit.contain,
+            ),
           ),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              Icons.emoji_events_outlined,
-              size: 48,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              l10n.noActiveChallenges,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.startNewChallenge,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.secondaryContainer.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.emoji_events_rounded,
-                color: Theme.of(context).colorScheme.secondary,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                l10n.activeChallenges,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-            ],
+          // Plant (Basil)
+          Positioned(
+            bottom: 120, // Adjust based on pot size
+            child: Image.asset(
+              'assets/images/plants/basil_1.png',
+              width: 120, // Growing! (Onboarding was 60)
+              fit: BoxFit.contain,
+            ),
           ),
-          const SizedBox(height: 12),
-          ..._challenges
-              .map((challenge) => _buildChallengeItem(challenge, l10n))
-              .toList(),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildChallengeItem(
-    ChallengeProgress challenge,
-    AppLocalizations l10n,
-  ) {
-    final progressPercentage = (challenge.progress * 100).round();
-    final progressText = challenge.progress == 0.4
-        ? '(12/30 ${l10n.progressText})'
-        : '(${(challenge.progress * 30).round()}/30 ${l10n.progressText})';
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
+          // Plant Name Tag
+          Positioned(
+            top: 60,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  challenge.title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
+                  "Baby Basil", // Todo: Dynamic Name
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
+                    shadows: [BoxShadow(color: Colors.black45, blurRadius: 10)],
                   ),
                 ),
-                const SizedBox(height: 4),
                 Text(
-                  progressText,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  "Day 1",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.6),
+                    fontSize: 14,
+                    letterSpacing: 1.0,
                   ),
                 ),
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '$progressPercentage%',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSecondary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildMoreChallengesButton(AppLocalizations l10n) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton.icon(
-        onPressed: _onMoreChallenges,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Theme.of(context).colorScheme.secondary,
-          side: BorderSide(color: Theme.of(context).colorScheme.secondary),
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        icon: const Icon(Icons.explore, size: 20),
-        label: Text(
-          l10n.moreChallenges,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
       ),
     );
   }

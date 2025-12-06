@@ -46,7 +46,14 @@ class AppLocalizations {
   String get moreChallenges => _get('moreChallenges');
   String get progressText => _get('progressText');
 
-  static final Map<String, Map<String, String>> _localizedValues = {
+  // Dashboard Getters
+  String get sunlight => _get('sunlight');
+  String get water => _get('water');
+  String get temperature => _get('temperature');
+  String get giveWaterButton => _get('giveWaterButton');
+  String get pruneButton => _get('pruneButton');
+
+  static Map<String, Map<String, String>> get _localizedValues => {
     'ko': {
       'appName': 'ZestInMe',
       'goodMorning': 'Good Morning, 영도자님 🌞',
@@ -63,6 +70,13 @@ class AppLocalizations {
       'moreChallenges': '더 많은 챌린지 보기',
       'progressText': '진행',
 
+      // Dashboard Keys
+      'sunlight': '햇빛',
+      'water': '수분',
+      'temperature': '온도',
+      'giveWaterButton': '물 주기',
+      'pruneButton': '가지치기',
+
       // Onboarding
       'onboarding_step1Title': '지금 이 순간,\n당신의 마음은 어떤 이름인가요?',
       'onboarding_step2Title': "그 '{emotion}'{particle}\n어디에서 시작되었나요?",
@@ -70,10 +84,12 @@ class AppLocalizations {
       'onboarding_hint': '이유나 상황을 적어주세요...',
       'onboarding_submit': '마음 담기',
       'onboarding_instructionTitle':
-          "당신의 '{emotion}'{particle} 이제\n이 화분 속에서 자라날 것입니다.",
+          "당신의 '{emotion}'{particle} 이 화분 속에서\n새로운 생명으로 피어납니다.",
       'onboarding_instructionSubtitle':
           '솔직하게 적어주신 그 마음이\n이 아이를 꽃피우게 할 유일한 영양분입니다.',
       'onboarding_finish': '함께 키워가기',
+      'onboarding_transition_planted': '마음의 씨앗이 무사히 심어졌습니다.',
+      'onboarding_transition_entering': '이제, 당신만의 안식처로 안내합니다.',
 
       // Emotions
       'onboarding_emotion_joy': '기쁨',
@@ -98,6 +114,13 @@ class AppLocalizations {
       'moreChallenges': 'View More Challenges',
       'progressText': 'Progress',
 
+      // Dashboard Keys
+      'sunlight': 'Sunlight',
+      'water': 'Water',
+      'temperature': 'Temperature',
+      'giveWaterButton': 'Give Water',
+      'pruneButton': 'Prune',
+
       // Onboarding
       'onboarding_step1Title':
           'At this moment,\nwhat is the name of your heart?',
@@ -106,10 +129,12 @@ class AppLocalizations {
       'onboarding_hint': 'Situation or reason...',
       'onboarding_submit': 'Plant Mind',
       'onboarding_instructionTitle':
-          "Your '{emotion}' will now\ngrow in this pot.",
+          "Your '{emotion}' will now\nbloom into new life here.",
       'onboarding_instructionSubtitle':
           'The honest heart you wrote\nis the only nutrient to bloom this child.',
       'onboarding_finish': 'Grow Together',
+      'onboarding_transition_planted': 'The mind seed has been planted safely.',
+      'onboarding_transition_entering': 'Now, guiding you to your sanctuary.',
 
       // Emotions
       'onboarding_emotion_joy': 'Joy',
@@ -134,6 +159,8 @@ class OnboardingLocalizations {
   String get instructionSubtitle =>
       _l10n._get('onboarding_instructionSubtitle');
   String get finish => _l10n._get('onboarding_finish');
+  String get transitionPlanted => _l10n._get('onboarding_transition_planted');
+  String get transitionEntering => _l10n._get('onboarding_transition_entering');
 
   String step2Title(String emotion, String particle) {
     var text = _l10n._get('onboarding_step2Title');

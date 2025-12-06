@@ -38,6 +38,12 @@
     "close": "Close"
   },
 
+  "sunlight": "Sunlight",
+  "water": "Water",
+  "temperature": "Temperature",
+  "giveWaterButton": "Give Water",
+  "pruneButton": "Prune",
+
   "onboarding": {
     "step1Title": "At this moment,\nwhat is the name of your heart?",
     "step2Title": "Where did that '{emotion}' come from?",
@@ -50,7 +56,7 @@
     "step2Subtitle": "Write briefly, it will become a mind seed.",
     "hint": "Situation or reason...",
     "submit": "Plant Mind",
-    "instructionTitle": "Your '{emotion}' will now\ngrow in this pot.",
+    "instructionTitle": "Your '{emotion}' will now\nbloom into new life here.",
     "@instructionTitle": {
       "placeholders": {
         "emotion": { "type": "String" },
@@ -59,6 +65,9 @@
     },
     "instructionSubtitle": "The honest heart you wrote\nis the only nutrient to bloom this child.",
     "finish": "Grow Together",
+    "onboarding_finish": "Grow Together",
+    "onboarding_transition_planted": "The mind seed has been planted safely.",
+    "onboarding_transition_entering": "Now, guiding you to your sanctuary.",
     "emotions": {
       "joy": "Joy",
       "sadness": "Sadness",

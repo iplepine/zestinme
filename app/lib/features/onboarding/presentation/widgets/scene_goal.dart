@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zestinme/features/onboarding/presentation/providers/onboarding_provider.dart';
 import 'package:zestinme/core/localization/app_localizations.dart';
+import 'package:zestinme/features/garden/presentation/providers/current_pot_provider.dart';
 
 class SceneEncounter extends ConsumerStatefulWidget {
   final VoidCallback onEncounterComplete;
@@ -41,31 +42,61 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
     });
   }
 
-  void _submitDetail() {
-    if (_detailController.text.isEmpty) return;
+  void _onDetailSubmitted() async {
+    FocusScope.of(context).unfocus();
 
-    // Dismiss keyboard
-    FocusManager.instance.primaryFocus?.unfocus();
+    // Wait for keyboard to dismiss to prevent jank/crashes
+    await Future.delayed(const Duration(milliseconds: 300));
 
+    if (!mounted) return;
     setState(() {
       _detailText = _detailController.text;
       _step = 2; // Start Animation
     });
 
     // Sequence
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
+        // Plant the pot in state management just before showing the sprout
+        ref
+            .read(currentPotNotifierProvider.notifier)
+            .plantNewPot(emotionKey: _selectedEmotionKey, nickname: 'My Basil');
+
         setState(() {
-          _step = 3; // Show Instruction
+          _step = 3; // Show Instruction (Sprout appears)
         });
       }
     });
 
-    // Complete background logic
-    ref.read(onboardingViewModelProvider.notifier).complete();
+    // Notify parent to proceed (actually not yet, wait for user confirmation)
+    // ref.read(onboardingViewModelProvider.notifier).complete();
   }
 
-  void _finish() {
+  bool _isFinishing = false;
+  String _transitionMessage = "";
+
+  void _finish() async {
+    final l10n = AppLocalizations.of(context);
+
+    // Pot is already planted at step 3 transition
+
+    setState(() {
+      _isFinishing = true;
+      _transitionMessage = l10n.onboarding.transitionPlanted;
+    });
+
+    // 1. "Seed Planted" message
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
+    setState(() {
+      _transitionMessage = l10n.onboarding.transitionEntering;
+    });
+
+    // 2. "Entering Sanctuary" message
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
     widget.onEncounterComplete();
   }
 
@@ -122,24 +153,24 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
               return Stack(
                 alignment: Alignment.center,
                 children: [
-                  if (_step == 0)
+                  if (_step == 0 && !_isFinishing)
                     Center(
                       child: SingleChildScrollView(
                         child: _buildSelectionStep(context),
                       ),
                     ),
 
-                  if (_step == 1)
+                  if (_step == 1 && !_isFinishing)
                     Center(
                       child: SingleChildScrollView(
                         child: _buildDetailInputStep(context),
                       ),
                     ),
 
-                  if (_step == 2)
+                  if (_step == 2 && !_isFinishing)
                     _buildPlantingAnimation(context, constraints.biggest),
 
-                  if (_step == 3)
+                  if (_step == 3 && !_isFinishing)
                     Center(
                       child: SingleChildScrollView(
                         child: _buildInstructionStep(context),
@@ -150,9 +181,33 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
             },
           ),
         ),
+
+        // 3. Transition Overlay
+        if (_isFinishing)
+          Container(
+            color: Colors.black.withOpacity(0.9),
+            alignment: Alignment.center,
+            child:
+                Text(
+                      _transitionMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                        height: 1.5,
+                      ),
+                    )
+                    .animate(key: ValueKey(_transitionMessage))
+                    .fadeIn(duration: 1000.ms)
+                    .then(delay: 1500.ms) // Hold
+                    .fadeOut(duration: 500.ms), // Fade out
+          ),
       ],
     );
   }
+
+  // ... (REST OF THE FILE) ...
 
   Widget _buildSelectionStep(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -269,14 +324,14 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
                   borderSide: BorderSide(color: Colors.amberAccent),
                 ),
               ),
-              onSubmitted: (_) => _submitDetail(),
+              onSubmitted: (_) => _onDetailSubmitted(),
             ),
           ),
 
           const SizedBox(height: 40),
 
           ElevatedButton(
-            onPressed: _submitDetail,
+            onPressed: _onDetailSubmitted,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white24,
               foregroundColor: Colors.white,
@@ -292,85 +347,97 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
   Widget _buildPlantingAnimation(BuildContext context, Size screenSize) {
     final emotionName = _getLocalizedEmotion(context, _selectedEmotionKey);
 
-    return Stack(
-      fit: StackFit.expand,
-      alignment: Alignment.center,
-      children: [
-        // 2. Pot Area (Target) - Static Position
-        Positioned(
-          bottom: 120, // Adjusted higher for smaller pot
-          child: Image.asset(
-            'assets/images/pots/pot_1.png',
-            width: 150, // Reduced to 150
-            fit: BoxFit.contain,
-          ).animate(delay: 500.ms).fadeIn(duration: 1000.ms),
-        ),
+    return Center(
+      child: SizedBox(
+        height: 250, // Match Step 3 height
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          clipBehavior: Clip.none, // Allow seed to start from outside if needed
+          children: [
+            // 2. Pot Area (Target) - Static Position matching Step 3
+            Image.asset(
+              'assets/images/pots/pot_1.png',
+              width: 150,
+              fit: BoxFit.contain,
+            ).animate(delay: 500.ms).fadeIn(duration: 1000.ms),
 
-        // 1. Text transforming to Seed (On top of Pot)
-        TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0.0, end: 1.0),
-          duration: const Duration(seconds: 3),
-          builder: (context, value, child) {
-            final textOpacity = (1.0 - (value / 0.3)).clamp(0.0, 1.0);
-            final seedOpacity = ((value - 0.3) / 0.2).clamp(0.0, 1.0);
+            // 1. Text transforming to Seed
+            Positioned.fill(
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(seconds: 3),
+                builder: (context, value, child) {
+                  final textOpacity = (1.0 - (value / 0.3)).clamp(0.0, 1.0);
+                  final seedOpacity = ((value - 0.3) / 0.2).clamp(0.0, 1.0);
 
-            final startAlign = Alignment.center;
-            // Target: Slightly above bottom center.
-            final endAlign = const Alignment(
-              0.0,
-              0.45,
-            ); // Adjusted for 150px pot
+                  // Start: Top of the SizedBox (or relatively higher)
+                  // End: Center of the pot (approx bottom 90px matching spout)
 
-            final moveProgress = ((value - 0.5) / 0.5).clamp(0.0, 1.0);
-            final currentAlign = Alignment.lerp(
-              startAlign,
-              endAlign,
-              Curves.easeInOutBack.transform(moveProgress),
-            )!;
+                  // Using Alignment for interpolation within the SizedBox
+                  final startAlign = const Alignment(
+                    0.0,
+                    -0.8,
+                  ); // Start from way above
+                  final endAlign = const Alignment(
+                    0.0,
+                    0.2,
+                  ); // Near the pot rim
 
-            return Align(
-              alignment: currentAlign,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Opacity(
-                    opacity: textOpacity.toDouble(),
-                    child: Text(
-                      emotionName,
-                      style: const TextStyle(
-                        color: Colors.amberAccent,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          BoxShadow(color: Colors.amber, blurRadius: 20),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Opacity(
-                    opacity: seedOpacity.toDouble(),
-                    child: Container(
-                      width: 15,
-                      height: 15,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.amber.withOpacity(0.8),
-                            blurRadius: 10 + (value * 20),
-                            spreadRadius: 2,
+                  final moveProgress = ((value - 0.5) / 0.5).clamp(0.0, 1.0);
+                  final currentAlign = Alignment.lerp(
+                    startAlign,
+                    endAlign,
+                    Curves.easeInOutBack.transform(moveProgress),
+                  )!;
+
+                  return Align(
+                    alignment: currentAlign,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Text fading out
+                        Opacity(
+                          opacity: textOpacity.toDouble(),
+                          child: Text(
+                            emotionName,
+                            style: const TextStyle(
+                              color: Colors.amberAccent,
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                BoxShadow(color: Colors.amber, blurRadius: 20),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                        // Seed fading in
+                        Opacity(
+                          opacity: seedOpacity.toDouble(),
+                          child: Container(
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.amber.withOpacity(0.8),
+                                  blurRadius: 10 + (value * 20),
+                                  spreadRadius: 2,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -379,41 +446,42 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
     final emotionName = _getLocalizedEmotion(context, _selectedEmotionKey);
     final particle = _getSubjectParticle(emotionName);
 
+    // Get dynamic asset from provider
+    // If null (not planted yet/error), fallback to 'basil_1.png'
+    final currentPot = ref.watch(currentPotNotifierProvider);
+    final assetPath = currentPot != null
+        ? 'assets/images/plants/basil_${currentPot.growthStage}.png'
+        : 'assets/images/plants/basil_1.png';
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Final Visual: Pot + Sprout
+          // Final Visual: The Planted Pot
           SizedBox(
             height: 250,
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
+                // The Pot with Plant (basil_1 includes the pot)
                 Image.asset(
-                  'assets/images/pots/pot_1.png',
-                  width: 150, // Reduced to 150
-                  fit: BoxFit.contain,
-                ),
-                // Sprout growing
-                Positioned(
-                  bottom: 90, // Adjusted for 150px pot (approx 0.6 * height)
-                  child:
-                      Image.asset(
-                            'assets/images/plants/basil_1.png',
-                            width: 60, // Reduced to 60 for proportion
-                            fit: BoxFit.contain,
-                          )
-                          .animate()
-                          .scale(
-                            begin: const Offset(0, 0),
-                            end: const Offset(1, 1),
-                            duration: 1000.ms,
-                            curve: Curves.elasticOut,
-                          )
-                          .fadeIn(duration: 500.ms),
-                ),
+                      assetPath,
+                      width: 150, // Full pot size
+                      fit: BoxFit.contain,
+                    )
+                    .animate()
+                    .scale(
+                      begin: const Offset(
+                        0.8,
+                        0.8,
+                      ), // Start slightly smaller (pop effect)
+                      end: const Offset(1, 1),
+                      duration: 800.ms,
+                      curve: Curves.elasticOut,
+                    )
+                    .fadeIn(duration: 300.ms),
               ],
             ),
           ),

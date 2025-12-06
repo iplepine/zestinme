@@ -98,41 +98,7 @@ class _SceneVoidState extends State<SceneVoid> {
                     fit: BoxFit.contain,
                   ),
 
-                  // Label that appears clearly on the pot
-                  if (_cleanedRatio > 0.3)
-                    Positioned(
-                      bottom: 80,
-                      child: AnimatedOpacity(
-                        opacity: (_cleanedRatio - 0.3).clamp(0.0, 1.0),
-                        duration: 500.ms,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(4),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            "MY MIND",
-                            style: TextStyle(
-                              fontFamily: 'Courier',
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2.0,
-                              color: Colors.brown[800],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  // Label removed as per user feedback
 
                   // 2. The Dust Layer (On Top)
                   GestureDetector(

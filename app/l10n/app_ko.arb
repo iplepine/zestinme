@@ -38,6 +38,12 @@
     "close": "닫기"
   },
   
+  "sunlight": "햇빛",
+  "water": "수분",
+  "temperature": "온도",
+  "giveWaterButton": "물 주기",
+  "pruneButton": "가지치기",
+
   "onboarding": {
     "step1Title": "지금 이 순간,\n당신의 마음은 어떤 이름인가요?",
     "step2Title": "그 '{emotion}'{particle}\n어디에서 시작되었나요?",
@@ -50,7 +56,7 @@
     "step2Subtitle": "짧게 적어주시면, 마음의 씨앗이 됩니다.",
     "hint": "이유나 상황을 적어주세요...",
     "submit": "마음 담기",
-    "instructionTitle": "당신의 '{emotion}'{particle} 이제\n이 화분 속에서 자라날 것입니다.",
+    "instructionTitle": "당신의 '{emotion}'{particle} 이 화분 속에서\n새로운 생명으로 피어납니다.",
     "@instructionTitle": {
       "placeholders": {
         "emotion": { "type": "String" },
@@ -58,6 +64,9 @@
       }
     },
     "instructionSubtitle": "솔직하게 적어주신 그 마음이\n이 아이를 꽃피우게 할 유일한 영양분입니다.",
+    "onboarding_finish": "함께 키워가기",
+    "onboarding_transition_planted": "마음의 씨앗이 무사히 심어졌습니다.",
+    "onboarding_transition_entering": "이제, 당신만의 안식처로 안내합니다.",
     "finish": "함께 키워가기",
     "emotions": {
       "joy": "기쁨",

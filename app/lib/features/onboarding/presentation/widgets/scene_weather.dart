@@ -50,7 +50,7 @@ class SceneEnvironment extends ConsumerWidget {
                 context,
                 iconStart: Icons.nightlight_round,
                 iconEnd: Icons.wb_sunny,
-                label: "오늘의 기분",
+                label: "마음의 밝기", // Renamed from "오늘의 기분"
                 value: state.sunlightLevel,
                 color: Colors.amber,
                 onChanged: (v) => ref
@@ -63,7 +63,7 @@ class SceneEnvironment extends ConsumerWidget {
                 context,
                 iconStart: Icons.ac_unit,
                 iconEnd: Icons.local_fire_department,
-                label: "나의 에너지",
+                label: "마음의 온도", // Renamed from "나의 에너지"
                 value: state.temperatureLevel,
                 color: Colors.orangeAccent,
                 onChanged: (v) => ref
@@ -76,7 +76,7 @@ class SceneEnvironment extends ConsumerWidget {
                 context,
                 iconStart: Icons.water_drop_outlined,
                 iconEnd: Icons.water_drop,
-                label: "감정의 몰입도",
+                label: "마음의 습도", // Renamed from "감정의 몰입도"
                 value: state.humidityLevel,
                 color: Colors.blueAccent,
                 onChanged: (v) => ref
@@ -144,16 +144,16 @@ class SceneEnvironment extends ConsumerWidget {
 
   Color _getSkyColor(double brightness) {
     return Color.lerp(
-      const Color(0xFF0A101C), // Night
-      const Color(0xFF4FC3F7), // Day
+      const Color(0xFF2C221C), // Warm Dark (Cocoa Night)
+      const Color(0xFFFFB74D), // Warm Light (Sunset Orange)
       brightness,
     )!;
   }
 
   Color _getSoilColor(double humidity) {
     return Color.lerp(
-      const Color(0xFFE0E0E0), // Dry/Mist
-      const Color(0xFF263238), // Wet/Dark
+      const Color(0xFFFFE0B2), // Dry (Warm Sand/Beige)
+      const Color(0xFF4E342E), // Wet (Deep Soil Brown)
       humidity,
     )!;
   }

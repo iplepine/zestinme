@@ -15,6 +15,10 @@
     *   **Gamification:** 낚시 게임 메타포를 통한 몰입 유도.
     *   **Retention:** Hook Model (Trigger -> Action -> Variable Reward -> Investment) 적용.
     *   **Vibe:** UI/UX의 감성적 '바이브(Vibe)' 설계. '숙제'가 아닌 '안식처' 같은 경험 제공.
+*   **🎨 Artist Esthetic (디자인)**
+    *   **Consistency:** 타이포그래피, 여백, 컬러 팔레트의 통일성 (Design System).
+    *   **Emotion:** 부드러운 애니메이션과 따뜻한 톤앤매너로 '위로'의 감정 전달.
+    *   **Detail:** 픽셀 퍼펙트(Pixel-perfect)와 마이크로 인터랙션(Micro-interactions) 집착.
 *   **🏗️ Architect Spec (개발)**
     *   **Local-First Architecture:** 데이터 주권과 오프라인 사용성 보장.
     *   **Scalability & Security:** 확장 가능한 구조와 JSON 스키마 기반 데이터 관리.
