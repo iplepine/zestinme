@@ -17,6 +17,6 @@ class PlantSpecies with _$PlantSpecies {
     required double optimalHumidity,
 
     // Assets
-    @Default('assets/images/plants/default_plant.png') String assetPath,
+    @Default('basil') String assetKey, // e.g. 'basil', 'mimosa'
   }) = _PlantSpecies;
 }

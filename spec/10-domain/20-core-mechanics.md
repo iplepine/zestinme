@@ -63,7 +63,27 @@
         | 20–40 | 저습 | 건조 | 긴장·경직 |
         | 40–60 | 중간 | 정상 | 안정·균형 |
         | 60–80 | 고습 | 풍부한 수분 | 따뜻함·감정 흐름 |
+        | 60–80 | 고습 | 풍부한 수분 | 따뜻함·감정 흐름 |
         | 80–100 | 극고습 | 과습·포화 | 감정 과부하 |
+
+### 3.1.1 측정 알고리즘 (Measurement Logic)
+입력된 데이터는 다음과 같은 규칙으로 환경 변수에 반영됩니다. (Dr. Neuro's Rule)
+
+1.  **일조량 & 온도 (Valence & Arousal):**
+    *   **Emotion Mapping:** 사용자가 선택한 '핵심 감정'에 미리 할당된 좌표값을 사용합니다.
+        *   *기쁨 (Joy):* Valence(High) + Arousal(Mid)
+        *   *분노 (Anger):* Valence(Low) + Arousal(High)
+        *   *슬픔 (Sadness):* Valence(Low) + Arousal(Low)
+        *   *평온 (Peace):* Valence(Mid) + Arousal(Low)
+    *   **Smoothing:** 급격한 변화를 막기 위해 **이동 평균(Moving Average)**을 사용하여 서서히 변화합니다.
+
+2.  **습도 (Immersion - Decay & Replenish):**
+    *   **Base Rule:** 습도는 시간에 따라 자연스럽게 감소(Dry out)합니다.
+        *   *Decay Rate:* -2% / hour
+    *   **Replenish (충전):** 사용자 활동에 따라 증가합니다.
+        *   *Check-in (물주기):* +10%
+        *   *Reflection (글쓰기):* +30% (글자 수에 비례)
+    *   **Feedback:** 습도가 30% 이하로 떨어지면 식물이 '목마름(Thirsty)' 반응을 보입니다.
 
 ### 3.2 확률적 적소 모델 (Stochastic Niche Model)
 *   **원리:** 특정 환경 값(예: 고온 다습)이 설정되면, 해당 환경을 *선호(Preference)*하는 식물군의 출현 확률이 높아질 뿐, 100% 확정되지 않습니다.

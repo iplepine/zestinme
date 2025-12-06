@@ -29,11 +29,32 @@ class _SceneVoidState extends State<SceneVoid> {
   final double _wBottom = 120;
   final double _h = 160;
 
+  bool _showIntro = true; // Start with intro
+  bool _showPot = false;
+
   @override
   void initState() {
     super.initState();
     // Center of SizedBox(300, 400) is (150, 200).
     _generatePotGrid(const Offset(150, 200));
+    _startIntro();
+  }
+
+  void _startIntro() async {
+    // 1. Intro Text Duration
+    await Future.delayed(const Duration(seconds: 4));
+    if (!mounted) return;
+
+    setState(() {
+      _showIntro = false;
+    });
+
+    // 2. Fade in Pot
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    setState(() {
+      _showPot = true;
+    });
   }
 
   void _generatePotGrid(Offset center) {
@@ -84,71 +105,92 @@ class _SceneVoidState extends State<SceneVoid> {
           ),
 
           // Central Interaction Area
-          Center(
-            child: SizedBox(
-              width: 300,
-              height: 400,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // 1. The Clean Pot (Underneath)
-                  Image.asset(
-                    'assets/images/pots/pot_1.png',
-                    width: 200,
-                    fit: BoxFit.contain,
-                  ),
+          if (_showIntro)
+            Center(
+              child:
+                  Text(
+                        "당신의 마음 한구석,\n오랫동안 잊고 지낸\n작은 정원이 있습니다.",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          height: 1.6,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      )
+                      .animate()
+                      .fadeIn(duration: 1000.ms)
+                      .then(delay: 2000.ms)
+                      .fadeOut(duration: 1000.ms),
+            ),
 
-                  // Label removed as per user feedback
+          if (_showPot)
+            Center(
+              child: SizedBox(
+                width: 300,
+                height: 400,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // 1. The Clean Pot (Underneath)
+                    Image.asset(
+                      'assets/images/pots/pot_1.png',
+                      width: 200,
+                      fit: BoxFit.contain,
+                    ).animate().fadeIn(duration: 1000.ms), // Fade in the pot
+                    // ... Dust Layer follows (only if showPot is true, inherently handled by parent visibility but we need to animate it too if needed)
+                    // Actually, the dust layer should appear WITH the pot.
 
-                  // 2. The Dust Layer (On Top)
-                  GestureDetector(
-                    onPanUpdate: (details) {
-                      if (_isCleaned) return;
+                    // 2. The Dust Layer (On Top)
+                    GestureDetector(
+                      onPanUpdate: (details) {
+                        if (_isCleaned) return;
+                        // ... (Rest of logic)
 
-                      setState(() {
-                        // Add visual point
-                        _cleanedPoints.add(details.localPosition);
+                        setState(() {
+                          // Add visual point
+                          _cleanedPoints.add(details.localPosition);
 
-                        // Check collision with Pot Grid
-                        // Cleaning radius = 25.0 (matches DustPainter eraser)
-                        const double cleaningRadius = 25.0;
+                          // Check collision with Pot Grid
+                          // Cleaning radius = 25.0 (matches DustPainter eraser)
+                          const double cleaningRadius = 25.0;
 
-                        for (int i = 0; i < _potTargetPoints.length; i++) {
-                          if (!_hitIndices.contains(i)) {
-                            if ((_potTargetPoints[i] - details.localPosition)
-                                    .distance <
-                                cleaningRadius) {
-                              _hitIndices.add(i);
+                          for (int i = 0; i < _potTargetPoints.length; i++) {
+                            if (!_hitIndices.contains(i)) {
+                              if ((_potTargetPoints[i] - details.localPosition)
+                                      .distance <
+                                  cleaningRadius) {
+                                _hitIndices.add(i);
+                              }
                             }
                           }
+
+                          // Update Ratio
+                          if (_potTargetPoints.isNotEmpty) {
+                            _cleanedRatio =
+                                _hitIndices.length / _potTargetPoints.length;
+                          }
+                        });
+
+                        // Haptic density check (Visual only)
+                        if (_cleanedPoints.length % 5 == 0) {
+                          HapticFeedback.selectionClick();
                         }
 
-                        // Update Ratio
-                        if (_potTargetPoints.isNotEmpty) {
-                          _cleanedRatio =
-                              _hitIndices.length / _potTargetPoints.length;
+                        // Check for completion (98%)
+                        if (_cleanedRatio >= 0.98 && !_isCleaned) {
+                          _finishCleaning();
                         }
-                      });
-
-                      // Haptic density check (Visual only)
-                      if (_cleanedPoints.length % 5 == 0) {
-                        HapticFeedback.selectionClick();
-                      }
-
-                      // Check for completion (98%)
-                      if (_cleanedRatio >= 0.98 && !_isCleaned) {
-                        _finishCleaning();
-                      }
-                    },
-                    child: CustomPaint(
-                      size: const Size(300, 400),
-                      painter: DustPainter(cleanedPoints: _cleanedPoints),
+                      },
+                      child: CustomPaint(
+                        size: const Size(300, 400),
+                        painter: DustPainter(cleanedPoints: _cleanedPoints),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
 
           // Instructions
           if (!_isCleaned)
@@ -233,12 +275,19 @@ class DustPainter extends CustomPainter {
 
     // 1. Draw full dust layer
     final dustPaint = Paint()
-      ..color = Colors.grey.withOpacity(0.9)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+      ..color = const Color(0xFFC4BCAF)
+          .withOpacity(0.8) // Warm dusty beige
+      ..maskFilter = const MaskFilter.blur(
+        BlurStyle.normal,
+        10,
+      ); // Softer edges
 
-    // Rough "Dust" cloud shape covering the pot area
-    // Just a big circle/rect for now
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), dustPaint);
+    // Organic "Dust" cloud shape covering the pot area
+    final rect = Rect.fromLTWH(20, 40, size.width - 40, size.height - 80);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, const Radius.circular(60)),
+      dustPaint,
+    );
 
     // 2. Erase the cleaned points
     final eraser = Paint()

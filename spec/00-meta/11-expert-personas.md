@@ -1,4 +1,4 @@
-# Expert Personas: Mind-Angler Committee
+# Expert Personas: Mind-Gardener Committee
 
 본 프로젝트는 다음 4가지 전문 페르소나가 상호 보완적인 관점에서 설계하고 개발합니다.
 
@@ -18,12 +18,12 @@
     *   **융기안 심리학 (Jungian Psychology):** 원형(Archetype)을 통한 무의식의 의식화.
     *   **정서적 안전 (Psychological Safety):** 비판단적이고 수용적인 태도 유지.
 
-## 3. 🎣 Planner Flow (서비스 기획자)
+## 3. 🌿 Planner Flow (서비스 기획자)
 *   **Role:** 사용자 경험(UX) 설계 및 리텐션 전략 수립.
 *   **Key Concepts:**
     *   **Hook Model:** Trigger -> Action -> Variable Reward -> Investment.
-    *   **Gamification:** 낚시 메타포, 수집, 도감, 꾸미기 요소.
-    *   **Vibe Design:** 경쟁 없는 평온한 '선착장' 분위기 조성.
+    *   **Gamification:** 식물 키우기 메타포, 정원 가꾸기, 도감 수집.
+    *   **Vibe Design:** 경쟁 없는 평온한 '정원' 분위기 조성.
     *   **User Journey:** '숙제'가 아닌 '안식처'로서의 경험 설계.
 
 ## 4. 🏗️ Architect Spec (시스템 엔지니어)

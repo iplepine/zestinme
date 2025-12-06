@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/emotion_write/presentation/screens/emotion_write_screen.dart';
+import '../../features/seeding/presentation/screens/seeding_screen.dart';
+import '../../features/dev/presentation/screens/dev_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
+import '../../features/happy_record/presentation/dashboard/home_dashboard_page.dart';
 import '../../features/main/presentation/main_screen.dart';
 import '../../features/auth/presentation/login_page.dart';
 
@@ -14,13 +17,31 @@ part 'app_router.g.dart';
 
 @riverpod
 GoRouter goRouter(GoRouterRef ref) {
+  final notifier = _RouterNotifier(ref);
+
   return GoRouter(
-    initialLocation: '/',
-    redirect: (context, state) async {
-      // DEBUG: Always force onboarding
-      // final checkStatus = ref.read(checkOnboardingStatusProvider);
-      // final isCompleted = await checkStatus.call();
-      const isCompleted = false; // Forced for debug
+    initialLocation: '/dev',
+    refreshListenable: notifier,
+    redirect: (context, state) {
+      // Developer Mode: Always allow /dev and debugging routes
+      final allowedRoutes = [
+        '/dev',
+        '/seeding',
+        '/write',
+        '/history',
+        '/login',
+        '/old-home',
+        '/',
+      ];
+      if (allowedRoutes.contains(state.matchedLocation)) return null;
+
+      // Read the current state directly
+      final onboardingState = ref.read(onboardingViewModelProvider);
+      final isCompleted = onboardingState.isCompleted;
+
+      // Logic:
+      // If NOT completed and NOT in /onboarding -> Go to /onboarding
+      // If completed and IN /onboarding -> Go to /
 
       if (!isCompleted && state.matchedLocation != '/onboarding') {
         return '/onboarding';
@@ -33,7 +54,10 @@ GoRouter goRouter(GoRouterRef ref) {
       return null;
     },
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const HomeDashboardPage(),
+      ),
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
@@ -46,6 +70,11 @@ GoRouter goRouter(GoRouterRef ref) {
         path: '/history',
         builder: (context, state) => const HistoryScreen(),
       ),
+      GoRoute(
+        path: '/seeding',
+        builder: (context, state) => const SeedingScreen(),
+      ),
+      GoRoute(path: '/dev', builder: (context, state) => const DevScreen()),
 
       // Legacy Routes (kept for reference if needed, or can be removed)
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
@@ -55,4 +84,10 @@ GoRouter goRouter(GoRouterRef ref) {
       ),
     ],
   );
+}
+
+class _RouterNotifier extends ChangeNotifier {
+  _RouterNotifier(Ref ref) {
+    ref.listen(onboardingViewModelProvider, (_, __) => notifyListeners());
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../data/plant_static_data.dart';
 
 part 'current_pot.freezed.dart';
 part 'current_pot.g.dart';
@@ -17,6 +18,12 @@ class CurrentPot with _$CurrentPot {
     @Default(100.0) double maxXp, // XP needed for next stage
   }) = _CurrentPot;
 
+  const CurrentPot._(); // Required for custom methods/getters in Freezed
+
   factory CurrentPot.fromJson(Map<String, dynamic> json) =>
       _$CurrentPotFromJson(json);
+
+  String get speciesName {
+    return PlantStaticData.getById(plantSpeciesId).assetKey;
+  }
 }

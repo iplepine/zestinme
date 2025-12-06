@@ -5,7 +5,7 @@
 | **Version** | 2.1 |
 | **Status** | Narrative Refined |
 | **Date** | 2025-12-06 |
-| **Author** | Mind-Angler Committee |
+| **Author** | Mind-Gardener Committee |
 | **Related** | `spec/10-domain/20-core-mechanics.md` |
 
 ## 1. 기획 의도 (Design Intent)

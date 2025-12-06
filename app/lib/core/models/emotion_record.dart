@@ -19,10 +19,30 @@ class EmotionRecord {
   List<String>? people;
   String? location;
 
+  @enumerated
+  late EmotionRecordStatus status;
+
+  DateTime? analysisUnlockTime; // When incubation ends
+
+  // Cold Cognition Fields
+  String? detailedNote; // Full journal
+  List<String>? cognitiveDistortions; // Selected distortion types
+  String? alternativeThought; // Re-framed thought
+
+  // Link to Quest
+  String? questId;
+
   // Bio-Psycho
   List<String>? bodySensations;
   String? automaticThought;
 
   // Action
   String? actionTaken;
+}
+
+enum EmotionRecordStatus {
+  caught, // Initial recording (Hot)
+  incubating, // Waiting period
+  readyForAnalysis, // Time passed
+  analyzed, // Analysis complete (Cold)
 }

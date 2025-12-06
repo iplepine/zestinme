@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zestinme/features/onboarding/presentation/widgets/scene_goal.dart';
+import 'package:zestinme/features/onboarding/presentation/providers/onboarding_provider.dart';
 import 'package:zestinme/features/onboarding/presentation/widgets/scene_identity.dart';
 import 'package:zestinme/features/onboarding/presentation/widgets/scene_void.dart';
 import 'package:zestinme/features/onboarding/presentation/widgets/scene_weather.dart';
@@ -54,8 +55,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         );
       case 3:
         return SceneEncounter(
-          onEncounterComplete: () {
-            context.go('/'); // Navigate to Home
+          onEncounterComplete: () async {
+            // Mark as completed in ViewModel + DB
+            await ref.read(onboardingViewModelProvider.notifier).complete();
+
+            if (context.mounted) {
+              context.go('/'); // Navigate to Home
+            }
           },
         );
       default:

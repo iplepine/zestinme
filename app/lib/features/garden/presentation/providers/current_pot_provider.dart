@@ -18,7 +18,7 @@ class CurrentPotNotifier extends _$CurrentPotNotifier {
     // Create new pot
     final newPot = CurrentPot(
       id: DateTime.now().toIso8601String(),
-      plantSpeciesId: 1, // Default Basil
+      plantSpeciesId: 6, // Default Basil (ID 6 from Plant Database)
       nickname: nickname,
       emotionKey: emotionKey,
       plantedAt: DateTime.now(),

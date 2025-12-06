@@ -55,7 +55,10 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
     });
 
     // Sequence
-    Future.delayed(const Duration(seconds: 3), () {
+    // 1. Seed Falls (0-2s)
+    // 2. Watering (2-4s)
+    // 3. Sprout (5s -> Step 3)
+    Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
         // Plant the pot in state management just before showing the sprout
         ref
@@ -306,7 +309,7 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
               controller: _detailController,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                color: Colors.amberAccent,
+                color: Color(0xFFFFECB3), // Soft Cream/Amber
                 fontSize: 18,
                 fontWeight: FontWeight.normal,
               ),
@@ -321,7 +324,7 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
                   borderSide: BorderSide(color: Colors.white24),
                 ),
                 focusedBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.amberAccent),
+                  borderSide: BorderSide(color: Color(0xFFFFECB3)),
                 ),
               ),
               onSubmitted: (_) => _onDetailSubmitted(),
@@ -351,8 +354,7 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
       child: SizedBox(
         height: 250, // Match Step 3 height
         child: Stack(
-          alignment: Alignment.bottomCenter,
-          clipBehavior: Clip.none, // Allow seed to start from outside if needed
+          alignment: Alignment.center,
           children: [
             // 2. Pot Area (Target) - Static Position matching Step 3
             Image.asset(
@@ -361,27 +363,23 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
               fit: BoxFit.contain,
             ).animate(delay: 500.ms).fadeIn(duration: 1000.ms),
 
-            // 1. Text transforming to Seed
+            // 1. Text transforming to Seed (0.0 - 2.0s)
             Positioned.fill(
               child: TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0.0, end: 1.0),
-                duration: const Duration(seconds: 3),
+                duration: const Duration(seconds: 2),
                 builder: (context, value, child) {
                   final textOpacity = (1.0 - (value / 0.3)).clamp(0.0, 1.0);
                   final seedOpacity = ((value - 0.3) / 0.2).clamp(0.0, 1.0);
 
-                  // Start: Top of the SizedBox (or relatively higher)
-                  // End: Center of the pot (approx bottom 90px matching spout)
+                  // Seed disappears into soil at the end
+                  final seedVisibility = (1.0 - (value - 0.9) * 10).clamp(
+                    0.0,
+                    1.0,
+                  );
 
-                  // Using Alignment for interpolation within the SizedBox
-                  final startAlign = const Alignment(
-                    0.0,
-                    -0.8,
-                  ); // Start from way above
-                  final endAlign = const Alignment(
-                    0.0,
-                    0.2,
-                  ); // Near the pot rim
+                  final startAlign = const Alignment(0.0, -0.8);
+                  final endAlign = const Alignment(0.0, 0.2); // Pot rim/soil
 
                   final moveProgress = ((value - 0.5) / 0.5).clamp(0.0, 1.0);
                   final currentAlign = Alignment.lerp(
@@ -401,18 +399,22 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
                           child: Text(
                             emotionName,
                             style: const TextStyle(
-                              color: Colors.amberAccent,
+                              color: Colors.white,
                               fontSize: 32,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 2.0,
                               shadows: [
-                                BoxShadow(color: Colors.amber, blurRadius: 20),
+                                BoxShadow(
+                                  color: Color(0xFFFFD700),
+                                  blurRadius: 25,
+                                ),
                               ],
                             ),
                           ),
                         ),
-                        // Seed fading in
+                        // Seed fading in and then disappearing into soil
                         Opacity(
-                          opacity: seedOpacity.toDouble(),
+                          opacity: (seedOpacity * seedVisibility).toDouble(),
                           child: Container(
                             width: 15,
                             height: 15,
@@ -434,6 +436,59 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
                   );
                 },
               ),
+            ),
+
+            // 3. Watering Animation (2.0s - 4.5s)
+            Positioned(
+              top: 0,
+              child:
+                  const Icon(
+                        Icons.water_drop,
+                        color: Colors.blueAccent,
+                        size: 40,
+                      )
+                      .animate(delay: 2500.ms) // Start after seed lands
+                      .fadeIn(duration: 500.ms)
+                      .moveY(
+                        begin: -20,
+                        end: 80,
+                        duration: 1500.ms,
+                        curve: Curves.easeIn,
+                      )
+                      .fadeOut(delay: 1000.ms, duration: 500.ms),
+            ),
+            Positioned(
+              top: 20,
+              left: 20,
+              child:
+                  const Icon(
+                        Icons.water_drop,
+                        color: Colors.lightBlueAccent,
+                        size: 30,
+                      )
+                      .animate(delay: 2800.ms)
+                      .fadeIn(duration: 500.ms)
+                      .moveY(
+                        begin: -20,
+                        end: 80,
+                        duration: 1400.ms,
+                        curve: Curves.easeIn,
+                      )
+                      .fadeOut(delay: 900.ms, duration: 500.ms),
+            ),
+            Positioned(
+              top: 10,
+              right: 15,
+              child: const Icon(Icons.water_drop, color: Colors.blue, size: 35)
+                  .animate(delay: 3100.ms)
+                  .fadeIn(duration: 500.ms)
+                  .moveY(
+                    begin: -20,
+                    end: 80,
+                    duration: 1600.ms,
+                    curve: Curves.easeIn,
+                  )
+                  .fadeOut(delay: 1100.ms, duration: 500.ms),
             ),
           ],
         ),

@@ -42,7 +42,16 @@
   "water": "Water",
   "temperature": "Temperature",
   "giveWaterButton": "Give Water",
-  "pruneButton": "Prune",
+  "pruneButton": "가지치기",
+
+  "home_checkIn": "Check-in",
+  "home_reflection": "Reflection",
+  "home_letGo": "Let Go",
+  "home_history": "History",
+
+  "home_question_default": "How is your heart today?",
+  "home_question_tired": "Are you pushing yourself too hard?",
+  "home_question_happy": "Who do you want to share this joy with?",
 
   "onboarding": {
     "step1Title": "At this moment,\nwhat is the name of your heart?",

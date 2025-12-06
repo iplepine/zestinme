@@ -1,0 +1,188 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/localization/app_localizations.dart';
+import '../providers/environment_provider.dart';
+
+class MentalWeatherHeader extends ConsumerWidget {
+  const MentalWeatherHeader({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final environmentState = ref.watch(environmentNotifierProvider);
+
+    final double sunlight = environmentState.sunlight;
+    final double temperature = environmentState.temperature;
+    final double water = environmentState.water;
+
+    return GestureDetector(
+      onTap: () => _showGuideDialog(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildWeatherGauge(
+              context,
+              '☀️',
+              sunlight,
+              AppLocalizations.of(context).sunlight,
+            ),
+            _buildWeatherGauge(
+              context,
+              '🌡️',
+              temperature,
+              AppLocalizations.of(context).temperature,
+            ),
+            _buildWeatherGauge(
+              context,
+              '💧',
+              water,
+              AppLocalizations.of(context).water,
+            ),
+            // Help Icon
+            Icon(
+              Icons.help_outline,
+              color: Colors.white.withOpacity(0.3),
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showGuideDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF2C3E50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            "마음의 날씨 (Mental Weather)",
+            style: TextStyle(color: Colors.white, fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildGuideItem(
+                '☀️',
+                "일조량 (Sunlight)",
+                "당신의 기분이 얼마나 밝은지를 나타냅니다.\n(긍정적일수록 높음)",
+              ),
+              const SizedBox(height: 16),
+              _buildGuideItem(
+                '🌡️',
+                "온도 (Temperature)",
+                "감정의 에너지가 얼마나 뜨거운지를 나타냅니다.\n(활력/격앙 등)",
+              ),
+              const SizedBox(height: 16),
+              _buildGuideItem(
+                '💧',
+                "수분 (Humidity)",
+                "마음이 얼마나 촉촉하고 깊이 있는지를 나타냅니다.\n(몰입/공감 등)",
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("알겠어요", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildGuideItem(String icon, String title, String desc) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(icon, style: const TextStyle(fontSize: 24)),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                desc,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.7),
+                  fontSize: 12,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWeatherGauge(
+    BuildContext context,
+    String icon,
+    double value,
+    String label,
+  ) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Container(
+              width: 12,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            Container(
+              width: 12,
+              height: 50 * value,
+              decoration: BoxDecoration(
+                color: _getGaugeColor(icon, value),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: _getGaugeColor(icon, value).withOpacity(0.5),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(icon, style: const TextStyle(fontSize: 16)),
+      ],
+    );
+  }
+
+  Color _getGaugeColor(String icon, double value) {
+    if (icon == '☀️') return Colors.amber;
+    if (icon == '🌡️') {
+      if (value > 0.8) return Colors.red;
+      if (value < 0.2) return Colors.blue;
+      return Colors.green;
+    }
+    if (icon == '💧') return Colors.lightBlueAccent;
+    return Colors.white;
+  }
+}

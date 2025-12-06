@@ -53,6 +53,16 @@ class AppLocalizations {
   String get giveWaterButton => _get('giveWaterButton');
   String get pruneButton => _get('pruneButton');
 
+  // Home Screen Getters
+  String get homeCheckIn => _get('home_checkIn');
+  String get homeReflection => _get('home_reflection');
+  String get homeLetGo => _get('home_letGo');
+  String get homeHistory => _get('home_history');
+
+  String get homeQuestionDefault => _get('home_question_default');
+  String get homeQuestionTired => _get('home_question_tired');
+  String get homeQuestionHappy => _get('home_question_happy');
+
   static Map<String, Map<String, String>> get _localizedValues => {
     'ko': {
       'appName': 'ZestInMe',
@@ -76,6 +86,17 @@ class AppLocalizations {
       'temperature': '온도',
       'giveWaterButton': '물 주기',
       'pruneButton': '가지치기',
+
+      // Home Screen - Insight Tools
+      'home_checkIn': '퀵 체크',
+      'home_reflection': '깊은 기록',
+      'home_letGo': '비워내기',
+      'home_history': '회고',
+
+      // Home Screen - Self-Talk Questions
+      'home_question_default': '오늘 당신의 마음은 어떤가요?',
+      'home_question_tired': '혹시 지금 너무 애쓰고 있지 않나요?',
+      'home_question_happy': '이 기쁨을 누구와 나누고 싶나요?',
 
       // Onboarding
       'onboarding_step1Title': '지금 이 순간,\n당신의 마음은 어떤 이름인가요?',
@@ -120,6 +141,17 @@ class AppLocalizations {
       'temperature': 'Temperature',
       'giveWaterButton': 'Give Water',
       'pruneButton': 'Prune',
+
+      // Home Screen - Insight Tools
+      'home_checkIn': 'Check-in',
+      'home_reflection': 'Reflection',
+      'home_letGo': 'Let Go',
+      'home_history': 'History',
+
+      // Home Screen - Self-Talk Questions
+      'home_question_default': 'How is your heart today?',
+      'home_question_tired': 'Are you pushing yourself too hard?',
+      'home_question_happy': 'Who do you want to share this joy with?',
 
       // Onboarding
       'onboarding_step1Title':
