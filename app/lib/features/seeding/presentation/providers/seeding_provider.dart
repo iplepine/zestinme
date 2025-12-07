@@ -83,9 +83,8 @@ class SeedingNotifier extends _$SeedingNotifier {
     if (currentTags.contains(tag)) {
       currentTags.remove(tag);
     } else {
-      if (currentTags.length < 3) {
-        currentTags.add(tag);
-      }
+      currentTags.clear(); // Enforce single selection
+      currentTags.add(tag);
     }
     state = state.copyWith(selectedTags: currentTags);
   }

@@ -260,6 +260,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get seeding_mood_soso => '그저 그럼';
 
   @override
+  String get seeding_hint_trigger => '무엇이 이 기분을 만들었나요?';
+
+  @override
+  String get seeding_hint_thought => '그 순간 어떤 생각이 들었나요?';
+
+  @override
+  String get seeding_hint_tendency => '지금 하고 싶은 것이 있나요?';
+
+  @override
   String get seeding_quadrant_energized => '활기참';
 
   @override

@@ -265,6 +265,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seeding_mood_soso => 'So-so';
 
   @override
+  String get seeding_hint_trigger => 'What triggered this feeling?';
+
+  @override
+  String get seeding_hint_thought => 'What was your thought?';
+
+  @override
+  String get seeding_hint_tendency => 'What do you want to do now?';
+
+  @override
   String get seeding_quadrant_energized => 'Energized';
 
   @override

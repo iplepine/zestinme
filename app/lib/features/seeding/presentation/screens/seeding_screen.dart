@@ -7,6 +7,9 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../l10n/app_localizations.dart'; // Correct generated import
 import 'package:go_router/go_router.dart';
 import 'dart:ui' as ui;
+import 'dart:async';
+import 'package:flutter/services.dart';
+import '../../../../app/routes/app_router.dart';
 
 class SeedingScreen extends ConsumerStatefulWidget {
   const SeedingScreen({super.key});
@@ -23,8 +26,9 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
   // Helper to determine mood label based on coordinates
   String _getMoodLabel(BuildContext context, double valence, double arousal) {
     final l10n = AppLocalizations.of(context)!;
-    if (valence.abs() < 0.2 && arousal.abs() < 0.2)
+    if (valence.abs() < 0.2 && arousal.abs() < 0.2) {
       return l10n.seeding_mood_neutral;
+    }
 
     if (arousal > 0) {
       // High Energy
@@ -316,205 +320,301 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
         .read(seedingNotifierProvider.notifier)
         .getRecommendedTags();
 
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child:
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              // Increased opacity and used dark grey for better contrast
-              color: const Color(0xFF1E1E1E).withValues(alpha: 0.95),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(30),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.5),
-                  blurRadius: 20,
-                  offset: const Offset(0, -5),
-                ),
-              ],
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: AppColors.seedingCardBackground,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  l10n.seeding_promptTags,
-                  style: const TextStyle(
-                    color: Colors.white, // Increased from white70
-                    fontSize: 20, // Slightly larger
-                    fontWeight: FontWeight.bold,
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle Bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 24),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+
+            // 1. Tags
+            Text(
+              l10n.seeding_promptTags, // "How do you feel?"
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: recommendedTags.map((tag) {
+                final localizedTag = _getLocalizedTag(l10n, tag);
+                final isSelected = seedingState.selectedTags.contains(tag);
+                return FilterChip(
+                  label: Text(localizedTag),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    ref.read(seedingNotifierProvider.notifier).toggleTag(tag);
+                    HapticFeedback.selectionClick();
+                  },
+                  elevation: 0,
+                  pressElevation: 0,
+                  showCheckmark: false,
+                  backgroundColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  selectedColor: AppColors.seedingChipSelected,
+                  labelStyle: TextStyle(
+                    color: isSelected
+                        ? AppColors.seedingChipTextSelected
+                        : Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: isSelected
+                          ? Colors.transparent
+                          : Colors.white.withValues(alpha: 0.5),
+                      width: 1,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+
+            const SizedBox(height: 32),
+
+            // 2. Note (Guided Input with Rolling Hints)
+            _RollingHintTextField(
+              l10n: l10n,
+              onChanged: (value) {
+                ref.read(seedingNotifierProvider.notifier).updateNote(value);
+              },
+            ),
+
+            const SizedBox(height: 32),
+
+            // 3. Plant Button
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton(
+                onPressed: seedingState.isSaving
+                    ? null
+                    : () async {
+                        // Allow planting even without tags?
+                        // Yes, coordinate is the primary data.
+                        HapticFeedback.mediumImpact();
+                        await ref
+                            .read(seedingNotifierProvider.notifier)
+                            .saveRecord();
+                        if (context.mounted) {
+                          context.go(AppRouter.home);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(l10n.seeding_messagePlanted),
+                            ),
+                          );
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28),
                   ),
                 ),
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: recommendedTags.map((tag) {
-                    final isSelected = seedingState.selectedTags.contains(tag);
-                    final localizedTag = _getLocalizedTag(l10n, tag);
-                    return FilterChip(
-                      label: Text(localizedTag),
-                      selected: isSelected,
-                      onSelected: (_) {
-                        ref
-                            .read(seedingNotifierProvider.notifier)
-                            .toggleTag(tag);
-                      },
-                      // Fix: Explicitly disable elevation and set dark background to prevent white surface
-                      elevation: 0,
-                      pressElevation: 0,
-                      backgroundColor: Colors
-                          .transparent, // Or use dark color if transparent fails
-                      surfaceTintColor: Colors.transparent,
-
-                      selectedColor: AppColors.seedingSun,
-                      checkmarkColor: Colors.black,
-                      showCheckmark: false,
-                      labelStyle: TextStyle(
-                        color: isSelected ? Colors.black : Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(
-                          color: isSelected
-                              ? Colors.transparent
-                              : Colors.white.withValues(
-                                  alpha: 0.5,
-                                ), // Visible white border
-                          width: 1.2,
+                child: seedingState.isSaving
+                    ? const CircularProgressIndicator()
+                    : Text(
+                        l10n.seeding_buttonPlant,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 24),
-                TextField(
-                  onChanged: (value) => ref
-                      .read(seedingNotifierProvider.notifier)
-                      .updateNote(value),
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: l10n.seeding_promptNote,
-                    // Much brighter hint text
-                    hintStyle: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.6),
-                    ),
-                    filled: true,
-                    // Brighter input field background
-                    fillColor: Colors.white.withValues(alpha: 0.1),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.all(16),
-                  ),
-                  maxLines: 2,
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: seedingState.isSaving
-                        ? null
-                        : () async {
-                            await ref
-                                .read(seedingNotifierProvider.notifier)
-                                .saveRecord();
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(l10n.seeding_messagePlanted),
-                                ),
-                              );
-                              context.pop(); // Return to Home
-                            }
-                          },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.seedingSun,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: seedingState.isSaving
-                        ? const CircularProgressIndicator(color: Colors.black)
-                        : Text(
-                            l10n.seeding_buttonPlant,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                  ),
-                ),
-                const SizedBox(height: 20), // Bottom padding
-              ],
+              ),
             ),
-          ).animate().moveY(
-            begin: 300,
-            end: 0,
-            duration: 400.ms,
-            curve: Curves.easeOutBack,
-          ),
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 20),
+          ],
+        ),
+      ),
+    ).animate().slideY(
+      begin: 1.0,
+      end: 0.0,
+      duration: 500.ms,
+      curve: Curves.easeOutCubic,
     );
   }
 
   String _getLocalizedTag(AppLocalizations l10n, String tag) {
-    switch (tag.toLowerCase()) {
-      case 'neutral':
+    switch (tag) {
+      case 'Neutral':
         return l10n.seeding_mood_neutral;
-      case 'okay':
+      case 'Okay':
         return l10n.seeding_mood_okay;
-      case 'so-so':
+      case 'So-so':
         return l10n.seeding_mood_soso;
-      case 'excited':
+      case 'Excited':
         return l10n.seeding_mood_excited;
-      case 'joyful':
+      case 'Joyful':
         return l10n.seeding_mood_joyful;
-      case 'passionate':
+      case 'Passionate':
         return l10n.seeding_mood_passionate;
-      case 'surprised':
+      case 'Surprised':
         return l10n.seeding_mood_surprised;
-      case 'angry':
+      case 'Angry':
         return l10n.seeding_mood_angry;
-      case 'anxious':
+      case 'Anxious':
         return l10n.seeding_mood_anxious;
-      case 'annoyed':
-      case 'annoy':
+      case 'Annoyed':
         return l10n.seeding_mood_annoyed;
-      case 'stressed':
-      case 'stress':
+      case 'Stressed':
         return l10n.seeding_mood_stressed;
-      case 'calm':
+      case 'Calm':
         return l10n.seeding_mood_calm;
-      case 'relieved':
+      case 'Relieved':
         return l10n.seeding_mood_relieved;
-      case 'grateful':
+      case 'Grateful':
         return l10n.seeding_mood_grateful;
-      case 'peaceful':
+      case 'Peaceful':
         return l10n.seeding_mood_peaceful;
-      case 'depressed':
+      case 'Depressed':
         return l10n.seeding_mood_depressed;
-      case 'tired':
+      case 'Tired':
         return l10n.seeding_mood_tired;
-      case 'sad':
+      case 'Sad':
         return l10n.seeding_mood_sad;
-      case 'bored':
+      case 'Bored':
         return l10n.seeding_mood_bored;
-      case 'focused':
+      case 'Focused':
         return l10n.seeding_mood_focused;
-      case 'melancholy':
+      case 'Melancholy':
         return l10n.seeding_mood_melancholy;
       default:
         return tag;
     }
+  }
+}
+
+class _RollingHintTextField extends StatefulWidget {
+  final AppLocalizations l10n;
+  final ValueChanged<String> onChanged;
+
+  const _RollingHintTextField({required this.l10n, required this.onChanged});
+
+  @override
+  State<_RollingHintTextField> createState() => _RollingHintTextFieldState();
+}
+
+class _RollingHintTextFieldState extends State<_RollingHintTextField> {
+  late List<String> _hints;
+  int _currentHintIndex = 0;
+  Timer? _timer;
+  final TextEditingController _controller = TextEditingController();
+  bool _hasInput = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _hints = [
+      widget.l10n.seeding_hint_trigger,
+      widget.l10n.seeding_hint_thought,
+      widget.l10n.seeding_hint_tendency,
+    ];
+    _startTimer();
+    _controller.addListener(_handleInput);
+  }
+
+  void _handleInput() {
+    setState(() {
+      _hasInput = _controller.text.isNotEmpty;
+    });
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (_hasInput) return; // Don't rotate if user is typing
+      if (!mounted) return;
+      setState(() {
+        _currentHintIndex = (_currentHintIndex + 1) % _hints.length;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: _hasInput
+              ? const SizedBox(
+                  height: 18,
+                ) // Maintain height aligned with hint text
+              : Text(
+                  _hints[_currentHintIndex],
+                  key: ValueKey(_currentHintIndex),
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _controller,
+          onChanged: widget.onChanged,
+          style: const TextStyle(color: Colors.white),
+          maxLength: 300, // Reasonable limit for a quick note
+          maxLines: 2, // Allow some lines
+          decoration: InputDecoration(
+            // Use floatingLabelBehavior: FloatingLabelBehavior.never because we handle hints manually
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            filled: true,
+            fillColor: Colors.white.withValues(alpha: 0.1),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            counterText: "", // Hide character counter
+          ),
+        ),
+      ],
+    );
   }
 }
 

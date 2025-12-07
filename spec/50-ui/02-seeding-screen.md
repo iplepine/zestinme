@@ -46,17 +46,28 @@
     *   드래그 시 주변 색상이 화면 전체로 확장(Spread)되며 몰입감을 줌.
     *   놓는(Drop) 순간 해당 위치의 감정 색상이 보존됨.
 
-### 2.4 Post-Drag: The Tagging (명명)
+### 2.4 Post-Drag: Value Discovery Framework (가치 발견)
+> **Refer to:** `spec/10-domain/23-emotion-value-framework.md`
+
 *   **Transition:** 하단에서 부드럽게 올라오는(Slide-up) 디테일 패널.
-*   **Content:**
-    *   **Recommended Tags:** 좌표 기반 추천 태그 (Chip 형태).
-    *   **Note:** "이 감정은 마치..." (Placeholder) 텍스트 필드.
-    *   **Plant Button:** 저장 버튼.
+*   **Section 1: Emotional Granularity (감정 입자도)**
+    *   **Action:** 좌표 기반 추천 태그(Recommended Tags) 중 가장 적절한 단어 선택. (예: 분노 vs 짜증)
+*   **Section 2: Contextual Logging (Guided Input)**
+    *   **Format:** 단일 텍스트 필드 (Single Text Field). 복잡한 입력을 피하고 자유롭게 작성.
+    *   **Smart Hint:** 3 T's 프레임워크를 자연스럽게 유도하는 힌트 텍스트(Placeholder) 롤링 제공.
+        *   *"무엇이 이 감정을 불렀나요? (Trigger)"*
+        *   *"그 순간 어떤 생각이 스쳤나요? (Thought)"*
+        *   *"지금 당장 무엇을 하고 싶나요? (Tendency)"*
+    *   **Value:** 사용자가 힌트를 보고 자연스럽게 맥락을 포함하여 기록하도록 유도.
+*   **Plant Button:** 저장 ("이 마음을 심어서 가꾸기").
+
+> **Note:** 핵심 가치 발견(Value Discovery) 및 코칭 질문은 **'심기(Seeding)' 단계가 아닌 '가꾸기(Nurturing)' 단계**에서 진행합니다. (See: `spec/50-ui/03-nurturing-flow.md`)
 
 ## 3. Interaction Flow
 
 1.  **Entry:** 홈 화면 FAB 탭 -> Seeding Screen 오버레이.
-2.  **Explore:** 씨앗을 드래그하여 감정 탐색. 배경색이 반응하여 변함.
-3.  **Plant:** 손을 뗌 -> 씨앗이 고정되고 태그 선택 패널 등장.
-4.  **Refine:** 추천 태그 선택 혹은 메모 작성.
-5.  **Save:** '씨앗 심기' 버튼 탭 -> 홈 화면 타임라인에 기록 추가.
+2.  **Explore (Quadrant):** 씨앗을 드래그하여 자신의 에너지/기분 상태(4분면) 탐색. 배경색 반응.
+3.  **Plant (Drop):** 손을 떼면 씨앗이 심어지고(Fixed), 가치 발견 패널(Detail Panel) 등장.
+4.  **Granularity:** 구체적 감정 단어 선택.
+5.  **Context (Optional):** 힌트를 보며 간단한 메모 작성 (Trigger/Thought/Tendency).
+6.  **Save:** '씨앗 심기' 버튼 탭 -> 데이터베이스 저장 및 홈 타임라인 반영. (가치 태깅은 나중으로 연기)

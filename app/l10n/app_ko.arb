@@ -94,6 +94,9 @@
   "seeding_mood_melancholy": "멜랑꼴리",
   "seeding_mood_okay": "괜찮음",
   "seeding_mood_soso": "그저 그럼",
+  "seeding_hint_trigger": "무엇이 이 기분을 만들었나요?",
+  "seeding_hint_thought": "그 순간 어떤 생각이 들었나요?",
+  "seeding_hint_tendency": "지금 하고 싶은 것이 있나요?",
 
   "seeding_quadrant_energized": "활기참",
   "seeding_quadrant_calm": "차분함",

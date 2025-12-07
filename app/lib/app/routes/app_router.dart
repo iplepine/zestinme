@@ -15,6 +15,14 @@ import '../../features/onboarding/presentation/providers/onboarding_provider.dar
 
 part 'app_router.g.dart';
 
+class AppRouter {
+  static const home = '/';
+  static const onboarding = '/onboarding';
+  static const history = '/history';
+  static const seeding = '/seeding';
+  static const dev = '/dev';
+}
+
 @riverpod
 GoRouter goRouter(GoRouterRef ref) {
   final notifier = _RouterNotifier(ref);

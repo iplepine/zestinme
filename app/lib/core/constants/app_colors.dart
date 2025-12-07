@@ -202,4 +202,10 @@ class AppColors {
   static const seedingTextShadow = Color(
     0x80000000,
   ); // Text Shadow for readability
+
+  static final seedingCardBackground = const Color(
+    0xFF1E1E1E,
+  ).withValues(alpha: 0.95);
+  static const seedingChipSelected = Color(0xFFffe135); // Seeding Sun Yellow
+  static const seedingChipTextSelected = Colors.black;
 }

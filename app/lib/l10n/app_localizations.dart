@@ -590,6 +590,24 @@ abstract class AppLocalizations {
   /// **'So-so'**
   String get seeding_mood_soso;
 
+  /// No description provided for @seeding_hint_trigger.
+  ///
+  /// In en, this message translates to:
+  /// **'What triggered this feeling?'**
+  String get seeding_hint_trigger;
+
+  /// No description provided for @seeding_hint_thought.
+  ///
+  /// In en, this message translates to:
+  /// **'What was your thought?'**
+  String get seeding_hint_thought;
+
+  /// No description provided for @seeding_hint_tendency.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to do now?'**
+  String get seeding_hint_tendency;
+
   /// No description provided for @seeding_quadrant_energized.
   ///
   /// In en, this message translates to:
