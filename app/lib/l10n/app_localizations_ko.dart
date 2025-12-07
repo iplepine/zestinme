@@ -254,6 +254,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get seeding_mood_melancholy => '멜랑꼴리';
 
   @override
+  String get seeding_mood_okay => '괜찮음';
+
+  @override
+  String get seeding_mood_soso => '그저 그럼';
+
+  @override
   String get seeding_quadrant_energized => '활기참';
 
   @override

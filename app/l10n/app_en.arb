@@ -101,6 +101,8 @@
   "seeding_mood_bored": "Bored",
   "seeding_mood_focused": "Focused",
   "seeding_mood_melancholy": "Melancholy",
+  "seeding_mood_okay": "Okay",
+  "seeding_mood_soso": "So-so",
 
   "seeding_quadrant_energized": "Energized",
   "seeding_quadrant_calm": "Calm",

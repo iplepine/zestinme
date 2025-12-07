@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:zestinme/features/seeding/presentation/providers/seeding_provider.dart';
-import 'package:zestinme/core/constants/app_colors.dart';
-import 'package:zestinme/l10n/app_localizations.dart';
+import '../../../../app/theme/app_theme.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart'; // Correct generated import
 import 'package:go_router/go_router.dart';
 import 'dart:ui' as ui;
 
@@ -49,166 +50,180 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
         .round()
         .ms;
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white),
-          onPressed: () => context.pop(),
+    // Force Dark Theme for this screen as it has a specific dark aesthetic (Space/Night)
+    // This ensures Chips and other widgets inherit dark mode styles (e.g. text colors, chip backgrounds)
+    // instead of pulling Light Theme values if the system is in Light Mode.
+    return Theme(
+      data: AppTheme.darkTheme,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        resizeToAvoidBottomInset:
+            false, // Prevent keyboard from pushing up the background
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.close, color: Colors.white),
+            onPressed: () => context.pop(),
+          ),
         ),
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          // Calculate center and radius based on screen size
-          _center = Offset(constraints.maxWidth / 2, constraints.maxHeight / 2);
-          _radius =
-              constraints.maxWidth * 0.4; // 80% of width is the active area
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            // Calculate center and radius based on screen size
+            _center = Offset(
+              constraints.maxWidth / 2,
+              constraints.maxHeight / 2,
+            );
+            _radius =
+                constraints.maxWidth * 0.4; // 80% of width is the active area
 
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              // 1. Background: 4-Quadrant Soil
-              CustomPaint(
-                painter: SoilPainter(
-                  valence: seedingState.valence,
-                  arousal: seedingState.arousal,
-                  center: _center,
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                // 1. Background: 4-Quadrant Soil
+                CustomPaint(
+                  painter: SoilPainter(
+                    valence: seedingState.valence,
+                    arousal: seedingState.arousal,
+                    center: _center,
+                  ),
+                  size: Size.infinite,
                 ),
-                size: Size.infinite,
-              ),
 
-              // 2. Guide Lines (Crosshairs)
-              CustomPaint(
-                painter: GuidePainter(
-                  center: _center,
-                  radius: _radius,
-                  l10n: l10n,
+                // 2. Guide Lines (Crosshairs)
+                CustomPaint(
+                  painter: GuidePainter(
+                    center: _center,
+                    radius: _radius,
+                    l10n: l10n,
+                  ),
+                  size: Size.infinite,
                 ),
-                size: Size.infinite,
-              ),
 
-              // 3. Dynamic Mood Label (Background text with Shadow)
-              if (seedingState.isDragging)
-                Center(
-                  child:
-                      Text(
-                            _getMoodLabel(
-                              context,
-                              seedingState.valence,
-                              seedingState.arousal,
-                            ),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2.0,
-                              shadows: [
-                                Shadow(
-                                  offset: Offset(0, 2),
-                                  blurRadius: 4,
-                                  color: AppColors.seedingTextShadow,
-                                ),
-                              ],
-                            ),
-                          )
-                          .animate(
-                            key: ValueKey(
+                // 3. Dynamic Mood Label (Background text with Shadow)
+                if (seedingState.isDragging)
+                  Center(
+                    child:
+                        Text(
                               _getMoodLabel(
                                 context,
                                 seedingState.valence,
                                 seedingState.arousal,
                               ),
-                            ),
-                          )
-                          .fadeIn(duration: 300.ms)
-                          .scale(begin: const Offset(0.9, 0.9)),
-                ),
-
-              // 4. Instruction Text (Fade out when dragging)
-              if (!seedingState.isDragging && !seedingState.isPlanted)
-                Positioned(
-                  top:
-                      constraints.maxHeight *
-                      0.25, // Moved down slightly as requested
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40.0,
-                    ), // Increased padding
-                    child: Text(
-                      l10n.seeding_instruction,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w300,
-                        shadows: [
-                          Shadow(
-                            offset: Offset(0, 2),
-                            blurRadius: 4,
-                            color: AppColors.seedingTextShadow,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ).animate().fadeIn(duration: 800.ms),
-                ),
-
-              // 5. Draggable Seed
-              GestureDetector(
-                onPanStart: (details) =>
-                    ref.read(seedingNotifierProvider.notifier).startDrag(),
-                onPanUpdate: (details) {
-                  _handleDrag(details.globalPosition);
-                },
-                onPanEnd: (details) =>
-                    ref.read(seedingNotifierProvider.notifier).endDrag(),
-                behavior:
-                    HitTestBehavior.translucent, // Catch touches everywhere
-                child: SizedBox.expand(
-                  child: Stack(
-                    children: [
-                      // The Seed Visual
-                      Positioned(
-                        left:
-                            _calculateSeedPosition(
-                              seedingState.valence,
-                              constraints.maxWidth,
-                            ).dx -
-                            30, // 30 is half size (60/2)
-                        top:
-                            _calculateSeedPosition(
-                              seedingState.arousal,
-                              constraints.maxHeight,
-                              isY: true,
-                            ).dy -
-                            30,
-                        child:
-                            _buildSeedIcon(seedingState.arousal, pulseDuration)
-                                .animate(
-                                  onPlay: (controller) =>
-                                      controller.repeat(reverse: true),
-                                )
-                                .scaleXY(
-                                  end: 1.2,
-                                  duration: pulseDuration,
-                                  curve: Curves.easeInOut,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 48,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2.0,
+                                shadows: [
+                                  Shadow(
+                                    offset: Offset(0, 2),
+                                    blurRadius: 4,
+                                    color: AppColors.seedingTextShadow,
+                                  ),
+                                ],
+                              ),
+                            )
+                            .animate(
+                              key: ValueKey(
+                                _getMoodLabel(
+                                  context,
+                                  seedingState.valence,
+                                  seedingState.arousal,
                                 ),
+                              ),
+                            )
+                            .fadeIn(duration: 300.ms)
+                            .scale(begin: const Offset(0.9, 0.9)),
+                  ),
+
+                // 4. Instruction Text (Fade out when dragging)
+                if (!seedingState.isDragging && !seedingState.isPlanted)
+                  Positioned(
+                    top:
+                        constraints.maxHeight *
+                        0.25, // Moved down slightly as requested
+                    left: 0,
+                    right: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40.0,
+                      ), // Increased padding
+                      child: Text(
+                        l10n.seeding_instruction,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w300,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0, 2),
+                              blurRadius: 4,
+                              color: AppColors.seedingTextShadow,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ).animate().fadeIn(duration: 800.ms),
+                  ),
+
+                // 5. Draggable Seed
+                GestureDetector(
+                  onPanStart: (details) =>
+                      ref.read(seedingNotifierProvider.notifier).startDrag(),
+                  onPanUpdate: (details) {
+                    _handleDrag(details.globalPosition);
+                  },
+                  onPanEnd: (details) =>
+                      ref.read(seedingNotifierProvider.notifier).endDrag(),
+                  behavior:
+                      HitTestBehavior.translucent, // Catch touches everywhere
+                  child: SizedBox.expand(
+                    child: Stack(
+                      children: [
+                        // The Seed Visual
+                        Positioned(
+                          left:
+                              _calculateSeedPosition(
+                                seedingState.valence,
+                                constraints.maxWidth,
+                              ).dx -
+                              30, // 30 is half size (60/2)
+                          top:
+                              _calculateSeedPosition(
+                                seedingState.arousal,
+                                constraints.maxHeight,
+                                isY: true,
+                              ).dy -
+                              30,
+                          child:
+                              _buildSeedIcon(
+                                    seedingState.arousal,
+                                    pulseDuration,
+                                  )
+                                  .animate(
+                                    onPlay: (controller) =>
+                                        controller.repeat(reverse: true),
+                                  )
+                                  .scaleXY(
+                                    end: 1.2,
+                                    duration: pulseDuration,
+                                    curve: Curves.easeInOut,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              // 6. Post-Planting Options (Chips)
-              if (seedingState.isPlanted) _buildEmotionChips(context, l10n),
-            ],
-          );
-        },
+                // 6. Post-Planting Options (Chips)
+                if (seedingState.isPlanted) _buildEmotionChips(context, l10n),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -340,23 +355,29 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
                   runSpacing: 8,
                   children: recommendedTags.map((tag) {
                     final isSelected = seedingState.selectedTags.contains(tag);
+                    final localizedTag = _getLocalizedTag(l10n, tag);
                     return FilterChip(
-                      label: Text(tag),
+                      label: Text(localizedTag),
                       selected: isSelected,
                       onSelected: (_) {
                         ref
                             .read(seedingNotifierProvider.notifier)
                             .toggleTag(tag);
                       },
-                      // Use Transparent background for unselected state to avoid "White on White" issue
-                      backgroundColor: Colors.transparent,
+                      // Fix: Explicitly disable elevation and set dark background to prevent white surface
+                      elevation: 0,
+                      pressElevation: 0,
+                      backgroundColor: Colors
+                          .transparent, // Or use dark color if transparent fails
+                      surfaceTintColor: Colors.transparent,
+
                       selectedColor: AppColors.seedingSun,
                       checkmarkColor: Colors.black,
+                      showCheckmark: false,
                       labelStyle: TextStyle(
                         color: isSelected ? Colors.black : Colors.white,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.normal,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -366,7 +387,7 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
                               : Colors.white.withValues(
                                   alpha: 0.5,
                                 ), // Visible white border
-                          width: 1.5,
+                          width: 1.2,
                         ),
                       ),
                     );
@@ -443,6 +464,57 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
             curve: Curves.easeOutBack,
           ),
     );
+  }
+
+  String _getLocalizedTag(AppLocalizations l10n, String tag) {
+    switch (tag.toLowerCase()) {
+      case 'neutral':
+        return l10n.seeding_mood_neutral;
+      case 'okay':
+        return l10n.seeding_mood_okay;
+      case 'so-so':
+        return l10n.seeding_mood_soso;
+      case 'excited':
+        return l10n.seeding_mood_excited;
+      case 'joyful':
+        return l10n.seeding_mood_joyful;
+      case 'passionate':
+        return l10n.seeding_mood_passionate;
+      case 'surprised':
+        return l10n.seeding_mood_surprised;
+      case 'angry':
+        return l10n.seeding_mood_angry;
+      case 'anxious':
+        return l10n.seeding_mood_anxious;
+      case 'annoyed':
+      case 'annoy':
+        return l10n.seeding_mood_annoyed;
+      case 'stressed':
+      case 'stress':
+        return l10n.seeding_mood_stressed;
+      case 'calm':
+        return l10n.seeding_mood_calm;
+      case 'relieved':
+        return l10n.seeding_mood_relieved;
+      case 'grateful':
+        return l10n.seeding_mood_grateful;
+      case 'peaceful':
+        return l10n.seeding_mood_peaceful;
+      case 'depressed':
+        return l10n.seeding_mood_depressed;
+      case 'tired':
+        return l10n.seeding_mood_tired;
+      case 'sad':
+        return l10n.seeding_mood_sad;
+      case 'bored':
+        return l10n.seeding_mood_bored;
+      case 'focused':
+        return l10n.seeding_mood_focused;
+      case 'melancholy':
+        return l10n.seeding_mood_melancholy;
+      default:
+        return tag;
+    }
   }
 }
 

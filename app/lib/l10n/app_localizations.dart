@@ -578,6 +578,18 @@ abstract class AppLocalizations {
   /// **'Melancholy'**
   String get seeding_mood_melancholy;
 
+  /// No description provided for @seeding_mood_okay.
+  ///
+  /// In en, this message translates to:
+  /// **'Okay'**
+  String get seeding_mood_okay;
+
+  /// No description provided for @seeding_mood_soso.
+  ///
+  /// In en, this message translates to:
+  /// **'So-so'**
+  String get seeding_mood_soso;
+
   /// No description provided for @seeding_quadrant_energized.
   ///
   /// In en, this message translates to:

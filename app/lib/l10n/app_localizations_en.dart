@@ -259,6 +259,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seeding_mood_melancholy => 'Melancholy';
 
   @override
+  String get seeding_mood_okay => 'Okay';
+
+  @override
+  String get seeding_mood_soso => 'So-so';
+
+  @override
   String get seeding_quadrant_energized => 'Energized';
 
   @override

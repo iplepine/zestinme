@@ -130,7 +130,7 @@ class SeedingNotifier extends _$SeedingNotifier {
       if (state.valence > 0) {
         return ['Excited', 'Joyful', 'Passionate', 'Surprised']; // Top-Right
       } else {
-        return ['Angry', 'Anxious', 'Annoyed', 'Stress']; // Top-Left
+        return ['Angry', 'Anxious', 'Annoyed', 'Stressed']; // Top-Left
       }
     } else {
       // Bottom

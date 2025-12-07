@@ -92,6 +92,8 @@
   "seeding_mood_bored": "지루함",
   "seeding_mood_focused": "집중",
   "seeding_mood_melancholy": "멜랑꼴리",
+  "seeding_mood_okay": "괜찮음",
+  "seeding_mood_soso": "그저 그럼",
 
   "seeding_quadrant_energized": "활기참",
   "seeding_quadrant_calm": "차분함",
