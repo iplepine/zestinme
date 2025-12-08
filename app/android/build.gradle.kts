@@ -30,3 +30,19 @@ subprojects {
         }
     }
 }
+
+// Force compileSdk 36 for all Android subprojects to prevent lStar resource errors
+subprojects {
+    afterEvaluate {
+        if (plugins.hasPlugin("com.android.application") ||
+            plugins.hasPlugin("com.android.library")) {
+
+            extensions.findByName("android")?.let { ext ->
+                (ext as com.android.build.gradle.BaseExtension).apply {
+                    compileSdkVersion(36)
+                    buildToolsVersion = "36.0.0"
+                }
+            }
+        }
+    }
+}
