@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.jyoon.zestinme"
-    compileSdk = 34  // isar_flutter_libs requires API 31+
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -27,8 +27,8 @@ android {
         applicationId = "com.jyoon.zestinme"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 21  // Minimum supported Android version
-        targetSdk = 34  // Target Android API 34 for better compatibility
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
