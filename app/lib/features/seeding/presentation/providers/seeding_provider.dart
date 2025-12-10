@@ -65,7 +65,13 @@ class SeedingNotifier extends _$SeedingNotifier {
   }
 
   void startDrag() {
-    state = state.copyWith(isDragging: true, isPlanted: false);
+    // Reset selection and note when picking up the seed again
+    state = state.copyWith(
+      isDragging: true,
+      isPlanted: false,
+      selectedTags: [], // Clear tags
+      note: '', // Clear note
+    );
   }
 
   void endDrag() {
@@ -83,8 +89,10 @@ class SeedingNotifier extends _$SeedingNotifier {
     if (currentTags.contains(tag)) {
       currentTags.remove(tag);
     } else {
-      currentTags.clear(); // Enforce single selection
-      currentTags.add(tag);
+      // Allow multiple selections (up to 3) for complex emotions
+      if (currentTags.length < 3) {
+        currentTags.add(tag);
+      }
     }
     state = state.copyWith(selectedTags: currentTags);
   }
@@ -121,22 +129,47 @@ class SeedingNotifier extends _$SeedingNotifier {
   // Recommended Tags based on Quadrant
   List<String> getRecommendedTags() {
     if (state.valence.abs() < 0.2 && state.arousal.abs() < 0.2) {
-      return ['Neutral', 'Okay', 'So-so'];
+      return ['Neutral']; // Center
     }
 
     if (state.arousal > 0) {
-      // Top
+      // High Energy
       if (state.valence > 0) {
-        return ['Excited', 'Joyful', 'Passionate', 'Surprised']; // Top-Right
+        // Top-Right: Yellow (Expansion)
+        return [
+          'Excited',
+          'Proud',
+          'Inspired',
+          'Enthusiastic',
+          'Curious',
+          'Amused',
+        ];
       } else {
-        return ['Angry', 'Anxious', 'Annoyed', 'Stressed']; // Top-Left
+        // Top-Left: Red (Threat/Boundary)
+        return [
+          'Angry',
+          'Anxious',
+          'Resentful',
+          'Overwhelmed',
+          'Jealous',
+          'Annoyed',
+        ];
       }
     } else {
-      // Bottom
+      // Low Energy
       if (state.valence > 0) {
-        return ['Calm', 'Relieved', 'Grateful', 'Peaceful']; // Bottom-Right
+        // Bottom-Right: Green (Restoration)
+        return [
+          'Relaxed',
+          'Grateful',
+          'Content',
+          'Serene',
+          'Trusting',
+          'Reflective',
+        ];
       } else {
-        return ['Depressed', 'Tired', 'Sad', 'Bored']; // Bottom-Left
+        // Bottom-Left: Blue (Loss/Lack)
+        return ['Sad', 'Disappointed', 'Bored', 'Lonely', 'Guilty', 'Envious'];
       }
     }
   }

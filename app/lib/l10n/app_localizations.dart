@@ -500,12 +500,6 @@ abstract class AppLocalizations {
   /// **'Anxious'**
   String get seeding_mood_anxious;
 
-  /// No description provided for @seeding_mood_annoyed.
-  ///
-  /// In en, this message translates to:
-  /// **'Annoyed'**
-  String get seeding_mood_annoyed;
-
   /// No description provided for @seeding_mood_excited.
   ///
   /// In en, this message translates to:
@@ -536,23 +530,29 @@ abstract class AppLocalizations {
   /// **'Relieved'**
   String get seeding_mood_relieved;
 
-  /// No description provided for @seeding_mood_grateful.
+  /// No description provided for @seeding_mood_resentful.
   ///
   /// In en, this message translates to:
-  /// **'Grateful'**
-  String get seeding_mood_grateful;
+  /// **'Resentful'**
+  String get seeding_mood_resentful;
 
-  /// No description provided for @seeding_mood_peaceful.
+  /// No description provided for @seeding_mood_overwhelmed.
   ///
   /// In en, this message translates to:
-  /// **'Peaceful'**
-  String get seeding_mood_peaceful;
+  /// **'Overwhelmed'**
+  String get seeding_mood_overwhelmed;
 
-  /// No description provided for @seeding_mood_depressed.
+  /// No description provided for @seeding_mood_jealous.
   ///
   /// In en, this message translates to:
-  /// **'Depressed'**
-  String get seeding_mood_depressed;
+  /// **'Jealous'**
+  String get seeding_mood_jealous;
+
+  /// No description provided for @seeding_mood_annoyed.
+  ///
+  /// In en, this message translates to:
+  /// **'Annoyed'**
+  String get seeding_mood_annoyed;
 
   /// No description provided for @seeding_mood_sad.
   ///
@@ -560,35 +560,101 @@ abstract class AppLocalizations {
   /// **'Sad'**
   String get seeding_mood_sad;
 
+  /// No description provided for @seeding_mood_disappointed.
+  ///
+  /// In en, this message translates to:
+  /// **'Disappointed'**
+  String get seeding_mood_disappointed;
+
   /// No description provided for @seeding_mood_bored.
   ///
   /// In en, this message translates to:
   /// **'Bored'**
   String get seeding_mood_bored;
 
-  /// No description provided for @seeding_mood_focused.
+  /// No description provided for @seeding_mood_lonely.
   ///
   /// In en, this message translates to:
-  /// **'Focused'**
-  String get seeding_mood_focused;
+  /// **'Lonely'**
+  String get seeding_mood_lonely;
 
-  /// No description provided for @seeding_mood_melancholy.
+  /// No description provided for @seeding_mood_guilty.
   ///
   /// In en, this message translates to:
-  /// **'Melancholy'**
-  String get seeding_mood_melancholy;
+  /// **'Guilty'**
+  String get seeding_mood_guilty;
 
-  /// No description provided for @seeding_mood_okay.
+  /// No description provided for @seeding_mood_envious.
   ///
   /// In en, this message translates to:
-  /// **'Okay'**
-  String get seeding_mood_okay;
+  /// **'Envious'**
+  String get seeding_mood_envious;
 
-  /// No description provided for @seeding_mood_soso.
+  /// No description provided for @seeding_mood_proud.
   ///
   /// In en, this message translates to:
-  /// **'So-so'**
-  String get seeding_mood_soso;
+  /// **'Proud'**
+  String get seeding_mood_proud;
+
+  /// No description provided for @seeding_mood_inspired.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspired'**
+  String get seeding_mood_inspired;
+
+  /// No description provided for @seeding_mood_enthusiastic.
+  ///
+  /// In en, this message translates to:
+  /// **'Enthusiastic'**
+  String get seeding_mood_enthusiastic;
+
+  /// No description provided for @seeding_mood_curious.
+  ///
+  /// In en, this message translates to:
+  /// **'Curious'**
+  String get seeding_mood_curious;
+
+  /// No description provided for @seeding_mood_amused.
+  ///
+  /// In en, this message translates to:
+  /// **'Amused'**
+  String get seeding_mood_amused;
+
+  /// No description provided for @seeding_mood_relaxed.
+  ///
+  /// In en, this message translates to:
+  /// **'Relaxed'**
+  String get seeding_mood_relaxed;
+
+  /// No description provided for @seeding_mood_grateful.
+  ///
+  /// In en, this message translates to:
+  /// **'Grateful'**
+  String get seeding_mood_grateful;
+
+  /// No description provided for @seeding_mood_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get seeding_mood_content;
+
+  /// No description provided for @seeding_mood_serene.
+  ///
+  /// In en, this message translates to:
+  /// **'Serene'**
+  String get seeding_mood_serene;
+
+  /// No description provided for @seeding_mood_trusting.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusting'**
+  String get seeding_mood_trusting;
+
+  /// No description provided for @seeding_mood_reflective.
+  ///
+  /// In en, this message translates to:
+  /// **'Reflective'**
+  String get seeding_mood_reflective;
 
   /// No description provided for @seeding_hint_trigger.
   ///

@@ -220,9 +220,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seeding_mood_anxious => 'Anxious';
 
   @override
-  String get seeding_mood_annoyed => 'Annoyed';
-
-  @override
   String get seeding_mood_excited => 'Excited';
 
   @override
@@ -238,31 +235,67 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seeding_mood_relieved => 'Relieved';
 
   @override
-  String get seeding_mood_grateful => 'Grateful';
+  String get seeding_mood_resentful => 'Resentful';
 
   @override
-  String get seeding_mood_peaceful => 'Peaceful';
+  String get seeding_mood_overwhelmed => 'Overwhelmed';
 
   @override
-  String get seeding_mood_depressed => 'Depressed';
+  String get seeding_mood_jealous => 'Jealous';
+
+  @override
+  String get seeding_mood_annoyed => 'Annoyed';
 
   @override
   String get seeding_mood_sad => 'Sad';
 
   @override
+  String get seeding_mood_disappointed => 'Disappointed';
+
+  @override
   String get seeding_mood_bored => 'Bored';
 
   @override
-  String get seeding_mood_focused => 'Focused';
+  String get seeding_mood_lonely => 'Lonely';
 
   @override
-  String get seeding_mood_melancholy => 'Melancholy';
+  String get seeding_mood_guilty => 'Guilty';
 
   @override
-  String get seeding_mood_okay => 'Okay';
+  String get seeding_mood_envious => 'Envious';
 
   @override
-  String get seeding_mood_soso => 'So-so';
+  String get seeding_mood_proud => 'Proud';
+
+  @override
+  String get seeding_mood_inspired => 'Inspired';
+
+  @override
+  String get seeding_mood_enthusiastic => 'Enthusiastic';
+
+  @override
+  String get seeding_mood_curious => 'Curious';
+
+  @override
+  String get seeding_mood_amused => 'Amused';
+
+  @override
+  String get seeding_mood_relaxed => 'Relaxed';
+
+  @override
+  String get seeding_mood_grateful => 'Grateful';
+
+  @override
+  String get seeding_mood_content => 'Content';
+
+  @override
+  String get seeding_mood_serene => 'Serene';
+
+  @override
+  String get seeding_mood_trusting => 'Trusting';
+
+  @override
+  String get seeding_mood_reflective => 'Reflective';
 
   @override
   String get seeding_hint_trigger => 'What triggered this feeling?';

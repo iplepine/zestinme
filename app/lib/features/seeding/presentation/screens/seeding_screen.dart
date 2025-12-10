@@ -469,48 +469,66 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
 
   String _getLocalizedTag(AppLocalizations l10n, String tag) {
     switch (tag) {
-      case 'Neutral':
-        return l10n.seeding_mood_neutral;
-      case 'Okay':
-        return l10n.seeding_mood_okay;
-      case 'So-so':
-        return l10n.seeding_mood_soso;
-      case 'Excited':
-        return l10n.seeding_mood_excited;
-      case 'Joyful':
-        return l10n.seeding_mood_joyful;
-      case 'Passionate':
-        return l10n.seeding_mood_passionate;
-      case 'Surprised':
-        return l10n.seeding_mood_surprised;
+      // RED (High Energy, Negative)
       case 'Angry':
         return l10n.seeding_mood_angry;
       case 'Anxious':
         return l10n.seeding_mood_anxious;
+      case 'Resentful':
+        return l10n.seeding_mood_resentful;
+      case 'Overwhelmed':
+        return l10n.seeding_mood_overwhelmed;
+      case 'Jealous':
+        return l10n.seeding_mood_jealous;
       case 'Annoyed':
         return l10n.seeding_mood_annoyed;
-      case 'Stressed':
-        return l10n.seeding_mood_stressed;
-      case 'Calm':
-        return l10n.seeding_mood_calm;
-      case 'Relieved':
-        return l10n.seeding_mood_relieved;
-      case 'Grateful':
-        return l10n.seeding_mood_grateful;
-      case 'Peaceful':
-        return l10n.seeding_mood_peaceful;
-      case 'Depressed':
-        return l10n.seeding_mood_depressed;
-      case 'Tired':
-        return l10n.seeding_mood_tired;
+
+      // BLUE (Low Energy, Negative)
       case 'Sad':
         return l10n.seeding_mood_sad;
+      case 'Disappointed':
+        return l10n.seeding_mood_disappointed;
       case 'Bored':
         return l10n.seeding_mood_bored;
-      case 'Focused':
-        return l10n.seeding_mood_focused;
-      case 'Melancholy':
-        return l10n.seeding_mood_melancholy;
+      case 'Lonely':
+        return l10n.seeding_mood_lonely;
+      case 'Guilty':
+        return l10n.seeding_mood_guilty;
+      case 'Envious':
+        return l10n.seeding_mood_envious;
+
+      // YELLOW (High Energy, Positive)
+      case 'Excited':
+        return l10n.seeding_mood_excited;
+      case 'Proud': // Replaces Joyful/Passionate in new spec
+        return l10n.seeding_mood_proud;
+      case 'Inspired':
+        return l10n.seeding_mood_inspired;
+      case 'Enthusiastic':
+        return l10n.seeding_mood_enthusiastic;
+      case 'Curious':
+        return l10n.seeding_mood_curious;
+      case 'Amused':
+        return l10n.seeding_mood_amused;
+
+      // GREEN (Low Energy, Positive)
+      case 'Relaxed': // Replaces Calm
+        return l10n.seeding_mood_relaxed;
+      case 'Grateful':
+        return l10n.seeding_mood_grateful;
+      case 'Content':
+        return l10n.seeding_mood_content;
+      case 'Serene': // Replaces Peaceful
+        return l10n.seeding_mood_serene;
+      case 'Trusting':
+        return l10n.seeding_mood_trusting;
+      case 'Reflective':
+        return l10n.seeding_mood_reflective;
+
+      // Center
+      case 'Neutral':
+        return l10n.seeding_mood_neutral;
+
       default:
         return tag;
     }
@@ -576,18 +594,48 @@ class _RollingHintTextFieldState extends State<_RollingHintTextField> {
       children: [
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0.0, 0.2),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
+            );
+          },
           child: _hasInput
               ? const SizedBox(
-                  height: 18,
+                  height: 24,
                 ) // Maintain height aligned with hint text
-              : Text(
-                  _hints[_currentHintIndex],
+              : Row(
                   key: ValueKey(_currentHintIndex),
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    fontSize: 14,
-                    fontStyle: FontStyle.italic,
-                  ),
+                  children: [
+                    Icon(
+                      Icons.auto_awesome,
+                      color:
+                          AppColors.primary, // Use brand yellow for visibility
+                      size: 16,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _hints[_currentHintIndex],
+                      style: const TextStyle(
+                        color: Colors.white, // High contrast
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(0, 1),
+                            blurRadius: 2,
+                            color: Colors.black45,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
         ),
         const SizedBox(height: 8),
