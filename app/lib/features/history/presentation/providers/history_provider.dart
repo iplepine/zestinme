@@ -1,15 +1,39 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:zestinme/core/models/emotion_record.dart';
-import 'package:zestinme/core/services/local_db_service.dart';
+import '../../../../core/models/emotion_record.dart';
+import '../../../../core/services/local_db_service.dart';
 import 'package:get_it/get_it.dart';
 
 part 'history_provider.g.dart';
 
+/// Manages the currently focused date/month in the History Calendar
 @riverpod
-class History extends _$History {
+class HistoryDate extends _$HistoryDate {
   @override
-  Future<List<EmotionRecord>> build() async {
-    final dbService = GetIt.I<LocalDbService>();
-    return await dbService.getAllEmotionRecords();
+  DateTime build() {
+    return DateTime.now();
   }
+
+  void updateDate(DateTime date) {
+    state = date;
+  }
+}
+
+/// Fetches Emotion Records for the month of the currently selected date
+@riverpod
+Future<List<EmotionRecord>> historyRecords(HistoryRecordsRef ref) async {
+  final focusedDate = ref.watch(historyDateProvider);
+  final db = GetIt.I<LocalDbService>();
+
+  // Calculate start and end of the month
+  final startOfMonth = DateTime(focusedDate.year, focusedDate.month, 1);
+  final endOfMonth = DateTime(
+    focusedDate.year,
+    focusedDate.month + 1,
+    0,
+    23,
+    59,
+    59,
+  );
+
+  return await db.getEmotionRecordsByDateRange(startOfMonth, endOfMonth);
 }

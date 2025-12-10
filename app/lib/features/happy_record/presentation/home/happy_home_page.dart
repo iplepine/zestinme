@@ -163,6 +163,13 @@ class _HomeViewState extends State<_HomeView> with WidgetsBindingObserver {
           title: const Text('해피 인사이드'),
           centerTitle: true,
           elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.calendar_month),
+              onPressed: () => context.push(AppRouter.history),
+              tooltip: '정원 일지',
+            ),
+          ],
         ),
         // Stack을 사용하여 위젯들을 겹치게 함
         body: Stack(

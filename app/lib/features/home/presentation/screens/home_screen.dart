@@ -10,7 +10,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final historyAsync = ref.watch(historyProvider);
+    final historyAsync = ref.watch(historyRecordsProvider);
     final today = DateFormat('MMMM d, EEEE').format(DateTime.now());
 
     return Scaffold(
@@ -44,7 +44,7 @@ class HomeScreen extends ConsumerWidget {
               flex: 3,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Column(

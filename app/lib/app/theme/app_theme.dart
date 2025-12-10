@@ -31,6 +31,12 @@ class AppTheme {
   static const _onBackgroundDark = Color(0xFFE1E6EC); // 어두운 배경 위 텍스트
   static const _outlineDark = Color(0xFF4A5568); // 어두운 테두리
 
+  // Public Getters for easier access (Backward Compatibility / Custom Widgets)
+  static Color get primaryColor => _primary;
+  static Color get secondaryColor => _secondary;
+  static Color get backgroundColor => _background;
+  static TextTheme get textTheme => lightTheme.textTheme;
+
   // 라이트 모드 ColorScheme
   static final ColorScheme colorScheme = ColorScheme(
     primary: _primary,

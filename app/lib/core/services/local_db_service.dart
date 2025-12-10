@@ -37,4 +37,17 @@ class LocalDbService {
       await _isar.emotionRecords.delete(id);
     });
   }
+
+  // Range Query for Calibration/History
+  Future<List<EmotionRecord>> getEmotionRecordsByDateRange(
+    DateTime start,
+    DateTime end,
+  ) async {
+    return await _isar.emotionRecords
+        .where()
+        .filter()
+        .timestampBetween(start, end)
+        .sortByTimestampDesc()
+        .findAll();
+  }
 }
