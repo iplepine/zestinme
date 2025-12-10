@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
+import 'package:zestinme/l10n/app_localizations.dart';
 
 class SceneVoid extends StatefulWidget {
   final VoidCallback
@@ -50,7 +51,7 @@ class _SceneVoidState extends State<SceneVoid> {
     });
 
     // 2. Fade in Pot
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 1000));
     if (!mounted) return;
     setState(() {
       _showPot = true;
@@ -87,6 +88,7 @@ class _SceneVoidState extends State<SceneVoid> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFF1E1E2C), // Darker soil/night color
       body: Stack(
@@ -109,7 +111,7 @@ class _SceneVoidState extends State<SceneVoid> {
             Center(
               child:
                   Text(
-                        "당신의 마음 한구석,\n오랫동안 잊고 지낸\n작은 정원이 있습니다.",
+                        l10n.onboarding_intro_message,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,
@@ -120,7 +122,9 @@ class _SceneVoidState extends State<SceneVoid> {
                       )
                       .animate()
                       .fadeIn(duration: 1000.ms)
-                      .then(delay: 2000.ms)
+                      .then(
+                        delay: 3000.ms,
+                      ) // Increased from 2000ms to allow reading
                       .fadeOut(duration: 1000.ms),
             ),
 
@@ -193,7 +197,7 @@ class _SceneVoidState extends State<SceneVoid> {
             ),
 
           // Instructions
-          if (!_isCleaned)
+          if (!_isCleaned && _showPot)
             Positioned(
               bottom: 100,
               left: 0,
@@ -201,14 +205,17 @@ class _SceneVoidState extends State<SceneVoid> {
               child: Column(
                 children: [
                   Text(
-                    "오랫동안 방치된 화분을 찾았습니다...\n먼지가 많이 쌓여있네요.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.6),
-                      fontSize: 16,
-                      height: 1.5,
-                    ),
-                  ).animate().fade().moveY(begin: 10, end: 0),
+                        l10n.onboarding_found_pot_title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.6),
+                          fontSize: 16,
+                          height: 1.5,
+                        ),
+                      )
+                      .animate()
+                      .fadeIn(duration: 1000.ms)
+                      .moveY(begin: 10, end: 0, duration: 1000.ms),
                   const SizedBox(height: 20),
                   Icon(Icons.touch_app, color: Colors.white24, size: 32)
                       .animate(onPlay: (c) => c.repeat(reverse: true))
@@ -223,15 +230,15 @@ class _SceneVoidState extends State<SceneVoid> {
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
+                  color: Colors.black.withValues(alpha: 0.7),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      "화분이 깨끗해졌습니다!",
-                      style: TextStyle(
+                    Text(
+                      l10n.onboarding_cleaning_complete,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -276,7 +283,7 @@ class DustPainter extends CustomPainter {
     // 1. Draw full dust layer
     final dustPaint = Paint()
       ..color = const Color(0xFFC4BCAF)
-          .withOpacity(0.8) // Warm dusty beige
+          .withValues(alpha: 0.8) // Warm dusty beige
       ..maskFilter = const MaskFilter.blur(
         BlurStyle.normal,
         10,

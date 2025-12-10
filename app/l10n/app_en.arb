@@ -129,5 +129,9 @@
   "seeding_quadrant_energized": "Energized",
   "seeding_quadrant_calm": "Calm",
   "seeding_quadrant_tired": "Tired",
-  "seeding_quadrant_stress": "Stressed"
+  "seeding_quadrant_stress": "Stressed",
+
+  "onboarding_intro_message": "In a corner of your heart,\nthere is a small garden\nforgotten for a long time.",
+  "onboarding_found_pot_title": "Found a pot left alone for a long time...\nIt gathered a lot of dust.",
+  "onboarding_cleaning_complete": "The pot is now clean!"
 }

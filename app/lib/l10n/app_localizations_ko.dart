@@ -312,4 +312,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get seeding_quadrant_stress => '스트레스';
+
+  @override
+  String get onboarding_intro_message =>
+      '당신의 마음 한구석,\n오랫동안 잊고 지낸\n작은 정원이 있습니다.';
+
+  @override
+  String get onboarding_found_pot_title =>
+      '오랫동안 방치된 화분을 찾았습니다...\n먼지가 많이 쌓여있네요.';
+
+  @override
+  String get onboarding_cleaning_complete => '화분이 깨끗해졌습니다!';
 }

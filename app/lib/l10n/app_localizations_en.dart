@@ -317,4 +317,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seeding_quadrant_stress => 'Stressed';
+
+  @override
+  String get onboarding_intro_message =>
+      'In a corner of your heart,\nthere is a small garden\nforgotten for a long time.';
+
+  @override
+  String get onboarding_found_pot_title =>
+      'Found a pot left alone for a long time...\nIt gathered a lot of dust.';
+
+  @override
+  String get onboarding_cleaning_complete => 'The pot is now clean!';
 }

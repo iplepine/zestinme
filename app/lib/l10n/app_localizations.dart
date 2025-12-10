@@ -697,6 +697,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stressed'**
   String get seeding_quadrant_stress;
+
+  /// No description provided for @onboarding_intro_message.
+  ///
+  /// In en, this message translates to:
+  /// **'In a corner of your heart,\nthere is a small garden\nforgotten for a long time.'**
+  String get onboarding_intro_message;
+
+  /// No description provided for @onboarding_found_pot_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Found a pot left alone for a long time...\nIt gathered a lot of dust.'**
+  String get onboarding_found_pot_title;
+
+  /// No description provided for @onboarding_cleaning_complete.
+  ///
+  /// In en, this message translates to:
+  /// **'The pot is now clean!'**
+  String get onboarding_cleaning_complete;
 }
 
 class _AppLocalizationsDelegate

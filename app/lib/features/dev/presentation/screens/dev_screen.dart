@@ -19,7 +19,6 @@ class DevScreen extends StatelessWidget {
           _buildNavTile(context, '🌿 Home Dashboard', '/'),
           _buildNavTile(context, '🌱 Seeding (New Catch)', '/seeding'),
           _buildNavTile(context, '🚀 Onboarding', '/onboarding'),
-          _buildNavTile(context, '📝 Emotion Write (Legacy)', '/write'),
           _buildNavTile(context, '📖 History', '/history'),
           const Divider(color: Colors.white24),
           _buildNavTile(context, '🔒 Login (Legacy)', '/login'),

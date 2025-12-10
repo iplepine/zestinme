@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zestinme/app/routes/app_router.dart';
 import 'package:zestinme/shared/services/quote_service.dart';
 
 import 'controllers/home_controller.dart';
@@ -89,16 +90,17 @@ class _HomeViewState extends State<_HomeView> with WidgetsBindingObserver {
 
   void _goToWritePage(BuildContext context, int score) async {
     _isPageVisible = false;
-    final result = await context.push('/write', extra: score);
+    // Navigate to Seeding Screen (The new Emotion Write)
+    // We ignore 'score' as Seeding starts with its own flow.
+    await context.push(AppRouter.seeding);
+
     _isPageVisible = true;
-    
-    // 저장 성공 시 (result == true) 홈 화면 갱신
-    if (result == true) {
-      // 상태 업데이트 및 데이터 갱신
+
+    // Always refresh when returning from Seeding, assuming user might have added something
+    if (context.mounted) {
       setState(() {
         _shouldScrollToTop = true;
       });
-      // 최신 기록을 다시 로드
       _refreshData();
     }
   }

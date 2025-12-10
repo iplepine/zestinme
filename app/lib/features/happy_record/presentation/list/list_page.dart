@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../write/write_page.dart';
+import 'package:go_router/go_router.dart';
+import 'package:zestinme/app/routes/app_router.dart';
 
 class ListPage extends StatelessWidget {
   const ListPage({super.key});
@@ -22,23 +23,15 @@ class ListPage extends StatelessWidget {
                   textStyle: Theme.of(context).textTheme.titleMedium,
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const WritePage(),
-                    ),
-                  );
+                  context.push(AppRouter.seeding);
                 },
               ),
             ),
           ),
           // TODO: 실제 기록 목록 위젯 추가
-          const Expanded(
-            child: Center(
-              child: Text('아직 기록이 없습니다.'),
-            ),
-          ),
+          const Expanded(child: Center(child: Text('아직 기록이 없습니다.'))),
         ],
       ),
     );
   }
-} 
+}
