@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:zestinme/l10n/app_localizations.dart';
+import 'package:zestinme/core/utils/emotion_localization_utils.dart';
 import 'package:zestinme/core/models/emotion_record.dart';
 
 class HistoryListItem extends StatelessWidget {
@@ -12,6 +14,7 @@ class HistoryListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // Format date: "10:30 AM"
     final timeString = DateFormat.jm().format(record.timestamp);
+    final l10n = AppLocalizations.of(context)!;
 
     // Determine color based on valence/arousal (simplified for MVP)
     Color cardColor = Colors.grey[100]!;
@@ -53,7 +56,9 @@ class HistoryListItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      record.emotionLabel ?? 'Unknown Emotion',
+                      l10n.getLocalizedEmotion(
+                        record.emotionLabel ?? 'Untitled',
+                      ),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

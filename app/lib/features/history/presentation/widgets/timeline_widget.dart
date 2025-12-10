@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:zestinme/app/theme/app_theme.dart';
+import 'package:zestinme/l10n/app_localizations.dart';
+import '../../../../core/utils/emotion_localization_utils.dart';
 import '../../../../core/models/emotion_record.dart';
 
 class TimelineWidget extends StatelessWidget {
   final List<EmotionRecord> records;
+  final ScrollController? scrollController;
 
-  const TimelineWidget({super.key, required this.records});
+  const TimelineWidget({
+    super.key,
+    required this.records,
+    this.scrollController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +30,7 @@ class TimelineWidget extends StatelessWidget {
     }
 
     return ListView.builder(
+      controller: scrollController,
       padding: const EdgeInsets.all(20),
       itemCount: records.length,
       itemBuilder: (context, index) {
@@ -34,7 +41,7 @@ class TimelineWidget extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 1. Timeline Line
+              // 1. Timeline Line (Stem)
               SizedBox(
                 width: 40,
                 child: Column(
@@ -43,15 +50,21 @@ class TimelineWidget extends StatelessWidget {
                       width: 12,
                       height: 12,
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor,
+                        color: Theme.of(context).colorScheme.primary,
                         shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.surface,
+                          width: 2,
+                        ),
                       ),
                     ),
                     if (!isLast)
                       Expanded(
                         child: Container(
                           width: 2,
-                          color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.3),
                         ),
                       ),
                   ],
@@ -74,12 +87,32 @@ class TimelineWidget extends StatelessWidget {
 
   Widget _buildRecordCard(BuildContext context, EmotionRecord record) {
     final dateFormat = DateFormat('a h:mm', 'ko'); // e.g. 오후 3:30
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    // Determine card accent color based on valence
+    Color accentColor;
+    if ((record.valence ?? 0) > 0) {
+      accentColor = colorScheme.secondary; // Lime
+    } else {
+      accentColor = Colors.blueAccent; // Sad/Blue
+    }
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(20), // More organic
+        border: Border.all(
+          color: accentColor.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -89,9 +122,9 @@ class TimelineWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                record.emotionLabel ?? "무제",
-                style: const TextStyle(
-                  color: Colors.white,
+                l10n.getLocalizedEmotion(record.emotionLabel ?? ""),
+                style: TextStyle(
+                  color: colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -99,7 +132,7 @@ class TimelineWidget extends StatelessWidget {
               Text(
                 dateFormat.format(record.timestamp),
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.5),
+                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                   fontSize: 12,
                 ),
               ),
@@ -113,7 +146,7 @@ class TimelineWidget extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.8),
+                color: colorScheme.onSurface.withValues(alpha: 0.8),
                 fontSize: 14,
                 height: 1.5,
               ),

@@ -15,6 +15,8 @@ class CalendarWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final focusedDay = ref.watch(historyDateProvider);
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return TableCalendar(
       firstDay: DateTime.utc(2024, 1, 1),
       lastDay: DateTime.now().add(const Duration(days: 365)),
@@ -24,22 +26,30 @@ class CalendarWidget extends ConsumerWidget {
         titleCentered: true,
         formatButtonVisible: false,
         titleTextStyle: AppTheme.textTheme.titleMedium!.copyWith(
-          color: Colors.white,
+          color: colorScheme.onSurface,
           fontWeight: FontWeight.bold,
+          fontSize: 18,
         ),
-        leftChevronIcon: const Icon(Icons.chevron_left, color: Colors.white),
-        rightChevronIcon: const Icon(Icons.chevron_right, color: Colors.white),
+        leftChevronIcon: Icon(Icons.chevron_left, color: colorScheme.onSurface),
+        rightChevronIcon: Icon(
+          Icons.chevron_right,
+          color: colorScheme.onSurface,
+        ),
       ),
       calendarStyle: CalendarStyle(
-        defaultTextStyle: const TextStyle(color: Colors.white70),
-        weekendTextStyle: const TextStyle(color: Colors.white60),
-        outsideTextStyle: TextStyle(color: Colors.white.withValues(alpha: 0.2)),
+        defaultTextStyle: TextStyle(color: colorScheme.onSurface),
+        weekendTextStyle: TextStyle(
+          color: colorScheme.onSurface.withValues(alpha: 0.6),
+        ),
+        outsideTextStyle: TextStyle(
+          color: colorScheme.onSurface.withValues(alpha: 0.2),
+        ),
         todayDecoration: BoxDecoration(
-          color: AppTheme.primaryColor.withValues(alpha: 0.3),
+          color: colorScheme.primary.withValues(alpha: 0.3),
           shape: BoxShape.circle,
         ),
         selectedDecoration: BoxDecoration(
-          color: AppTheme.primaryColor,
+          color: colorScheme.primary,
           shape: BoxShape.circle,
         ),
       ),
@@ -78,20 +88,22 @@ class CalendarWidget extends ConsumerWidget {
   }
 
   Widget _buildEmotionMarker(BuildContext context, EmotionRecord record) {
-    // Determine color based on valence (simplified logic for now)
-    // High Valence (Pos) -> Green/Yellow, Low Valence (Neg) -> Blue/Red
-    Color markerColor = Colors.grey;
+    // Determine color based on valence
+    // High Valence (Pos) -> Secondary (Lime/Green)
+    // Low Valence (Neg) -> Tertiary/Blue (Use Primary for now or defined color)
+    final colorScheme = Theme.of(context).colorScheme;
+    Color markerColor;
     if ((record.valence ?? 0) > 0) {
-      markerColor = AppTheme.secondaryColor; // Joyful
+      markerColor = colorScheme.secondary; // Joyful (Lime)
     } else {
       markerColor = Colors.blueAccent; // Sad/Calm
     }
 
-    // In future, use the specific emotion icon/seed
-    return Container(
-      width: 6,
-      height: 6,
-      decoration: BoxDecoration(color: markerColor, shape: BoxShape.circle),
+    // Seed/Sprout Icon acting as marker
+    return Icon(
+      Icons.grass, // Sprout icon representing a planted memory
+      size: 8,
+      color: markerColor,
     );
   }
 }

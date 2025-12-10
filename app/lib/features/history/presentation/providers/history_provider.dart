@@ -21,14 +21,17 @@ class HistoryDate extends _$HistoryDate {
 /// Fetches Emotion Records for the month of the currently selected date
 @riverpod
 Future<List<EmotionRecord>> historyRecords(HistoryRecordsRef ref) async {
-  final focusedDate = ref.watch(historyDateProvider);
+  // Only rebuild if the month changes
+  final monthDate = ref.watch(
+    historyDateProvider.select((date) => DateTime(date.year, date.month)),
+  );
   final db = GetIt.I<LocalDbService>();
 
   // Calculate start and end of the month
-  final startOfMonth = DateTime(focusedDate.year, focusedDate.month, 1);
+  final startOfMonth = DateTime(monthDate.year, monthDate.month, 1);
   final endOfMonth = DateTime(
-    focusedDate.year,
-    focusedDate.month + 1,
+    monthDate.year,
+    monthDate.month + 1,
     0,
     23,
     59,
