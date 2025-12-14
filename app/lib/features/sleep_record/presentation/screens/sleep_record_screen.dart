@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zestinme/app/theme/app_theme.dart';
 import 'package:intl/intl.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
@@ -373,6 +374,12 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                 );
               }),
 
+              // 4.4 Memo (Optional)
+              _MemoSection(
+                initialMemo: sleepState.memo,
+                onChanged: notifier.updateMemo,
+              ),
+
               const SizedBox(height: 40),
 
               // 5. Save Button
@@ -522,5 +529,129 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
     if (minutes <= 15) return '😌 양호 (15분)';
     if (minutes <= 30) return '🤔 보통 (30분)';
     return '😵 뒤척임 (1시간 이상)';
+  }
+}
+
+class _MemoSection extends StatefulWidget {
+  final String? initialMemo;
+  final ValueChanged<String> onChanged;
+
+  const _MemoSection({required this.initialMemo, required this.onChanged});
+
+  @override
+  State<_MemoSection> createState() => _MemoSectionState();
+}
+
+class _MemoSectionState extends State<_MemoSection> {
+  late TextEditingController _controller;
+  final SpeechToText _speechToText = SpeechToText();
+  bool _isListening = false;
+  bool _isSpeechEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialMemo);
+    _initSpeech();
+  }
+
+  void _initSpeech() async {
+    _isSpeechEnabled = await _speechToText.initialize();
+    if (mounted) setState(() {});
+  }
+
+  void _startListening() async {
+    if (!_isSpeechEnabled) return;
+
+    await _speechToText.listen(
+      onResult: (result) {
+        if (mounted) {
+          // Update controller and notify change
+          setState(() {
+            _controller.text = result.recognizedWords;
+            widget.onChanged(result.recognizedWords);
+          });
+        }
+      },
+    );
+    setState(() {
+      _isListening = true;
+    });
+  }
+
+  void _stopListening() async {
+    await _speechToText.stop();
+    setState(() {
+      _isListening = false;
+    });
+  }
+
+  void _toggleListening() {
+    if (_isListening) {
+      _stopListening();
+    } else {
+      _startListening();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '한줄 메모 (Optional)',
+          style: TextStyle(
+            color: AppTheme.secondaryColor,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10),
+        TextField(
+          controller: _controller,
+          onChanged: widget.onChanged,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: '더 남기고 싶은 기록이 있나요?',
+            hintStyle: const TextStyle(color: Colors.white24),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.05),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _isListening ? Icons.mic : Icons.mic_none,
+                color: _isListening ? Colors.redAccent : Colors.white54,
+              ),
+              onPressed: _isSpeechEnabled ? _toggleListening : null,
+              tooltip: '음성 입력 (STT)',
+            ),
+          ),
+          maxLines: 1,
+          maxLength: 50,
+        ),
+        if (_isListening)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, left: 4.0),
+            child: Text(
+              '듣고 있어요... 👂',
+              style: TextStyle(color: AppTheme.primaryColor, fontSize: 12),
+            ),
+          ),
+      ],
+    );
   }
 }

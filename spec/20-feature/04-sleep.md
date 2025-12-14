@@ -122,6 +122,11 @@ class SleepRecord {
 3.  **Wake Type:** "알람 소리를 듣고 일어났나요?" (Y/N), 스누즈 횟수 체크.
 4.  **Tags:** 어젯밤 수면 방해 요인 아이콘 선택.
 
+### 4.4 Future Improvements
+*   [ ] **Voice Input (STT):** Allow users to input Memo via voice.
+*   [ ] **Sleep Sound Analysis:** Measure noise levels during sleep.
+*   **Tonight's Target:** 오늘 밤 권장 취침 시간($T_{bed}$) 카운트다운.
+
 ### 5.3 홈 대시보드
 *   **Sleep Battery:** 오늘 수면 효율에 따른 배터리 잔량 표시.
 *   **Tonight's Target:** 오늘 밤 권장 취침 시간($T_{bed}$) 카운트다운.

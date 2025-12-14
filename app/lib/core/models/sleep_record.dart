@@ -30,4 +30,5 @@ class SleepRecord {
   int snoozeCount = 0; // Number of snoozes
 
   List<String> tags = []; // Factors
+  String? memo; // Optional note
 }

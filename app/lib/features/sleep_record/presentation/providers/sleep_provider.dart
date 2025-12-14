@@ -22,6 +22,7 @@ class SleepState {
   final bool isImmediateWake;
 
   final List<String> selectedTags;
+  final String? memo; // NEW
   final bool isSaving;
 
   const SleepState({
@@ -36,6 +37,7 @@ class SleepState {
     this.isNaturalWake = false,
     this.isImmediateWake = true,
     this.selectedTags = const [],
+    this.memo,
     this.isSaving = false,
   });
 
@@ -51,6 +53,7 @@ class SleepState {
     bool? isNaturalWake,
     bool? isImmediateWake,
     List<String>? selectedTags,
+    String? memo,
     bool? isSaving,
   }) {
     return SleepState(
@@ -65,6 +68,7 @@ class SleepState {
       isNaturalWake: isNaturalWake ?? this.isNaturalWake,
       isImmediateWake: isImmediateWake ?? this.isImmediateWake,
       selectedTags: selectedTags ?? this.selectedTags,
+      memo: memo ?? this.memo,
       isSaving: isSaving ?? this.isSaving,
     );
   }
@@ -122,6 +126,7 @@ class SleepNotifier extends _$SleepNotifier {
       isNaturalWake: record.isNaturalWake,
       isImmediateWake: record.isImmediateWake,
       selectedTags: record.tags,
+      memo: record.memo,
     );
   }
 
@@ -169,6 +174,10 @@ class SleepNotifier extends _$SleepNotifier {
     state = state.copyWith(sleepLatencyMinutes: minutes);
   }
 
+  void updateMemo(String value) {
+    state = state.copyWith(memo: value);
+  }
+
   void toggleTag(String tag) {
     final current = [...state.selectedTags];
     if (current.contains(tag)) {
@@ -195,7 +204,8 @@ class SleepNotifier extends _$SleepNotifier {
         ..isImmediateWake = state.isImmediateWake
         ..snoozeCount = state.snoozeCount
         ..sleepLatencyMinutes = state.sleepLatencyMinutes
-        ..tags = state.selectedTags;
+        ..tags = state.selectedTags
+        ..memo = state.memo;
 
       // Scientific fields logic
       // Efficiency = (TST) / (TIB) * 100
