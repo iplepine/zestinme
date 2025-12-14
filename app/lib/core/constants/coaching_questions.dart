@@ -57,7 +57,8 @@ class CoachingQuestions {
   static String getQuestionForTag(String tag) {
     // Default to generic if not found
     final list = _questions[tag] ?? _genericQuestions;
-    return (list..shuffle()).first;
+    // Use spread operator to create a mutable copy before shuffling
+    return ([...list]..shuffle()).first;
   }
 
   // --- Question Lists ---

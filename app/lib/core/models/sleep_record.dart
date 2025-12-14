@@ -18,5 +18,7 @@ class SleepRecord {
 
   bool isNaturalWake = false; // True if woke up without alarm
 
+  bool isImmediateWake = true; // True if woke up at once (no snooze)
+
   List<String> tags = []; // Factors
 }

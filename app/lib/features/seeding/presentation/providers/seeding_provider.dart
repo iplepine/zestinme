@@ -92,7 +92,8 @@ class SeedingNotifier extends _$SeedingNotifier {
   // --- New Logic ---
 
   void toggleTag(String tag) {
-    final currentTags = List<String>.from(state.selectedTags);
+    // Use spread operator to ensure we get a mutable list
+    final currentTags = [...state.selectedTags];
     if (currentTags.contains(tag)) {
       currentTags.remove(tag);
     } else {

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zestinme/app/theme/app_theme.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/constants/app_colors.dart';
 import '../providers/sleep_provider.dart';
 import '../widgets/moon_time_dial.dart';
 
@@ -142,7 +144,7 @@ class SleepRecordScreen extends ConsumerWidget {
                   activeTrackColor: AppTheme.secondaryColor,
                   inactiveTrackColor: Colors.white24,
                   thumbColor: Colors.white,
-                  overlayColor: AppTheme.secondaryColor.withValues(alpha: 0.2),
+                  overlayColor: AppTheme.secondaryColor.withOpacity(0.2),
                 ),
                 child: Slider(
                   value: sleepState.qualityScore.toDouble(),
@@ -173,7 +175,7 @@ class SleepRecordScreen extends ConsumerWidget {
                 subtitle: Text(
                   '자연스러운 기상은 꿀잠의 증거예요',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.5),
+                    color: Colors.white.withOpacity(0.5),
                     fontSize: 12,
                   ),
                 ),
@@ -181,12 +183,32 @@ class SleepRecordScreen extends ConsumerWidget {
                 onChanged: notifier.toggleNaturalWake,
               ),
 
+              const SizedBox(height: 12),
+
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                activeColor: AppTheme.secondaryColor,
+                title: const Text(
+                  '한 번에 일어났나요?',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                subtitle: Text(
+                  '알람 끄고 다시 잠들지 않았어요',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    fontSize: 12,
+                  ),
+                ),
+                value: sleepState.isImmediateWake,
+                onChanged: notifier.toggleImmediateWake,
+              ),
+
               const SizedBox(height: 24),
 
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '잠들기 전에 무엇을 했나요?',
+                  '수면에 영향을 준 요인이 있나요?', // Updated Label
                   style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
               ),
@@ -200,29 +222,32 @@ class SleepRecordScreen extends ConsumerWidget {
                   return FilterChip(
                     label: Text(tag),
                     selected: isSelected,
-                    onSelected: (_) => notifier.toggleTag(tag),
-                    backgroundColor: Colors.white.withValues(alpha: 0.1),
-                    selectedColor: AppTheme.secondaryColor.withValues(
-                      alpha: 0.3,
-                    ),
-                    checkmarkColor: AppTheme.secondaryColor,
+                    onSelected: (_) {
+                      notifier.toggleTag(tag);
+                      HapticFeedback.selectionClick();
+                    },
+                    elevation: 0,
+                    pressElevation: 0,
+                    showCheckmark: false,
+                    // Use a dark background explicitly as requested
+                    backgroundColor: Colors.black.withValues(alpha: 0.2),
+                    surfaceTintColor: Colors.transparent,
+                    selectedColor: AppColors.seedingChipSelected,
                     labelStyle: TextStyle(
                       color: isSelected
-                          ? AppTheme.secondaryColor
-                          : Colors.white70,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+                          ? AppColors.seedingChipTextSelected
+                          : Colors.white,
+                      fontWeight: FontWeight.w500,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       side: BorderSide(
                         color: isSelected
-                            ? AppTheme.secondaryColor
-                            : Colors.transparent,
+                            ? Colors.transparent
+                            : Colors.white.withValues(alpha: 0.5),
+                        width: 1,
                       ),
                     ),
-                    side: BorderSide.none,
                   );
                 }).toList(),
               ),
@@ -249,7 +274,7 @@ class SleepRecordScreen extends ConsumerWidget {
                         },
                   child: sleepState.isSaving
                       ? const CircularProgressIndicator()
-                      : const Text('꿈 기록하기', style: TextStyle(fontSize: 18)),
+                      : const Text('저장하기', style: TextStyle(fontSize: 18)),
                 ),
               ),
               const SizedBox(height: 40),

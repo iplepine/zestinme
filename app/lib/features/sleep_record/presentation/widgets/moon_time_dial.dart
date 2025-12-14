@@ -62,8 +62,8 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
     final distBed = _angularDistance(touchAngle, bedAngle);
     final distWake = _angularDistance(touchAngle, wakeAngle);
 
-    // Threshold (e.g. 0.8 radians approx 45 degrees for easier touch)
-    const threshold = 0.8;
+    // Threshold (e.g. 1.2 radians approx 68 degrees for maximum touch area)
+    const threshold = 1.2;
 
     if (distBed < threshold && distBed < distWake) {
       setState(() => _dragMode = _DragMode.bed);
@@ -78,22 +78,40 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
     if (_dragMode == _DragMode.none) return;
 
     final touchPos = details.localPosition;
-    final newAngle = _coordToAngle(touchPos, center);
-    final prevAngle = _coordToAngle(touchPos - details.delta, center);
+    final touchAngle = _coordToAngle(touchPos, center);
 
-    var delta = newAngle - prevAngle;
+    // Convert touch angle to "minutes from 12:00" on face (0..720)
+    // Angle -pi/2 is 12:00.
+    // Normalized angle starting from -pi/2 going clockwise.
+    // _coordToAngle returns -pi to pi.
+    // Right (0) -> 0. Top (-pi/2) -> -pi/2.
+    // We want to map Top(-pi/2) -> 0 minutes.
+    // Formula: minutes = ((angle + pi/2) / 2pi) * 720
 
-    // Fix wrap around (e.g. 3.1 -> -3.1 should be small positive delta)
-    if (delta > pi) delta -= 2 * pi;
-    if (delta < -pi) delta += 2 * pi;
+    double angleFrom12 = touchAngle + pi / 2;
+    // Normalize to 0..2pi
+    if (angleFrom12 < 0) angleFrom12 += 2 * pi;
 
-    // 12h clock: 2pi = 720 minutes
-    // deltaMinutes = (delta / 2pi) * 720
-    final deltaMinutes = (delta / (2 * pi)) * 720;
+    final targetMinutesFrom12 = (angleFrom12 / (2 * pi)) * 720;
 
-    // Round to nearest integer or 5 mins?
-    // Let's keep smooth updates.
-    final minutesToAdd = deltaMinutes.round();
+    // Get current time's minutes from 12
+    DateTime currentBase;
+    if (_dragMode == _DragMode.bed) {
+      currentBase = widget.bedTime;
+    } else {
+      currentBase = widget.wakeTime;
+    }
+
+    final currentMinutesFrom12 =
+        (currentBase.hour % 12) * 60 + currentBase.minute;
+
+    // Calculate smallest difference (shortest path)
+    var diff = targetMinutesFrom12 - currentMinutesFrom12;
+    // Normalize diff to -360..360 (half circle)
+    if (diff > 360) diff -= 720;
+    if (diff < -360) diff += 720;
+
+    final minutesToAdd = diff.round();
 
     if (minutesToAdd == 0) return;
 
@@ -349,7 +367,8 @@ class MoonTimeDialPainter extends CustomPainter {
     );
 
     final paintHandler = Paint()..color = color;
-    canvas.drawCircle(handlerPos, 14, paintHandler);
+    // Increased size for better visual feedback (Radius 14 -> 24)
+    canvas.drawCircle(handlerPos, 24, paintHandler);
 
     // Draw icon inside circle
     final iconPainter = TextPainter(textDirection: TextDirection.ltr);
@@ -357,7 +376,7 @@ class MoonTimeDialPainter extends CustomPainter {
       text: String.fromCharCode(icon.codePoint),
       style: TextStyle(
         color: Colors.white,
-        fontSize: 16,
+        fontSize: 26, // Increased from 16
         fontFamily: icon.fontFamily,
         package: icon.fontPackage,
       ),

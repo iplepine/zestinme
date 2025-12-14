@@ -11,6 +11,7 @@ class SleepState {
   final int qualityScore; // 1 to 5
   final int durationMinutes;
   final bool isNaturalWake;
+  final bool isImmediateWake; // New
   final List<String> selectedTags;
   final bool isSaving;
 
@@ -20,6 +21,7 @@ class SleepState {
     this.qualityScore = 3,
     this.durationMinutes = 0,
     this.isNaturalWake = false,
+    this.isImmediateWake = true, // New
     this.selectedTags = const [],
     this.isSaving = false,
   });
@@ -30,6 +32,7 @@ class SleepState {
     int? qualityScore,
     int? durationMinutes,
     bool? isNaturalWake,
+    bool? isImmediateWake, // New
     List<String>? selectedTags,
     bool? isSaving,
   }) {
@@ -39,6 +42,7 @@ class SleepState {
       qualityScore: qualityScore ?? this.qualityScore,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       isNaturalWake: isNaturalWake ?? this.isNaturalWake,
+      isImmediateWake: isImmediateWake ?? this.isImmediateWake, // New
       selectedTags: selectedTags ?? this.selectedTags,
       isSaving: isSaving ?? this.isSaving,
     );
@@ -95,6 +99,10 @@ class SleepNotifier extends _$SleepNotifier {
     state = state.copyWith(isNaturalWake: value);
   }
 
+  void toggleImmediateWake(bool value) {
+    state = state.copyWith(isImmediateWake: value);
+  }
+
   void toggleTag(String tag) {
     final current = [...state.selectedTags];
     if (current.contains(tag)) {
@@ -111,13 +119,14 @@ class SleepNotifier extends _$SleepNotifier {
       final db = GetIt.I<LocalDbService>();
 
       final record = SleepRecord()
-        ..date =
-            DateTime.now() // Associate with 'today' (morning)
+        ..date = state
+            .wakeTime // Associate with the wake-up date
         ..bedTime = state.bedTime
         ..wakeTime = state.wakeTime
         ..durationMinutes = state.durationMinutes
         ..qualityScore = state.qualityScore
         ..isNaturalWake = state.isNaturalWake
+        ..isImmediateWake = state.isImmediateWake
         ..tags = state.selectedTags;
 
       await db.saveSleepRecord(record);
