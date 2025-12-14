@@ -11,11 +11,37 @@ import '../providers/sleep_provider.dart';
 import '../widgets/moon_time_dial.dart';
 import '../../../../core/widgets/zest_filter_chip.dart';
 
-class SleepRecordScreen extends ConsumerWidget {
-  const SleepRecordScreen({super.key});
+import '../../../../core/models/sleep_record.dart';
+
+class SleepRecordScreen extends ConsumerStatefulWidget {
+  final SleepRecord? initialRecord;
+
+  const SleepRecordScreen({super.key, this.initialRecord});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SleepRecordScreen> createState() => _SleepRecordScreenState();
+}
+
+class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Use Future.microtask to avoid build conflicts if necessary,
+    // though initializing state in initState is generally safe for Notifiers if not watching immediately in a way that causes loops.
+    // However, since we are setting state, it's safer to do it immediately.
+    if (widget.initialRecord != null) {
+      // Defer to next frame to ensure provider is ready/listening?
+      // Actually ref.read(provider.notifier) is safe.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(sleepNotifierProvider.notifier)
+            .initializeWithRecord(widget.initialRecord!);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final sleepState = ref.watch(sleepNotifierProvider);
     final notifier = ref.read(sleepNotifierProvider.notifier);
 

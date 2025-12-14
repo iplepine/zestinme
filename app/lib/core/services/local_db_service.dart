@@ -77,6 +77,17 @@ class LocalDbService {
         .findFirst();
   }
 
+  Future<List<SleepRecord>> getSleepRecordsByRange(
+    DateTime start,
+    DateTime end,
+  ) async {
+    return await _isar.sleepRecords
+        .filter()
+        .dateBetween(start, end)
+        .sortByDateDesc()
+        .findAll();
+  }
+
   Future<void> deleteSleepRecord(int id) async {
     await _isar.writeTxn(() async {
       await _isar.sleepRecords.delete(id);

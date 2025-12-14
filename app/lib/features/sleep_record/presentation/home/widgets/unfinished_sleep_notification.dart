@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../di/injection.dart';
-import '../../../domain/models/sleep_record.dart';
-import '../../../domain/repositories/sleep_record_repository.dart';
-import '../../../domain/usecases/get_unfinished_sleep_record_usecase.dart';
-import '../../sleep_record_page.dart';
+import 'package:get_it/get_it.dart';
+import 'package:zestinme/core/models/sleep_record.dart';
+import 'package:zestinme/core/services/local_db_service.dart';
+import 'package:zestinme/features/sleep_record/presentation/screens/sleep_record_screen.dart';
 import '../../controller/sleep_home_controller.dart';
 
 class UnfinishedSleepNotification extends ConsumerStatefulWidget {
@@ -27,9 +26,20 @@ class _UnfinishedSleepNotificationState
   }
 
   void _loadUnfinishedRecord() {
-    final repository = Injection.getIt<SleepRecordRepository>();
-    final useCase = GetUnfinishedSleepRecordUseCase(repository);
-    _unfinishedRecordFuture = useCase();
+    _unfinishedRecordFuture = _fetchUnfinishedRecord();
+  }
+
+  Future<SleepRecord?> _fetchUnfinishedRecord() async {
+    final db = GetIt.I<LocalDbService>();
+    final now = DateTime.now();
+    // Check records from last 24 hours
+    final records = await db.getSleepRecordsByRange(
+      now.subtract(const Duration(hours: 24)),
+      now,
+    );
+
+    // Find incomplete record (assuming short duration < 10 mins means incomplete/just started)
+    return records.where((r) => r.durationMinutes < 10).firstOrNull;
   }
 
   @override
@@ -44,7 +54,9 @@ class _UnfinishedSleepNotificationState
         }
 
         final unfinishedRecord = snapshot.data!;
-        final key = ValueKey<String>(unfinishedRecord.id);
+        // sleep_record id is int (Id), ValueKey usually takes String or int.
+        // ValueKey<int> is valid.
+        final key = ValueKey<int>(unfinishedRecord.id);
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -77,7 +89,7 @@ class _UnfinishedSleepNotificationState
               child: _NotificationContent(
                 record: unfinishedRecord,
                 onTap: () =>
-                    _navigateToRecordPage(context, ref, unfinishedRecord),
+                    _navigateToRecordScreen(context, ref, unfinishedRecord),
               ),
             ),
           ),
@@ -86,7 +98,7 @@ class _UnfinishedSleepNotificationState
     );
   }
 
-  void _navigateToRecordPage(
+  void _navigateToRecordScreen(
     BuildContext context,
     WidgetRef ref,
     SleepRecord record,
@@ -94,17 +106,15 @@ class _UnfinishedSleepNotificationState
     Navigator.of(context)
         .push(
           MaterialPageRoute(
-            builder: (_) => SleepRecordPage(initialRecord: record),
+            builder: (_) => SleepRecordScreen(initialRecord: record),
           ),
         )
-        .then((result) {
-          if (result == true) {
-            ref.read(sleepHomeControllerProvider.notifier).fetchRecords();
-            // 수정 완료 후 알림을 다시 표시하지 않기 위해 상태를 갱신
-            setState(() {
-              _unfinishedRecordFuture = null;
-            });
-          }
+        .then((_) {
+          // Refresh regardless of result
+          ref.read(sleepHomeControllerProvider.notifier).fetchRecords();
+          setState(() {
+            _unfinishedRecordFuture = null; // Hide notification or reload
+          });
         });
   }
 }
@@ -152,7 +162,7 @@ class _NotificationContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${record.sleepTime.hour.toString().padLeft(2, '0')}:${record.sleepTime.minute.toString().padLeft(2, '0')}에 잠든 기록이 있습니다',
+                  '${record.bedTime.hour.toString().padLeft(2, '0')}:${record.bedTime.minute.toString().padLeft(2, '0')}에 잠든 기록이 있습니다',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],

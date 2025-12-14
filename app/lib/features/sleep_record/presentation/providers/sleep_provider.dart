@@ -6,6 +6,7 @@ import '../../../../core/models/sleep_record.dart';
 part 'sleep_provider.g.dart';
 
 class SleepState {
+  final int? id; // For editing existing records
   final DateTime bedTime;
   final DateTime wakeTime;
   final int qualityScore; // 1 to 5
@@ -16,6 +17,7 @@ class SleepState {
   final bool isSaving;
 
   const SleepState({
+    this.id,
     required this.bedTime,
     required this.wakeTime,
     this.qualityScore = 3,
@@ -27,6 +29,7 @@ class SleepState {
   });
 
   SleepState copyWith({
+    int? id,
     DateTime? bedTime,
     DateTime? wakeTime,
     int? qualityScore,
@@ -37,6 +40,7 @@ class SleepState {
     bool? isSaving,
   }) {
     return SleepState(
+      id: id ?? this.id,
       bedTime: bedTime ?? this.bedTime,
       wakeTime: wakeTime ?? this.wakeTime,
       qualityScore: qualityScore ?? this.qualityScore,
@@ -93,6 +97,19 @@ class SleepNotifier extends _$SleepNotifier {
     );
   }
 
+  void initializeWithRecord(SleepRecord record) {
+    state = state.copyWith(
+      id: record.id,
+      bedTime: record.bedTime,
+      wakeTime: record.wakeTime,
+      qualityScore: record.qualityScore,
+      durationMinutes: record.durationMinutes,
+      isNaturalWake: record.isNaturalWake,
+      isImmediateWake: record.isImmediateWake,
+      selectedTags: record.tags,
+    );
+  }
+
   void updateTimes(DateTime bedTime, DateTime wakeTime) {
     // Calculate duration
     int duration = wakeTime.difference(bedTime).inMinutes;
@@ -135,8 +152,7 @@ class SleepNotifier extends _$SleepNotifier {
       final db = GetIt.I<LocalDbService>();
 
       final record = SleepRecord()
-        ..date = state
-            .wakeTime // Associate with the wake-up date
+        ..date = state.wakeTime
         ..bedTime = state.bedTime
         ..wakeTime = state.wakeTime
         ..durationMinutes = state.durationMinutes
@@ -144,6 +160,11 @@ class SleepNotifier extends _$SleepNotifier {
         ..isNaturalWake = state.isNaturalWake
         ..isImmediateWake = state.isImmediateWake
         ..tags = state.selectedTags;
+
+      // If updating an existing record, set the ID
+      if (state.id != null) {
+        record.id = state.id!;
+      }
 
       await db.saveSleepRecord(record);
     } catch (e) {

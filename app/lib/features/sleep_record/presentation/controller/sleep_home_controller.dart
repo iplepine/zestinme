@@ -1,17 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zestinme/di/injection.dart';
-import '../../domain/usecases/get_sleep_records_usecase.dart';
+import '../../../../core/services/local_db_service.dart';
 import '../state/sleep_home_state.dart';
 
 final sleepHomeControllerProvider =
     StateNotifierProvider<SleepHomeController, SleepHomeState>(
-      (ref) => SleepHomeController(Injection.getIt<GetSleepRecordsUseCase>()),
+      (ref) => SleepHomeController(Injection.getIt<LocalDbService>()),
     );
 
 class SleepHomeController extends StateNotifier<SleepHomeState> {
-  final GetSleepRecordsUseCase _getSleepRecordsUseCase;
+  final LocalDbService _localDbService;
 
-  SleepHomeController(this._getSleepRecordsUseCase)
+  SleepHomeController(this._localDbService)
     : super(const SleepHomeState.loading()) {
     fetchRecords();
   }
@@ -20,8 +20,8 @@ class SleepHomeController extends StateNotifier<SleepHomeState> {
     state = const SleepHomeState.loading();
     try {
       final now = DateTime.now();
-      // 우선 최근 30일 기록을 가져오도록 설정
-      final records = await _getSleepRecordsUseCase(
+      // Fetch last 30 days
+      final records = await _localDbService.getSleepRecordsByRange(
         now.subtract(const Duration(days: 30)),
         now,
       );

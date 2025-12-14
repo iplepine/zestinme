@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../domain/models/sleep_record.dart';
+import '../../../../core/models/sleep_record.dart';
 
 class SleepHistoryChart extends StatelessWidget {
   final List<SleepRecord> records;
@@ -34,7 +34,7 @@ class SleepHistoryChart extends StatelessWidget {
         child: BarChart(
           BarChartData(
             alignment: BarChartAlignment.spaceAround,
-            maxY: 10, // Y축 최대값: 수면 만족도 10점
+            maxY: 5, // Y축 최대값: 수면 품질 5점
             barTouchData: BarTouchData(
               touchCallback: (FlTouchEvent event, barTouchResponse) {
                 if (event is FlLongPressStart &&
@@ -49,7 +49,7 @@ class SleepHistoryChart extends StatelessWidget {
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
                   final record = chartData[groupIndex];
                   return BarTooltipItem(
-                    '${DateFormat('MM/dd').format(record.createdAt)}\n${record.sleepSatisfaction}점',
+                    '${DateFormat('MM/dd').format(record.date)}\n${record.qualityScore}점',
                     const TextStyle(color: Colors.white, height: 1.5),
                   );
                 },
@@ -61,7 +61,7 @@ class SleepHistoryChart extends StatelessWidget {
                   showTitles: true,
                   reservedSize: 30,
                   getTitlesWidget: (value, meta) {
-                    if (value == 0 || value == 5 || value == 10) {
+                    if (value == 1 || value == 3 || value == 5) {
                       return Text(value.toInt().toString());
                     }
                     return const Text('');
@@ -74,8 +74,8 @@ class SleepHistoryChart extends StatelessWidget {
                   reservedSize: 40,
                   getTitlesWidget: (value, meta) {
                     final record = chartData[value.toInt()];
-                    final date = DateFormat('MM/dd').format(record.createdAt);
-                    final sleepTime = DateFormat.Hm().format(record.sleepTime);
+                    final date = DateFormat('MM/dd').format(record.date);
+                    final sleepTime = DateFormat.Hm().format(record.bedTime);
                     final wakeTime = DateFormat.Hm().format(record.wakeTime);
                     return SideTitleWidget(
                       axisSide: meta.axisSide,
@@ -110,7 +110,7 @@ class SleepHistoryChart extends StatelessWidget {
                 x: index,
                 barRods: [
                   BarChartRodData(
-                    toY: record.sleepSatisfaction.toDouble(),
+                    toY: record.qualityScore.toDouble(),
                     color: Colors.amber,
                     width: 16,
                     borderRadius: const BorderRadius.only(

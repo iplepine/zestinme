@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zestinme/features/sleep_record/domain/models/sleep_record.dart';
+import 'package:zestinme/core/models/sleep_record.dart';
 import 'package:zestinme/features/sleep_record/presentation/widgets/sleep_history_chart.dart';
-
-import 'sleep_statistics.dart';
+import 'package:zestinme/features/sleep_record/presentation/home/widgets/sleep_statistics.dart';
 
 class SleepHomeContent extends StatelessWidget {
   final List<SleepRecord> records;
@@ -54,11 +53,20 @@ class SleepHomeContent extends StatelessWidget {
     // 오늘의 수면 기록 찾기
     final todayRecord = records.where((record) {
       final recordDate = DateTime(
-        record.sleepTime.year,
-        record.sleepTime.month,
-        record.sleepTime.day,
+        record.bedTime.year,
+        record.bedTime.month,
+        record.bedTime.day,
       );
-      return recordDate == today;
+      // Check explicit date if available or just bedTime matches today's date (if sleeping after midnight? actually record date usually tracks wake up)
+      // Core SleepRecord 'date' is usually wake date.
+      // Let's check 'date' if initialized.
+      // Safe check: record.date == today
+      try {
+        return record.date == today;
+      } catch (e) {
+        // Fallback if date not set (though it should be)
+        return recordDate == today;
+      }
     }).firstOrNull;
 
     return Container(
@@ -97,13 +105,13 @@ class SleepHomeContent extends StatelessWidget {
             Builder(
               builder: (context) {
                 final sleepDuration = todayRecord.wakeTime.difference(
-                  todayRecord.sleepTime,
+                  todayRecord.bedTime,
                 );
                 final hours = sleepDuration.inHours;
                 final minutes = sleepDuration.inMinutes % 60;
 
                 return Text(
-                  '어젯밤 ${hours}h${minutes}m → 오늘 상쾌 +${todayRecord.freshness - 5} / 예민 ${todayRecord.freshness <= 5 ? '-' : '+'}${(todayRecord.freshness - 5).abs()}',
+                  '어젯밤 ${hours}h${minutes}m → 수면 품질 ${todayRecord.qualityScore}/5',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -115,7 +123,7 @@ class SleepHomeContent extends StatelessWidget {
             const SizedBox(height: 12),
 
             // 관련 태그 표시
-            if (todayRecord.disruptionFactors?.isNotEmpty == true)
+            if (todayRecord.tags.isNotEmpty)
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -126,7 +134,7 @@ class SleepHomeContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  '방해요인: ${todayRecord.disruptionFactors}',
+                  '방해요인: ${todayRecord.tags.join(', ')}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.orange[800],

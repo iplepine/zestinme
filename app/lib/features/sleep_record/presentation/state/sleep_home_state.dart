@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/models/sleep_record.dart';
+import '../../../../core/models/sleep_record.dart';
 
 part 'sleep_home_state.freezed.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zestinme/features/sleep_record/domain/models/sleep_record.dart';
+import 'package:zestinme/core/models/sleep_record.dart';
 
 class SleepStatistics extends StatelessWidget {
   final List<SleepRecord> records;
@@ -8,14 +8,17 @@ class SleepStatistics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalHours = records.fold<double>(
+    final double totalHours = records.fold<double>(
       0,
-      (sum, record) => sum + record.totalSleepHours,
+      (sum, record) => sum + (record.durationMinutes / 60.0),
     );
-    final avgHours = totalHours / records.length;
-    final avgScore =
-        records.fold<double>(0, (sum, record) => sum + record.averageScore) /
-        records.length;
+    final avgHours = records.isEmpty ? 0.0 : totalHours / records.length;
+
+    final double totalScore = records.fold<double>(
+      0,
+      (sum, record) => sum + record.qualityScore,
+    );
+    final avgScore = records.isEmpty ? 0.0 : totalScore / records.length;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
