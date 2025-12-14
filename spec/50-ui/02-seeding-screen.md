@@ -61,7 +61,7 @@
     *   **Value:** 사용자가 힌트를 보고 자연스럽게 맥락을 포함하여 기록하도록 유도.
 *   **Plant Button:** 저장 ("이 마음을 심어서 가꾸기").
 
-> **Note:** 핵심 가치 발견(Value Discovery) 및 코칭 질문은 **'심기(Seeding)' 단계가 아닌 '가꾸기(Nurturing)' 단계**에서 진행합니다. (See: `spec/50-ui/03-nurturing-flow.md`)
+> **Note:** 핵심 가치 발견(Value Discovery) 및 코칭 질문은 **'심기(Seeding)' 단계가 아닌 '돌보기(Caring)' 단계**에서 진행합니다. (See: `spec/50-ui/03-caring-flow.md`)
 
 ## 3. Interaction Flow
 

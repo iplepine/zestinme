@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/models/emotion_record.dart';
+import '../../../../core/models/emotion_record.dart';
 import '../../../../core/services/local_db_service.dart';
+import '../../../../core/constants/coaching_questions.dart';
 
 part 'seeding_provider.g.dart';
 
@@ -25,7 +27,10 @@ class SeedingState {
     this.selectedTags = const [],
     this.note = '',
     this.isSaving = false,
+    this.coachingQuestion,
   });
+
+  final String? coachingQuestion;
 
   SeedingState copyWith({
     double? valence,
@@ -35,6 +40,7 @@ class SeedingState {
     List<String>? selectedTags,
     String? note,
     bool? isSaving,
+    String? coachingQuestion,
   }) {
     return SeedingState(
       valence: valence ?? this.valence,
@@ -44,6 +50,7 @@ class SeedingState {
       selectedTags: selectedTags ?? this.selectedTags,
       note: note ?? this.note,
       isSaving: isSaving ?? this.isSaving,
+      coachingQuestion: coachingQuestion ?? this.coachingQuestion,
     );
   }
 }
@@ -94,7 +101,21 @@ class SeedingNotifier extends _$SeedingNotifier {
         currentTags.add(tag);
       }
     }
-    state = state.copyWith(selectedTags: currentTags);
+
+    // Update coaching question based on the first selected tag
+    String? newQuestion;
+    if (currentTags.isNotEmpty) {
+      // If we already have a question and the first tag is still the same, maybe keep it?
+      // But simple logic for now: always update based on the last added or first one.
+      // Let's use the most recently added one logic if we append, but usually it's better to stick to the 'primary' emotion (first one).
+      // Let's just use the first tag.
+      newQuestion = CoachingQuestions.getQuestionForTag(currentTags.first);
+    }
+
+    state = state.copyWith(
+      selectedTags: currentTags,
+      coachingQuestion: newQuestion,
+    );
   }
 
   void updateNote(String note) {
