@@ -18,6 +18,11 @@ class DevScreen extends StatelessWidget {
         children: [
           _buildNavTile(context, '🌿 Home Dashboard', '/'),
           _buildNavTile(context, '🌱 Seeding (New Catch)', '/seeding'),
+          _buildNavTile(
+            context,
+            '🌙 Sleep Record (Dreaming)',
+            '/sleep',
+          ), // Added Sleep Screen
           _buildNavTile(context, '🚀 Onboarding', '/onboarding'),
           _buildNavTile(context, '� Garden Journal (History)', '/history'),
           const Divider(color: Colors.white24),

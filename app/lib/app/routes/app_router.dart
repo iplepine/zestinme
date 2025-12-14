@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/seeding/presentation/screens/seeding_screen.dart';
+import '../../features/sleep_record/presentation/screens/sleep_record_screen.dart';
 import '../../features/dev/presentation/screens/dev_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
 import '../../features/happy_record/presentation/dashboard/home_dashboard_page.dart';
@@ -20,6 +21,7 @@ class AppRouter {
   static const onboarding = '/onboarding';
   static const history = '/history';
   static const seeding = '/seeding';
+  static const sleep = '/sleep'; // New Route
   static const dev = '/dev';
 }
 
@@ -38,6 +40,7 @@ GoRouter goRouter(GoRouterRef ref) {
         '/history',
         '/login',
         '/old-home',
+        '/sleep', // Allow Sleep Screen
         '/',
       ];
       if (allowedRoutes.contains(state.matchedLocation)) return null;
@@ -77,6 +80,10 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: '/seeding',
         builder: (context, state) => const SeedingScreen(),
+      ),
+      GoRoute(
+        path: '/sleep',
+        builder: (context, state) => const SleepRecordScreen(),
       ),
       GoRoute(path: '/dev', builder: (context, state) => const DevScreen()),
 
