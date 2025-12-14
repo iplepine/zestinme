@@ -26,12 +26,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
   @override
   void initState() {
     super.initState();
-    // Use Future.microtask to avoid build conflicts if necessary,
-    // though initializing state in initState is generally safe for Notifiers if not watching immediately in a way that causes loops.
-    // However, since we are setting state, it's safer to do it immediately.
     if (widget.initialRecord != null) {
-      // Defer to next frame to ensure provider is ready/listening?
-      // Actually ref.read(provider.notifier) is safe.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref
             .read(sleepNotifierProvider.notifier)
@@ -56,7 +51,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A2E), // Deep Indigo
       appBar: AppBar(
-        title: const Text('Dreaming', style: TextStyle(color: Colors.white)),
+        title: const Text('Recharge', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -68,33 +63,37 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
               // 1. Title
-              const Text(
-                '어젯밤, 푹 주무셨나요?',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              const Center(
+                child: Text(
+                  '잘 주무셨나요?',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
 
-              // 2. Moon Phase Dial (Visual Only for now, interactive logic is complex)
-              // For MVP, we can use simple TimePickers below, and just show the dial visualization.
-              SizedBox(
-                height: 250,
-                width: 250,
-                child: InteractiveMoonTimeDial(
-                  bedTime: sleepState.bedTime,
-                  wakeTime: sleepState.wakeTime,
-                  onBedTimeChanged: (newTime) {
-                    notifier.updateTimes(newTime, sleepState.wakeTime);
-                  },
-                  onWakeTimeChanged: (newTime) {
-                    notifier.updateTimes(sleepState.bedTime, newTime);
-                  },
+              // 2. Moon Phase Dial & Battery Visualization
+              Center(
+                child: SizedBox(
+                  height: 240,
+                  width: 240,
+                  child: InteractiveMoonTimeDial(
+                    bedTime: sleepState.bedTime,
+                    wakeTime: sleepState.wakeTime,
+                    onBedTimeChanged: (newTime) {
+                      notifier.updateTimes(newTime, sleepState.wakeTime);
+                    },
+                    onWakeTimeChanged: (newTime) {
+                      notifier.updateTimes(sleepState.bedTime, newTime);
+                    },
+                  ),
                 ),
               ),
 
@@ -105,7 +104,6 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildTimeColumn(context, '취침', bedTimeStr, () async {
-                    // Pick Bed Time
                     final time = await showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.fromDateTime(sleepState.bedTime),
@@ -118,9 +116,6 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                         time.hour,
                         time.minute,
                       );
-                      // Handling day boundaries is tricky with simple pickers.
-                      // For MVP assume user picks correct time on relevant day.
-                      // Or just update hours/mins.
                       notifier.updateTimes(newBedTime, sleepState.wakeTime);
                     }
                   }),
@@ -158,162 +153,225 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
 
               const SizedBox(height: 20),
 
-              // 3.5 Cycle Feedback (Golden Hour)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: sleepState.isGoldenHour
-                      ? AppColors.seedingSun.withValues(alpha: 0.2)
-                      : Colors.white.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: sleepState.isGoldenHour
-                        ? AppColors.seedingSun.withValues(alpha: 0.5)
-                        : Colors.transparent,
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      sleepState.isGoldenHour
-                          ? Icons.stars_rounded
-                          : Icons.access_time_rounded,
-                      color: sleepState.isGoldenHour
-                          ? AppColors.seedingSun
-                          : Colors.white54,
-                    ),
-                    const SizedBox(width: 8),
-                    Column(
-                      children: [
-                        Text(
-                          sleepState.isGoldenHour
-                              ? 'Golden Hour 달성! ✨'
-                              : '수면 사이클 확인',
-                          style: TextStyle(
-                            color: sleepState.isGoldenHour
-                                ? AppColors.seedingSun
-                                : Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          '${sleepState.sleepCycles.toStringAsFixed(1)} 사이클 (효율적으로 잤어요)',
-                          style: TextStyle(
-                            color: sleepState.isGoldenHour
-                                ? AppColors.seedingSun.withValues(alpha: 0.8)
-                                : Colors.white54,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              // 3.5 Golden Hour Feedback
+              _buildGoldenHourBanner(sleepState),
 
-              const SizedBox(height: 50),
-
-              // 4. Quality Slider (Emoji)
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '개운함 정도',
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
+              // 3.8 Sleep Latency (입면 잠복기)
+              Text(
+                '잠들기까지 걸린 시간',
+                style: TextStyle(
+                  color: AppTheme.secondaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 10),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${sleepState.sleepLatencyMinutes}분',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        _getLatencyLabel(sleepState.sleepLatencyMinutes),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: AppTheme.secondaryColor,
+                      inactiveTrackColor: Colors.white24,
+                      thumbColor: Colors.white,
+                      trackHeight: 6.0,
+                      overlayColor: AppTheme.secondaryColor.withOpacity(0.2),
+                    ),
+                    child: Slider(
+                      value: sleepState.sleepLatencyMinutes.toDouble().clamp(
+                        0,
+                        60,
+                      ),
+                      min: 0,
+                      max: 60,
+                      divisions: 12, // 5 min steps
+                      label: '${sleepState.sleepLatencyMinutes}분',
+                      onChanged: (val) {
+                        notifier.updateSleepLatency(val.round());
+                      },
+                    ),
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '바로 잠듦',
+                        style: TextStyle(color: Colors.white30, fontSize: 12),
+                      ),
+                      Text(
+                        '1시간 이상',
+                        style: TextStyle(color: Colors.white30, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 30),
+              const Divider(color: Colors.white10),
+              const SizedBox(height: 20),
+
+              // 4. Morning Check-in Flow
+
+              // 4.1 Refreshment Slider
+              Text(
+                '개운함 (Refreshment)',
+                style: TextStyle(
+                  color: AppTheme.secondaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${sleepState.selfRefreshmentScore}점',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    _getRefreshmentLabel(sleepState.selfRefreshmentScore),
+                    style: const TextStyle(color: Colors.white70, fontSize: 16),
+                  ),
+                ],
+              ),
               SliderTheme(
                 data: SliderTheme.of(context).copyWith(
                   activeTrackColor: AppTheme.secondaryColor,
                   inactiveTrackColor: Colors.white24,
                   thumbColor: Colors.white,
+                  trackHeight: 6.0,
                   overlayColor: AppTheme.secondaryColor.withOpacity(0.2),
                 ),
                 child: Slider(
-                  value: sleepState.qualityScore.toDouble(),
-                  min: 1,
-                  max: 5,
-                  divisions: 4,
-                  label: _getEmojiForScore(sleepState.qualityScore),
-                  onChanged: (val) => notifier.updateQuality(val.round()),
+                  value: sleepState.selfRefreshmentScore.toDouble(),
+                  min: 0,
+                  max: 100,
+                  divisions: 20,
+                  onChanged: (val) {
+                    notifier.updateRefreshmentScore(val.round());
+                    // Auto-map 0-100 to 1-5 quality score for legacy support
+                    final legacyScore = (val / 20).ceil().clamp(1, 5).toInt();
+                    notifier.updateQuality(legacyScore);
+                  },
                 ),
               ),
+
+              const SizedBox(height: 30),
+
+              // 4.2 Wake Type
               Text(
-                _getLabelForScore(sleepState.qualityScore),
+                '기상 유형',
                 style: TextStyle(
                   color: AppTheme.secondaryColor,
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-
-              // 5. Factors (Alarm & Tags)
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                activeColor: AppTheme.secondaryColor, // Green/Lime
-                title: const Text(
-                  '알람 없이 눈이 떠졌나요?',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+              const SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                subtitle: Text(
-                  '자연스러운 기상은 꿀잠의 증거예요',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
-                    fontSize: 12,
-                  ),
-                ),
-                value: sleepState.isNaturalWake,
-                onChanged: notifier.toggleNaturalWake,
-              ),
-
-              const SizedBox(height: 12),
-
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                activeColor: AppTheme.secondaryColor,
-                title: const Text(
-                  '한 번에 일어났나요?',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                subtitle: Text(
-                  '알람 끄고 다시 잠들지 않았어요',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    fontSize: 12,
-                  ),
-                ),
-                value: sleepState.isImmediateWake,
-                onChanged: notifier.toggleImmediateWake,
-              ),
-
-              const SizedBox(height: 24),
-
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '수면에 영향을 준 요인이 있나요?', // Updated Label
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                child: Column(
+                  children: [
+                    SwitchListTile(
+                      activeColor: AppTheme.secondaryColor,
+                      title: const Text(
+                        '알람 없이 일어났나요?',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      value: sleepState.isNaturalWake,
+                      onChanged: notifier.toggleNaturalWake,
+                    ),
+                    const Divider(color: Colors.white10),
+                    SwitchListTile(
+                      activeColor: AppTheme.secondaryColor,
+                      title: const Text(
+                        '알람 끄고 바로 일어났나요?',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      subtitle: const Text(
+                        '다시 잠들지 않았어요 (No Snooze)',
+                        style: TextStyle(color: Colors.white54, fontSize: 12),
+                      ),
+                      value: sleepState.isImmediateWake,
+                      onChanged: notifier.toggleImmediateWake,
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
 
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: SleepNotifier.factorTags.map((tag) {
-                  final isSelected = sleepState.selectedTags.contains(tag);
-                  return ZestFilterChip(
-                    label: tag,
-                    isSelected: isSelected,
-                    onSelected: (_) => notifier.toggleTag(tag),
-                  );
-                }).toList(),
+              const SizedBox(height: 30),
+
+              // 4.3 Categorized Factors
+              Text(
+                '수면 영향 요인',
+                style: TextStyle(
+                  color: AppTheme.secondaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
+              const SizedBox(height: 16),
+
+              ...SleepNotifier.categorizedTags.entries.map((entry) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
+                      child: Text(
+                        entry.key,
+                        style: const TextStyle(
+                          color: Colors.white54,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: entry.value.map((tag) {
+                        final isSelected = sleepState.selectedTags.contains(
+                          tag,
+                        );
+                        return ZestFilterChip(
+                          label: tag,
+                          isSelected: isSelected,
+                          onSelected: (_) => notifier.toggleTag(tag),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                );
+              }),
 
               const SizedBox(height: 40),
 
@@ -322,6 +380,12 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
                   onPressed: sleepState.isSaving
                       ? null
                       : () async {
@@ -329,7 +393,8 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('수면 기록이 저장되었습니다. 🌙'),
+                                content: Text('수면 기록이 저장되었습니다. ⚡️'),
+                                backgroundColor: Color(0xFF1E2632),
                               ),
                             );
                             context.pop();
@@ -337,7 +402,14 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                         },
                   child: sleepState.isSaving
                       ? const CircularProgressIndicator()
-                      : const Text('저장하기', style: TextStyle(fontSize: 18)),
+                      : const Text(
+                          '충전 완료 (Save)',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 40),
@@ -363,7 +435,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
+              color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.white24),
             ),
@@ -381,37 +453,74 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
     );
   }
 
-  String _getEmojiForScore(int score) {
-    switch (score) {
-      case 1:
-        return '🧟';
-      case 2:
-        return '😫';
-      case 3:
-        return '😐';
-      case 4:
-        return '🙂';
-      case 5:
-        return '✨';
-      default:
-        return '😐';
-    }
+  Widget _buildGoldenHourBanner(SleepState sleepState) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: sleepState.isGoldenHour
+            ? AppColors.seedingSun.withOpacity(0.1)
+            : Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: sleepState.isGoldenHour
+              ? AppColors.seedingSun.withOpacity(0.4)
+              : Colors.transparent,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            sleepState.isGoldenHour
+                ? Icons.battery_charging_full_rounded
+                : Icons.battery_std_rounded,
+            color: sleepState.isGoldenHour
+                ? AppColors.seedingSun
+                : Colors.white54,
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                sleepState.isGoldenHour ? 'Golden Hour 달성! ✨' : '수면 사이클 확인',
+                style: TextStyle(
+                  color: sleepState.isGoldenHour
+                      ? AppColors.seedingSun
+                      : Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '${sleepState.sleepCycles.toStringAsFixed(1)} 사이클 (약 ${(sleepState.sleepCycles * 90).round()}분)',
+                style: TextStyle(
+                  color: sleepState.isGoldenHour
+                      ? AppColors.seedingSun.withOpacity(0.8)
+                      : Colors.white54,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  String _getLabelForScore(int score) {
-    switch (score) {
-      case 1:
-        return '정말 피곤해요';
-      case 2:
-        return '조금 힘들어요';
-      case 3:
-        return '그저 그래요';
-      case 4:
-        return '개운해요';
-      case 5:
-        return '상쾌해요!';
-      default:
-        return '보통이에요';
-    }
+  String _getRefreshmentLabel(int score) {
+    if (score >= 90) return '✨ 날아갈 것 같아요';
+    if (score >= 70) return '🙂 상쾌해요';
+    if (score >= 50) return '😐 괜찮아요';
+    if (score >= 30) return '😫 피곤해요';
+    return '🧟 좀비 상태...';
+  }
+
+  String _getLatencyLabel(int minutes) {
+    if (minutes <= 5) return '🚀 기절 (5분 미만)';
+    if (minutes <= 15) return '😌 양호 (15분)';
+    if (minutes <= 30) return '🤔 보통 (30분)';
+    return '😵 뒤척임 (1시간 이상)';
   }
 }

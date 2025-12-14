@@ -12,13 +12,22 @@ class SleepRecord {
   late DateTime bedTime;
   late DateTime wakeTime;
 
-  int durationMinutes = 0; // Calculated duration
+  // Scientific Analysis Fields
+  DateTime? lightsOutTime; // When user tried to sleep
+  int? sleepLatencyMinutes; // Time to fall asleep
+  int? wasoMinutes; // Wake After Sleep Onset
 
-  int qualityScore = 3; // 1-5 Scale
+  int durationMinutes = 0; // Calculated duration (TST)
+  double? sleepEfficiency; // (TST / TIB) * 100
 
+  // Subjective Fields
+  int qualityScore = 3; // 1-5 Scale (General feel)
+  int? selfRefreshmentScore; // 0-100 (Morning check-in slider)
+
+  // Flags
   bool isNaturalWake = false; // True if woke up without alarm
-
   bool isImmediateWake = true; // True if woke up at once (no snooze)
+  int snoozeCount = 0; // Number of snoozes
 
   List<String> tags = []; // Factors
 }
