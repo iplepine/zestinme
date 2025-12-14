@@ -57,7 +57,11 @@
 
 #### Step 5: Memo (한줄 메모) [NEW]
 *   "더 남기고 싶은 기록이 있나요?" (Optional).
-*   Input: Text Field (Max 100 chars).
+*   Input: Text Field (Max 100 chars) or Voice Input (STT).
+    *   **Mic Button:** Toggle voice recognition.
+    *   **Animation:** Pulse animation when listening.
+    *   **Auto-Scroll:** Ensure "Listening" indicator is visible.
+    *   **Auto-Stop:** Automatically stop listening after 2 seconds of silence.
 
 *   **A. 섭취 (Ingestion):** ☕ #카페인_오후, 🍺 #알코올, 🍗 #야식, 🍽 #공복
 *   **B. 활동 (Activity):** 📱 #스크린타임, 🏃 #격한운동_저녁, 📖 #독서/명상, 💤 #낮잠

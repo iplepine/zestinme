@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:zestinme/app/theme/app_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -410,7 +411,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                   child: sleepState.isSaving
                       ? const CircularProgressIndicator()
                       : const Text(
-                          '충전 완료 (Save)',
+                          '충전 완료',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -563,10 +564,25 @@ class _MemoSectionState extends State<_MemoSection> {
   void _startListening() async {
     if (!_isSpeechEnabled) return;
 
+    // Auto-Scroll to make sure this section is visible
+    // Wait a bit for keyboard or UI changes if any, though here it might be just visibility
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) {
+        Scrollable.ensureVisible(
+          context,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+          alignment: 0.5, // Center the widget in the viewport
+        );
+      }
+    });
+
     await _speechToText.listen(
+      pauseFor: const Duration(
+        seconds: 3,
+      ), // Auto-stop after 3 seconds of silence
       onResult: (result) {
         if (mounted) {
-          // Update controller and notify change
           setState(() {
             _controller.text = result.recognizedWords;
             widget.onChanged(result.recognizedWords);
@@ -646,10 +662,19 @@ class _MemoSectionState extends State<_MemoSection> {
         if (_isListening)
           Padding(
             padding: const EdgeInsets.only(top: 8.0, left: 4.0),
-            child: Text(
-              '듣고 있어요... 👂',
-              style: TextStyle(color: AppTheme.primaryColor, fontSize: 12),
-            ),
+            child:
+                Text(
+                      '듣고 있어요... 👂',
+                      style: TextStyle(
+                        color: AppTheme.primaryColor,
+                        fontSize: 12,
+                      ),
+                    )
+                    .animate(
+                      onPlay: (controller) => controller.repeat(reverse: true),
+                    )
+                    .fade(begin: 0.5, end: 1.0, duration: 600.ms)
+                    .scaleXY(begin: 1.0, end: 1.1, duration: 600.ms),
           ),
       ],
     );
