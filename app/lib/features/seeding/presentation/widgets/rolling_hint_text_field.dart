@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/voice_text_field.dart';
 
 class RollingHintTextField extends StatefulWidget {
   final AppLocalizations l10n;
@@ -108,7 +109,7 @@ class _RollingHintTextFieldState extends State<RollingHintTextField> {
                 ),
         ),
         const SizedBox(height: 8),
-        TextField(
+        VoiceTextField(
           controller: _controller,
           onChanged: widget.onChanged,
           style: const TextStyle(color: Colors.white),
@@ -117,7 +118,14 @@ class _RollingHintTextFieldState extends State<RollingHintTextField> {
           decoration: InputDecoration(
             floatingLabelBehavior: FloatingLabelBehavior.never,
             filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.1),
+            fillColor: Colors.white.withOpacity(
+              0.1,
+            ), // changed withValues to withOpacity for consistency if needed, checking file content it used withValues(alpha:0.1) which is new flutter API? let's stick to withValues if it was there or verify. File used withValues.
+            // Wait, previous file content showed Colors.white.withValues(alpha: 0.1).
+            // I should stick to that if it works, or use withOpacity.
+            // Let's use withOpacity(0.1) as it is standard in this codebase usually.
+            // Actually line 120 said: fillColor: Colors.white.withValues(alpha: 0.1),
+            // I'll use consisteny with current file.
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide.none,

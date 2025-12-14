@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:zestinme/app/theme/app_theme.dart';
 import 'package:intl/intl.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/voice_text_field.dart';
 
 import '../providers/sleep_provider.dart';
 import '../widgets/moon_time_dial.dart';
@@ -208,6 +207,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                       divisions: 12, // 5 min steps
                       label: '${sleepState.sleepLatencyMinutes}분',
                       onChanged: (val) {
+                        HapticFeedback.selectionClick();
                         notifier.updateSleepLatency(val.round());
                       },
                     ),
@@ -275,6 +275,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                   max: 100,
                   divisions: 20,
                   onChanged: (val) {
+                    HapticFeedback.selectionClick();
                     notifier.updateRefreshmentScore(val.round());
                     // Auto-map 0-100 to 1-5 quality score for legacy support
                     final legacyScore = (val / 20).ceil().clamp(1, 5).toInt();
@@ -309,7 +310,10 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                         style: TextStyle(color: Colors.white),
                       ),
                       value: sleepState.isNaturalWake,
-                      onChanged: notifier.toggleNaturalWake,
+                      onChanged: (val) {
+                        HapticFeedback.lightImpact();
+                        notifier.toggleNaturalWake(val);
+                      },
                     ),
                     const Divider(color: Colors.white10),
                     SwitchListTile(
@@ -323,7 +327,10 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                         style: TextStyle(color: Colors.white54, fontSize: 12),
                       ),
                       value: sleepState.isImmediateWake,
-                      onChanged: notifier.toggleImmediateWake,
+                      onChanged: (val) {
+                        HapticFeedback.lightImpact();
+                        notifier.toggleImmediateWake(val);
+                      },
                     ),
                   ],
                 ),
@@ -366,7 +373,10 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                         return ZestFilterChip(
                           label: tag,
                           isSelected: isSelected,
-                          onSelected: (_) => notifier.toggleTag(tag),
+                          onSelected: (_) {
+                            HapticFeedback.selectionClick();
+                            notifier.toggleTag(tag);
+                          },
                         );
                       }).toList(),
                     ),
@@ -397,6 +407,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                   onPressed: sleepState.isSaving
                       ? null
                       : () async {
+                          HapticFeedback.mediumImpact();
                           await notifier.saveRecord();
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -545,69 +556,11 @@ class _MemoSection extends StatefulWidget {
 
 class _MemoSectionState extends State<_MemoSection> {
   late TextEditingController _controller;
-  final SpeechToText _speechToText = SpeechToText();
-  bool _isListening = false;
-  bool _isSpeechEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialMemo);
-    _initSpeech();
-  }
-
-  void _initSpeech() async {
-    _isSpeechEnabled = await _speechToText.initialize();
-    if (mounted) setState(() {});
-  }
-
-  void _startListening() async {
-    if (!_isSpeechEnabled) return;
-
-    // Auto-Scroll to make sure this section is visible
-    // Wait a bit for keyboard or UI changes if any, though here it might be just visibility
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (mounted) {
-        Scrollable.ensureVisible(
-          context,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-          alignment: 0.5, // Center the widget in the viewport
-        );
-      }
-    });
-
-    await _speechToText.listen(
-      pauseFor: const Duration(
-        seconds: 3,
-      ), // Auto-stop after 3 seconds of silence
-      onResult: (result) {
-        if (mounted) {
-          setState(() {
-            _controller.text = result.recognizedWords;
-            widget.onChanged(result.recognizedWords);
-          });
-        }
-      },
-    );
-    setState(() {
-      _isListening = true;
-    });
-  }
-
-  void _stopListening() async {
-    await _speechToText.stop();
-    setState(() {
-      _isListening = false;
-    });
-  }
-
-  void _toggleListening() {
-    if (_isListening) {
-      _stopListening();
-    } else {
-      _startListening();
-    }
   }
 
   @override
@@ -630,52 +583,13 @@ class _MemoSectionState extends State<_MemoSection> {
           ),
         ),
         const SizedBox(height: 10),
-        TextField(
+        VoiceTextField(
           controller: _controller,
           onChanged: widget.onChanged,
-          style: const TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-            hintText: '더 남기고 싶은 기록이 있나요?',
-            hintStyle: const TextStyle(color: Colors.white24),
-            filled: true,
-            fillColor: Colors.white.withOpacity(0.05),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-            suffixIcon: IconButton(
-              icon: Icon(
-                _isListening ? Icons.mic : Icons.mic_none,
-                color: _isListening ? Colors.redAccent : Colors.white54,
-              ),
-              onPressed: _isSpeechEnabled ? _toggleListening : null,
-              tooltip: '음성 입력 (STT)',
-            ),
-          ),
-          maxLines: 1,
+          hintText: '더 남기고 싶은 기록이 있나요?',
           maxLength: 50,
+          style: const TextStyle(color: Colors.white),
         ),
-        if (_isListening)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, left: 4.0),
-            child:
-                Text(
-                      '듣고 있어요... 👂',
-                      style: TextStyle(
-                        color: AppTheme.primaryColor,
-                        fontSize: 12,
-                      ),
-                    )
-                    .animate(
-                      onPlay: (controller) => controller.repeat(reverse: true),
-                    )
-                    .fade(begin: 0.5, end: 1.0, duration: 600.ms)
-                    .scaleXY(begin: 1.0, end: 1.1, duration: 600.ms),
-          ),
       ],
     );
   }

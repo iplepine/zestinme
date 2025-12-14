@@ -24,6 +24,10 @@
 *   **Concept:** **The Golden Hour & Sleep Battery**
 *   **Moon Time Dial:** 24시간 원형 다이얼 시계.
     *   **Golden Hour Marker:** 나의 최적 취침 시간 구간(예: 23:15~23:45)을 별무리로 하이라이팅.
+    *   **Interaction:** Circular slider (dual knob).
+        *   **Haptic Feedback:**
+            *   **Start Drag:** Light Impact.
+            *   **End Drag:** Medium Impact.
 *   **Sleep Battery:** 다이얼 중앙에 오늘의 **수면 효율(Sleep Efficiency)**에 따른 배터리 잔량 표시.
     *   🔋 Green (90%↑): "완전 충전! 상쾌한 하루 되세요."
     *   🔋 Yellow (85~89%): "적절한 휴식입니다."
@@ -59,9 +63,12 @@
 *   "더 남기고 싶은 기록이 있나요?" (Optional).
 *   Input: Text Field (Max 100 chars) or Voice Input (STT).
     *   **Mic Button:** Toggle voice recognition.
-    *   **Animation:** Pulse animation when listening.
-    *   **Auto-Scroll:** Ensure "Listening" indicator is visible.
-    *   **Auto-Stop:** Automatically stop listening after 2 seconds of silence.
+    *   **Auto-Scroll:** Scrolls to center the text field when listening starts.
+    *   **Animation:** "Listening..." text pulses (scale/fade).
+    *   **Auto-Stop:** Stops after 3 seconds of silence.
+    *   **Haptic Feedback:**
+        *   **Start:** Medium Impact.
+        *   **Stop:** Success/Light Impact.
 
 *   **A. 섭취 (Ingestion):** ☕ #카페인_오후, 🍺 #알코올, 🍗 #야식, 🍽 #공복
 *   **B. 활동 (Activity):** 📱 #스크린타임, 🏃 #격한운동_저녁, 📖 #독서/명상, 💤 #낮잠

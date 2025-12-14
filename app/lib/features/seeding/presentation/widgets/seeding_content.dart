@@ -101,6 +101,24 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
     final l10n = AppLocalizations.of(context)!;
     final pulseDuration = _getPulseDuration(seedingState.arousal);
 
+    // Haptic Feedback on Zone Change
+    ref.listen(seedingNotifierProvider, (previous, next) {
+      if (previous == null) return;
+
+      String getZone(double v, double a) {
+        if (v.abs() < 0.2 && a.abs() < 0.2) return 'neutral';
+        if (a > 0) return v > 0 ? 'highPos' : 'highNeg';
+        return v > 0 ? 'lowPos' : 'lowNeg';
+      }
+
+      final prevZone = getZone(previous.valence, previous.arousal);
+      final nextZone = getZone(next.valence, next.arousal);
+
+      if (prevZone != nextZone) {
+        HapticFeedback.selectionClick();
+      }
+    });
+
     return LayoutBuilder(
       builder: (context, constraints) {
         _center = Offset(constraints.maxWidth / 2, constraints.maxHeight / 2);

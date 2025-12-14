@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InteractiveMoonTimeDial extends StatefulWidget {
   final DateTime bedTime;
@@ -33,7 +34,12 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
         return GestureDetector(
           onPanStart: (details) => _handlePanStart(details, center),
           onPanUpdate: (details) => _handlePanUpdate(details, center),
-          onPanEnd: (_) => setState(() => _dragMode = _DragMode.none),
+          onPanEnd: (_) {
+            if (_dragMode != _DragMode.none) {
+              HapticFeedback.mediumImpact();
+            }
+            setState(() => _dragMode = _DragMode.none);
+          },
           child: CustomPaint(
             size: size,
             painter: MoonTimeDialPainter(
@@ -71,6 +77,10 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
       setState(() => _dragMode = _DragMode.wake);
     } else {
       setState(() => _dragMode = _DragMode.none);
+    }
+
+    if (_dragMode != _DragMode.none) {
+      HapticFeedback.lightImpact();
     }
   }
 
