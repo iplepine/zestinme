@@ -6,8 +6,10 @@ import 'package:zestinme/app/theme/app_theme.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+
 import '../providers/sleep_provider.dart';
 import '../widgets/moon_time_dial.dart';
+import '../../../../core/widgets/zest_filter_chip.dart';
 
 class SleepRecordScreen extends ConsumerWidget {
   const SleepRecordScreen({super.key});
@@ -128,6 +130,66 @@ class SleepRecordScreen extends ConsumerWidget {
                 ],
               ),
 
+              const SizedBox(height: 20),
+
+              // 3.5 Cycle Feedback (Golden Hour)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: sleepState.isGoldenHour
+                      ? AppColors.seedingSun.withValues(alpha: 0.2)
+                      : Colors.white.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: sleepState.isGoldenHour
+                        ? AppColors.seedingSun.withValues(alpha: 0.5)
+                        : Colors.transparent,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      sleepState.isGoldenHour
+                          ? Icons.stars_rounded
+                          : Icons.access_time_rounded,
+                      color: sleepState.isGoldenHour
+                          ? AppColors.seedingSun
+                          : Colors.white54,
+                    ),
+                    const SizedBox(width: 8),
+                    Column(
+                      children: [
+                        Text(
+                          sleepState.isGoldenHour
+                              ? 'Golden Hour 달성! ✨'
+                              : '수면 사이클 확인',
+                          style: TextStyle(
+                            color: sleepState.isGoldenHour
+                                ? AppColors.seedingSun
+                                : Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '${sleepState.sleepCycles.toStringAsFixed(1)} 사이클 (효율적으로 잤어요)',
+                          style: TextStyle(
+                            color: sleepState.isGoldenHour
+                                ? AppColors.seedingSun.withValues(alpha: 0.8)
+                                : Colors.white54,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
               const SizedBox(height: 50),
 
               // 4. Quality Slider (Emoji)
@@ -219,35 +281,10 @@ class SleepRecordScreen extends ConsumerWidget {
                 runSpacing: 8,
                 children: SleepNotifier.factorTags.map((tag) {
                   final isSelected = sleepState.selectedTags.contains(tag);
-                  return FilterChip(
-                    label: Text(tag),
-                    selected: isSelected,
-                    onSelected: (_) {
-                      notifier.toggleTag(tag);
-                      HapticFeedback.selectionClick();
-                    },
-                    elevation: 0,
-                    pressElevation: 0,
-                    showCheckmark: false,
-                    // Use a dark background explicitly as requested
-                    backgroundColor: Colors.black.withValues(alpha: 0.2),
-                    surfaceTintColor: Colors.transparent,
-                    selectedColor: AppColors.seedingChipSelected,
-                    labelStyle: TextStyle(
-                      color: isSelected
-                          ? AppColors.seedingChipTextSelected
-                          : Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(
-                        color: isSelected
-                            ? Colors.transparent
-                            : Colors.white.withValues(alpha: 0.5),
-                        width: 1,
-                      ),
-                    ),
+                  return ZestFilterChip(
+                    label: tag,
+                    isSelected: isSelected,
+                    onSelected: (_) => notifier.toggleTag(tag),
                   );
                 }).toList(),
               ),

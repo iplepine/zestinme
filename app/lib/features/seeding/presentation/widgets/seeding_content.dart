@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../providers/seeding_provider.dart';
 import 'seeding_painters.dart';
 import 'rolling_hint_text_field.dart';
+import '../../../../core/widgets/zest_filter_chip.dart';
 
 class SeedingContent extends ConsumerStatefulWidget {
   final VoidCallback? onComplete;
@@ -368,6 +369,7 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                       ),
                     ),
                     const SizedBox(height: 16),
+
                     Wrap(
                       spacing: 12,
                       runSpacing: 12,
@@ -376,36 +378,14 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                         final isSelected = seedingState.selectedTags.contains(
                           tag,
                         );
-                        return FilterChip(
-                          label: Text(localizedTag),
-                          selected: isSelected,
-                          onSelected: (selected) {
+                        return ZestFilterChip(
+                          label: localizedTag,
+                          isSelected: isSelected,
+                          onSelected: (_) {
                             ref
                                 .read(seedingNotifierProvider.notifier)
                                 .toggleTag(tag);
-                            HapticFeedback.selectionClick();
                           },
-                          elevation: 0,
-                          pressElevation: 0,
-                          showCheckmark: false,
-                          backgroundColor: Colors.transparent,
-                          surfaceTintColor: Colors.transparent,
-                          selectedColor: AppColors.seedingChipSelected,
-                          labelStyle: TextStyle(
-                            color: isSelected
-                                ? AppColors.seedingChipTextSelected
-                                : Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            side: BorderSide(
-                              color: isSelected
-                                  ? Colors.transparent
-                                  : Colors.white.withValues(alpha: 0.5),
-                              width: 1,
-                            ),
-                          ),
                         );
                       }).toList(),
                     ),

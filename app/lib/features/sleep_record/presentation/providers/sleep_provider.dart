@@ -47,6 +47,22 @@ class SleepState {
       isSaving: isSaving ?? this.isSaving,
     );
   }
+
+  // Derived Metrics (Golden Hour Logic)
+  double get sleepCycles {
+    // Basic Latency assumption: 15 minutes to fall asleep
+    // Effective Sleep = Total Duration - Latency
+    if (durationMinutes <= 15) return 0.0;
+    return (durationMinutes - 15) / 90.0;
+  }
+
+  bool get isGoldenHour {
+    if (durationMinutes < 180) return false; // Minimum 3 hours
+    final cycles = sleepCycles;
+    // Check if within +/- 10% of a full cycle (approx +/- 9 mins)
+    final diff = (cycles - cycles.round()).abs();
+    return diff <= 0.1;
+  }
 }
 
 @riverpod
