@@ -35,7 +35,7 @@ class SleepState {
     this.sleepLatencyMinutes = 15, // Default average
     this.durationMinutes = 0,
     this.isNaturalWake = false,
-    this.isImmediateWake = true,
+    this.isImmediateWake = false,
     this.selectedTags = const [],
     this.memo,
     this.isSaving = false,
