@@ -23,6 +23,7 @@ class InteractiveMoonTimeDial extends StatefulWidget {
 
 class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
   _DragMode _dragMode = _DragMode.none;
+  static const int _minuteStep = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +104,8 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
     if (angleFrom12 < 0) angleFrom12 += 2 * pi;
 
     final targetMinutesFrom12 = (angleFrom12 / (2 * pi)) * 720;
+    final snappedTargetMinutesFrom12 =
+        _snapMinutesOnDial(targetMinutesFrom12, step: _minuteStep);
 
     // Get current time's minutes from 12
     DateTime currentBase;
@@ -116,7 +119,7 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
         (currentBase.hour % 12) * 60 + currentBase.minute;
 
     // Calculate smallest difference (shortest path)
-    var diff = targetMinutesFrom12 - currentMinutesFrom12;
+    var diff = snappedTargetMinutesFrom12 - currentMinutesFrom12;
     // Normalize diff to -360..360 (half circle)
     if (diff > 360) diff -= 720;
     if (diff < -360) diff += 720;
@@ -126,20 +129,42 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
     if (minutesToAdd == 0) return;
 
     if (_dragMode == _DragMode.bed) {
-      final newBedTime = widget.inBedTime.add(Duration(minutes: minutesToAdd));
+      final newBedTime = _snapDateTimeToMinuteStep(
+        widget.inBedTime.add(Duration(minutes: minutesToAdd)),
+        step: _minuteStep,
+      );
       final duration = widget.wakeTime.difference(newBedTime).inMinutes;
       // Constraint: Minimum 120 minutes (2 hours) sleep for meaningful data
       if (duration >= 120) {
         widget.onInBedTimeChanged(newBedTime);
       }
     } else if (_dragMode == _DragMode.wake) {
-      final newWakeTime = widget.wakeTime.add(Duration(minutes: minutesToAdd));
+      final newWakeTime = _snapDateTimeToMinuteStep(
+        widget.wakeTime.add(Duration(minutes: minutesToAdd)),
+        step: _minuteStep,
+      );
       final duration = newWakeTime.difference(widget.inBedTime).inMinutes;
       // Constraint: Minimum 120 minutes (2 hours) sleep for meaningful data
       if (duration >= 120) {
         widget.onWakeTimeChanged(newWakeTime);
       }
     }
+  }
+
+  double _snapMinutesOnDial(double minutes, {required int step}) {
+    // Dial uses 12h face => 0..720 minutes.
+    // Snap to nearest `step` minutes, then normalize back into 0..719.
+    final snapped = (minutes / step).round() * step;
+    final normalized = snapped % 720;
+    return normalized.toDouble();
+  }
+
+  DateTime _snapDateTimeToMinuteStep(DateTime dt, {required int step}) {
+    final snappedMinute = (dt.minute / step).round() * step;
+    if (snappedMinute >= 60) {
+      return DateTime(dt.year, dt.month, dt.day, dt.hour + 1, 0);
+    }
+    return DateTime(dt.year, dt.month, dt.day, dt.hour, snappedMinute);
   }
 
   double _coordToAngle(Offset coord, Offset center) {

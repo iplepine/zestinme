@@ -264,6 +264,7 @@ class SleepTimePin extends StatefulWidget {
 
 class _SleepTimePinState extends State<SleepTimePin> {
   late Offset _position;
+  static const int _minuteStep = 5;
 
   @override
   void initState() {
@@ -308,7 +309,7 @@ class _SleepTimePinState extends State<SleepTimePin> {
 
     // 시침 위치에서 시간과 분 계산
     final hour = (normalizedAngle / 30).floor() % 12;
-    final minute = ((normalizedAngle % 30) * 2).round();
+    final minute = _snapMinuteToStep(((normalizedAngle % 30) * 2).round());
 
     final displayHour = hour == 0 ? 12 : hour;
 
@@ -321,6 +322,12 @@ class _SleepTimePinState extends State<SleepTimePin> {
     );
   }
 
+  int _snapMinuteToStep(int minute) {
+    final snapped = (minute / _minuteStep).round() * _minuteStep;
+    // Allow DateTime normalization for 60 -> next hour, but keep values stable.
+    return snapped;
+  }
+
   void _onPanUpdate(DragUpdateDetails details) {
     if (!widget.isEnabled || widget.onTimeChanged == null) return;
 
@@ -331,9 +338,6 @@ class _SleepTimePinState extends State<SleepTimePin> {
     // 시계 중심에서 터치 위치로의 각도 계산
     final angle = math.atan2(dy, dx);
 
-    // 핀을 원의 둘레에 배치 (터치 위치와 정확히 일치하도록)
-    _updatePinPosition(angle);
-
     // 시침 각도로 변환 (12시 방향이 0도가 되도록)
     final hourHandAngle = angle + math.pi / 2;
     final normalizedAngle = hourHandAngle < 0
@@ -341,6 +345,10 @@ class _SleepTimePinState extends State<SleepTimePin> {
         : hourHandAngle;
 
     final newTime = _hourHandAngleToTime(normalizedAngle);
+
+    // 5분 단위 스냅: 핀 위치도 스냅된 시간 기준으로 맞춤
+    _updatePinPosition(_timeToHourHandAngle(newTime));
+
     if (newTime != widget.time) {
       widget.onTimeChanged!(newTime);
     }
@@ -408,6 +416,7 @@ class WakeTimePin extends StatefulWidget {
 
 class _WakeTimePinState extends State<WakeTimePin> {
   late Offset _position;
+  static const int _minuteStep = 5;
 
   @override
   void initState() {
@@ -452,7 +461,7 @@ class _WakeTimePinState extends State<WakeTimePin> {
 
     // 시침 위치에서 시간과 분 계산
     final hour = (normalizedAngle / 30).floor() % 12;
-    final minute = ((normalizedAngle % 30) * 2).round();
+    final minute = _snapMinuteToStep(((normalizedAngle % 30) * 2).round());
 
     final displayHour = hour == 0 ? 12 : hour;
 
@@ -465,6 +474,11 @@ class _WakeTimePinState extends State<WakeTimePin> {
     );
   }
 
+  int _snapMinuteToStep(int minute) {
+    final snapped = (minute / _minuteStep).round() * _minuteStep;
+    return snapped;
+  }
+
   void _onPanUpdate(DragUpdateDetails details) {
     if (!widget.isEnabled || widget.onTimeChanged == null) return;
 
@@ -475,9 +489,6 @@ class _WakeTimePinState extends State<WakeTimePin> {
     // 시계 중심에서 터치 위치로의 각도 계산
     final angle = math.atan2(dy, dx);
 
-    // 핀을 원의 둘레에 배치 (터치 위치와 정확히 일치하도록)
-    _updatePinPosition(angle);
-
     // 시침 각도로 변환 (12시 방향이 0도가 되도록)
     final hourHandAngle = angle + math.pi / 2;
     final normalizedAngle = hourHandAngle < 0
@@ -485,6 +496,10 @@ class _WakeTimePinState extends State<WakeTimePin> {
         : hourHandAngle;
 
     final newTime = _hourHandAngleToTime(normalizedAngle);
+
+    // 5분 단위 스냅: 핀 위치도 스냅된 시간 기준으로 맞춤
+    _updatePinPosition(_timeToHourHandAngle(newTime));
+
     if (newTime != widget.time) {
       widget.onTimeChanged!(newTime);
     }
