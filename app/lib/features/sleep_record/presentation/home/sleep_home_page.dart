@@ -90,7 +90,7 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
 
         // Initial record for night mode
         final initialRecord = SleepRecord()
-          ..bedTime = sleepTime
+          ..inBedTime = sleepTime
           ..wakeTime =
               sleepTime // Placeholder
           ..date = sleepTime
@@ -123,14 +123,14 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
 
         // 12시간 내에 잠든 시간은 있지만 일어난 시간이 잠든시간과 같은(미완성) 기록 찾기
         final incompleteRecord = records.where((record) {
-          final timeDiff = now.difference(record.bedTime).inHours;
+          final timeDiff = now.difference(record.inBedTime).inHours;
           // Core SleepRecord logic: if bedTime equals wakeTime, it might be incomplete
           // (assuming we set them same on creation if wake time unknown, though usually we set wakeTime=bedTime+duration)
           // Let's assume if duration is 0 or very small, it's incomplete.
           final isIncomplete = record.durationMinutes < 10;
 
           print(
-            'Record: ${record.bedTime} -> ${record.wakeTime}, timeDiff: $timeDiff, isIncomplete: $isIncomplete',
+            'Record: ${record.inBedTime} -> ${record.wakeTime}, timeDiff: $timeDiff, isIncomplete: $isIncomplete',
           );
 
           return timeDiff <= 12 && isIncomplete;
@@ -159,7 +159,7 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
         return AlertDialog(
           title: const Text('기존 기록 수정'),
           content: Text(
-            '${existingRecord.bedTime.hour.toString().padLeft(2, '0')}:${existingRecord.bedTime.minute.toString().padLeft(2, '0')}에 잠든 기록이 있습니다.\n'
+            '${existingRecord.inBedTime.hour.toString().padLeft(2, '0')}:${existingRecord.inBedTime.minute.toString().padLeft(2, '0')}에 잠든 기록이 있습니다.\n'
             '이 기록에 일어난 시간을 추가하시겠습니까?',
           ),
           actions: [
@@ -194,7 +194,7 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
     final sleepTime = wakeTime.subtract(const Duration(hours: 8));
 
     final initialRecord = SleepRecord()
-      ..bedTime = sleepTime
+      ..inBedTime = sleepTime
       ..wakeTime = wakeTime
       ..date = wakeTime
       ..qualityScore = 3
@@ -210,7 +210,7 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
     // id는 existingRecord에 있으므로 복사됨
     final updatedRecord = SleepRecord()
       ..id = existingRecord.id
-      ..bedTime = existingRecord.bedTime
+      ..inBedTime = existingRecord.inBedTime
       ..wakeTime = DateTime(now.year, now.month, now.day, now.hour, now.minute)
       ..date = existingRecord.date
       ..qualityScore = existingRecord.qualityScore
@@ -264,7 +264,7 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
         ).add(const Duration(minutes: 10));
 
         final initialRecord = SleepRecord()
-          ..bedTime = sleepTime
+          ..inBedTime = sleepTime
           ..wakeTime = sleepTime
           ..date = sleepTime
           ..qualityScore = 3

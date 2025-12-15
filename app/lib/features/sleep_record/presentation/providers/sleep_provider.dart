@@ -7,7 +7,7 @@ part 'sleep_provider.g.dart';
 
 class SleepState {
   final int? id; // For editing existing records
-  final DateTime bedTime;
+  final DateTime inBedTime;
   final DateTime wakeTime;
 
   // New Fields
@@ -27,7 +27,7 @@ class SleepState {
 
   const SleepState({
     this.id,
-    required this.bedTime,
+    required this.inBedTime,
     required this.wakeTime,
     this.qualityScore = 3,
     this.selfRefreshmentScore = 50, // Default mid
@@ -43,7 +43,7 @@ class SleepState {
 
   SleepState copyWith({
     int? id,
-    DateTime? bedTime,
+    DateTime? inBedTime,
     DateTime? wakeTime,
     int? qualityScore,
     int? selfRefreshmentScore,
@@ -58,7 +58,7 @@ class SleepState {
   }) {
     return SleepState(
       id: id ?? this.id,
-      bedTime: bedTime ?? this.bedTime,
+      inBedTime: inBedTime ?? this.inBedTime,
       wakeTime: wakeTime ?? this.wakeTime,
       qualityScore: qualityScore ?? this.qualityScore,
       selfRefreshmentScore: selfRefreshmentScore ?? this.selfRefreshmentScore,
@@ -107,7 +107,7 @@ class SleepNotifier extends _$SleepNotifier {
     final yesterdayNight = todayMorning.subtract(const Duration(hours: 8));
 
     return SleepState(
-      bedTime: yesterdayNight,
+      inBedTime: yesterdayNight,
       wakeTime: todayMorning,
       durationMinutes: 480, // 8 hours
     );
@@ -116,7 +116,7 @@ class SleepNotifier extends _$SleepNotifier {
   void initializeWithRecord(SleepRecord record) {
     state = state.copyWith(
       id: record.id,
-      bedTime: record.bedTime,
+      inBedTime: record.inBedTime,
       wakeTime: record.wakeTime,
       qualityScore: record.qualityScore,
       selfRefreshmentScore: record.selfRefreshmentScore ?? 50,
@@ -130,10 +130,10 @@ class SleepNotifier extends _$SleepNotifier {
     );
   }
 
-  void updateTimes(DateTime bedTime, DateTime wakeTime) {
-    int duration = wakeTime.difference(bedTime).inMinutes;
+  void updateTimes(DateTime inBedTime, DateTime wakeTime) {
+    int duration = wakeTime.difference(inBedTime).inMinutes;
     state = state.copyWith(
-      bedTime: bedTime,
+      inBedTime: inBedTime,
       wakeTime: wakeTime,
       durationMinutes: duration,
     );
@@ -195,7 +195,7 @@ class SleepNotifier extends _$SleepNotifier {
 
       final record = SleepRecord()
         ..date = state.wakeTime
-        ..bedTime = state.bedTime
+        ..inBedTime = state.inBedTime
         ..wakeTime = state.wakeTime
         ..durationMinutes = state.durationMinutes
         ..qualityScore = state.qualityScore

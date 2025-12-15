@@ -25,6 +25,9 @@
 *   **Moon Time Dial:** 24시간 원형 다이얼 시계.
     *   **Golden Hour Marker:** 나의 최적 취침 시간 구간(예: 23:15~23:45)을 별무리로 하이라이팅.
     *   **Interaction:** Circular slider (dual knob).
+        *   **Knob 1 (Moon):** 침대에 누운 시간 (`in_bed_time`).
+        *   **Knob 2 (Sun):** 기상 시간 (`wake_time`).
+        *   **Feedback:** "실제 잠든 시간(`sleep_onset_time`)은 `in_bed_time` + `sleep_latency`로 자동 계산됩니다."
         *   **Haptic Feedback:**
             *   **Start Drag:** Light Impact.
             *   **End Drag:** Medium Impact.
@@ -40,8 +43,9 @@
 *   "오늘 몇 시에 일어나셨나요?"
 *   기본값: 알람 해제 시간 or 핸드폰 사용 시작 시간.
 
-#### Step 2: Sleep Latency (입면 잠복기) [NEW]
-*   "자려고 누워서 잠들기까지 얼마나 걸렸나요?"
+#### Step 2: Sleep Latency (잠들기까지 걸린 시간) [NEW]
+*   "침대에 눕고 나서 실제 잠들기까지(Sleep Onset) 얼마나 걸렸나요?"
+*   **Variable:** `sleep_latency` (뒤척인 시간)
 *   Input: Segmented Control or Slider
     *   🚀 5분 미만 (기절)
     *   😌 15분 (양호)

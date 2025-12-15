@@ -43,7 +43,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
 
     // Format times for display
     final timeFormat = DateFormat('HH:mm');
-    final bedTimeStr = timeFormat.format(sleepState.bedTime);
+    final bedTimeStr = timeFormat.format(sleepState.inBedTime);
     final wakeTimeStr = timeFormat.format(sleepState.wakeTime);
 
     final durationHours = sleepState.durationMinutes ~/ 60;
@@ -86,13 +86,13 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                   height: 240,
                   width: 240,
                   child: InteractiveMoonTimeDial(
-                    bedTime: sleepState.bedTime,
+                    inBedTime: sleepState.inBedTime,
                     wakeTime: sleepState.wakeTime,
-                    onBedTimeChanged: (newTime) {
+                    onInBedTimeChanged: (newTime) {
                       notifier.updateTimes(newTime, sleepState.wakeTime);
                     },
                     onWakeTimeChanged: (newTime) {
-                      notifier.updateTimes(sleepState.bedTime, newTime);
+                      notifier.updateTimes(sleepState.inBedTime, newTime);
                     },
                   ),
                 ),
@@ -104,16 +104,16 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildTimeColumn(context, '취침', bedTimeStr, () async {
+                  _buildTimeColumn(context, '침대에 누운 시간', bedTimeStr, () async {
                     final time = await showTimePicker(
                       context: context,
-                      initialTime: TimeOfDay.fromDateTime(sleepState.bedTime),
+                      initialTime: TimeOfDay.fromDateTime(sleepState.inBedTime),
                     );
                     if (time != null) {
                       final newBedTime = DateTime(
-                        sleepState.bedTime.year,
-                        sleepState.bedTime.month,
-                        sleepState.bedTime.day,
+                        sleepState.inBedTime.year,
+                        sleepState.inBedTime.month,
+                        sleepState.inBedTime.day,
                         time.hour,
                         time.minute,
                       );
@@ -146,7 +146,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                         time.hour,
                         time.minute,
                       );
-                      notifier.updateTimes(sleepState.bedTime, newWakeTime);
+                      notifier.updateTimes(sleepState.inBedTime, newWakeTime);
                     }
                   }),
                 ],

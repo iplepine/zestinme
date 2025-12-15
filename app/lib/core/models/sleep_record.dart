@@ -9,8 +9,13 @@ class SleepRecord {
   @Index()
   late DateTime date; // The date this sleep record belongs to (usually the morning of waking up)
 
-  late DateTime bedTime;
+  // Behavior: 침대에 누운 시간
+  late DateTime inBedTime;
   late DateTime wakeTime;
+
+  // State: 실제 잠든 시간 (Derived)
+  DateTime get sleepOnsetTime =>
+      inBedTime.add(Duration(minutes: sleepLatencyMinutes ?? 0));
 
   // Scientific Analysis Fields
   DateTime? lightsOutTime; // When user tried to sleep

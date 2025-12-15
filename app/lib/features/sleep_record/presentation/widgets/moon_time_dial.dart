@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class InteractiveMoonTimeDial extends StatefulWidget {
-  final DateTime bedTime;
+  final DateTime inBedTime;
   final DateTime wakeTime;
-  final ValueChanged<DateTime> onBedTimeChanged;
+  final ValueChanged<DateTime> onInBedTimeChanged;
   final ValueChanged<DateTime> onWakeTimeChanged;
 
   const InteractiveMoonTimeDial({
     super.key,
-    required this.bedTime,
+    required this.inBedTime,
     required this.wakeTime,
-    required this.onBedTimeChanged,
+    required this.onInBedTimeChanged,
     required this.onWakeTimeChanged,
   });
 
@@ -43,7 +43,7 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
           child: CustomPaint(
             size: size,
             painter: MoonTimeDialPainter(
-              bedTime: widget.bedTime,
+              inBedTime: widget.inBedTime,
               wakeTime: widget.wakeTime,
               baseColor: Colors.white.withValues(alpha: 0.3),
               activeColor: const Color(0xFF9575CD),
@@ -59,7 +59,7 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
     final touchPos = details.localPosition;
     final touchAngle = _coordToAngle(touchPos, center);
 
-    final bedAngle = _dateTimeToAngle(widget.bedTime);
+    final bedAngle = _dateTimeToAngle(widget.inBedTime);
     final wakeAngle = _dateTimeToAngle(widget.wakeTime);
 
     // Check distance in angular space
@@ -107,7 +107,7 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
     // Get current time's minutes from 12
     DateTime currentBase;
     if (_dragMode == _DragMode.bed) {
-      currentBase = widget.bedTime;
+      currentBase = widget.inBedTime;
     } else {
       currentBase = widget.wakeTime;
     }
@@ -126,15 +126,15 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
     if (minutesToAdd == 0) return;
 
     if (_dragMode == _DragMode.bed) {
-      final newBedTime = widget.bedTime.add(Duration(minutes: minutesToAdd));
+      final newBedTime = widget.inBedTime.add(Duration(minutes: minutesToAdd));
       final duration = widget.wakeTime.difference(newBedTime).inMinutes;
       // Constraint: Minimum 120 minutes (2 hours) sleep for meaningful data
       if (duration >= 120) {
-        widget.onBedTimeChanged(newBedTime);
+        widget.onInBedTimeChanged(newBedTime);
       }
     } else if (_dragMode == _DragMode.wake) {
       final newWakeTime = widget.wakeTime.add(Duration(minutes: minutesToAdd));
-      final duration = newWakeTime.difference(widget.bedTime).inMinutes;
+      final duration = newWakeTime.difference(widget.inBedTime).inMinutes;
       // Constraint: Minimum 120 minutes (2 hours) sleep for meaningful data
       if (duration >= 120) {
         widget.onWakeTimeChanged(newWakeTime);
@@ -187,14 +187,14 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
 enum _DragMode { none, bed, wake }
 
 class MoonTimeDialPainter extends CustomPainter {
-  final DateTime bedTime;
+  final DateTime inBedTime;
   final DateTime wakeTime;
   final Color baseColor;
   final Color activeColor;
   final Color handlerColor;
 
   MoonTimeDialPainter({
-    required this.bedTime,
+    required this.inBedTime,
     required this.wakeTime,
     required this.baseColor,
     required this.activeColor,
@@ -241,7 +241,7 @@ class MoonTimeDialPainter extends CustomPainter {
       return (totalMinutes / 720.0) * 2 * pi - pi / 2;
     }
 
-    double startAngle = dateTimeToAngle(bedTime);
+    double startAngle = dateTimeToAngle(inBedTime);
     double endAngle = dateTimeToAngle(wakeTime);
 
     // Calculate sweep angle correctly for cross-midnight/PM-AM logic on 12h face
@@ -400,6 +400,7 @@ class MoonTimeDialPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant MoonTimeDialPainter oldDelegate) {
-    return oldDelegate.bedTime != bedTime || oldDelegate.wakeTime != wakeTime;
+    return oldDelegate.inBedTime != inBedTime ||
+        oldDelegate.wakeTime != wakeTime;
   }
 }

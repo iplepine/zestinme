@@ -62,15 +62,17 @@ class SleepRecord {
   @Index()
   late DateTime date; // 기록 기준 날짜 (기상일)
 
-  late DateTime bedTime; // 침대에 누운 시간 (In Bed Time)
+  late DateTime inBedTime; // 침대에 누운 시간 (Behavior)
   late DateTime wakeTime; // 침대에서 일어난 시간 (Out of Bed Time)
   
   // 과학적 분석용 필드
   DateTime? lightsOutTime; // 불 끄고 잠을 청한 시간 (수면 시도)
-  int? sleepLatencyMinutes; // 잠들기까지 걸린 시간 (분)
+  int? sleepLatencyMinutes; // 잠들기까지 걸린 시간 (Difference)
+  
+  // 계산된 메트릭 (Derived)
+  // sleepOnsetTime = inBedTime + sleepLatencyMinutes (State: 실제 잠든 시간)
   int? wasoMinutes; // 수면 중 깬 시간 합계 (Wake After Sleep Onset)
   
-  // 계산된 메트릭
   int durationMinutes = 0; // 총 수면 시간 (TST)
   double? sleepEfficiency; // 수면 효율 (%)
 

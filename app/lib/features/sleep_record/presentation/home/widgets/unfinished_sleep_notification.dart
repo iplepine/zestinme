@@ -162,7 +162,7 @@ class _NotificationContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${record.bedTime.hour.toString().padLeft(2, '0')}:${record.bedTime.minute.toString().padLeft(2, '0')}에 잠든 기록이 있습니다',
+                  '${record.inBedTime.hour.toString().padLeft(2, '0')}:${record.inBedTime.minute.toString().padLeft(2, '0')}에 잠든 기록이 있습니다',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],

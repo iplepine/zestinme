@@ -75,7 +75,7 @@ class SleepHistoryChart extends StatelessWidget {
                   getTitlesWidget: (value, meta) {
                     final record = chartData[value.toInt()];
                     final date = DateFormat('MM/dd').format(record.date);
-                    final sleepTime = DateFormat.Hm().format(record.bedTime);
+                    final sleepTime = DateFormat.Hm().format(record.inBedTime);
                     final wakeTime = DateFormat.Hm().format(record.wakeTime);
                     return SideTitleWidget(
                       axisSide: meta.axisSide,

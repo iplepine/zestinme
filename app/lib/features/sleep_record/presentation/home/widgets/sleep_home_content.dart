@@ -53,9 +53,9 @@ class SleepHomeContent extends StatelessWidget {
     // 오늘의 수면 기록 찾기
     final todayRecord = records.where((record) {
       final recordDate = DateTime(
-        record.bedTime.year,
-        record.bedTime.month,
-        record.bedTime.day,
+        record.inBedTime.year,
+        record.inBedTime.month,
+        record.inBedTime.day,
       );
       // Check explicit date if available or just bedTime matches today's date (if sleeping after midnight? actually record date usually tracks wake up)
       // Core SleepRecord 'date' is usually wake date.
@@ -105,7 +105,7 @@ class SleepHomeContent extends StatelessWidget {
             Builder(
               builder: (context) {
                 final sleepDuration = todayRecord.wakeTime.difference(
-                  todayRecord.bedTime,
+                  todayRecord.inBedTime,
                 );
                 final hours = sleepDuration.inHours;
                 final minutes = sleepDuration.inMinutes % 60;
