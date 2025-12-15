@@ -26,9 +26,8 @@ class ZestFilterChip extends StatelessWidget {
       elevation: 0,
       pressElevation: 0,
       showCheckmark: false,
-      // Dark/Transparent background for unselected, Highlight for selected
-      backgroundColor:
-          Colors.black, // Unselected chip background unified to Black
+      // Glassmorphism: Translucent white for unselected
+      backgroundColor: Colors.white.withValues(alpha: 0.1),
       surfaceTintColor: Colors.transparent,
       selectedColor: AppColors.seedingChipSelected,
       labelStyle: TextStyle(
@@ -40,7 +39,7 @@ class ZestFilterChip extends StatelessWidget {
         side: BorderSide(
           color: isSelected
               ? Colors.transparent
-              : Colors.white.withValues(alpha: 0.5),
+              : Colors.white.withValues(alpha: 0.2), // Subtle glass border
           width: 1,
         ),
       ),
