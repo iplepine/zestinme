@@ -26,4 +26,7 @@ class OnboardingDataModel {
 
   // Gardening State
   int? assignedPlantId;
+
+  // 0: Seed (Mystery), 1: Sprout, 2: Growing, 3: Bloom (Reveal)
+  int? growthStage = 0;
 }

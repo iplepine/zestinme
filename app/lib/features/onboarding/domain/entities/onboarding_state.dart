@@ -8,6 +8,7 @@ class OnboardingState {
   final String activeModuleId;
   final int? assignedPlantId;
   final bool isCompleted;
+  final int growthStage;
 
   const OnboardingState({
     required this.nickname,
@@ -19,5 +20,6 @@ class OnboardingState {
     required this.activeModuleId,
     this.assignedPlantId,
     this.isCompleted = false,
+    this.growthStage = 0,
   });
 }

@@ -150,36 +150,65 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                     // Plant Info
                     if (assignedPlant != null) ...[
                       const SizedBox(height: 20),
-                      Text(
-                            assignedPlant.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(blurRadius: 4, color: Colors.black54),
-                              ],
-                            ),
-                          )
-                          .animate()
-                          .fadeIn(delay: 500.ms)
-                          .moveY(begin: 10, end: 0),
+                      // Mystery Logic: Reveal only if fully grown (Stage 3)
+                      // Default to 0 if not set.
+                      if ((state.growthStage) < 3) ...[
+                        Text(
+                              "이름 없는 씨앗",
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(blurRadius: 4, color: Colors.black54),
+                                ],
+                              ),
+                            )
+                            .animate()
+                            .fadeIn(delay: 500.ms)
+                            .moveY(begin: 10, end: 0),
+                        const SizedBox(height: 8),
+                        const Text(
+                          "??? (아직 알 수 없음)",
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ).animate().fadeIn(delay: 800.ms),
+                      ] else ...[
+                        // Revealed Info
+                        Text(
+                              assignedPlant.name,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(blurRadius: 4, color: Colors.black54),
+                                ],
+                              ),
+                            )
+                            .animate()
+                            .fadeIn(delay: 500.ms)
+                            .moveY(begin: 10, end: 0),
 
-                      const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                      Text(
-                        assignedPlant.flowerLanguage.isNotEmpty
-                            ? "꽃말: ${assignedPlant.flowerLanguage}"
-                            : assignedPlant.scientificName,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                          fontStyle: FontStyle.italic,
-                          shadows: [
-                            Shadow(blurRadius: 4, color: Colors.black54),
-                          ],
-                        ),
-                      ).animate().fadeIn(delay: 800.ms),
+                        Text(
+                          assignedPlant.flowerLanguage.isNotEmpty
+                              ? "꽃말: ${assignedPlant.flowerLanguage}"
+                              : assignedPlant.scientificName,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                            shadows: [
+                              Shadow(blurRadius: 4, color: Colors.black54),
+                            ],
+                          ),
+                        ).animate().fadeIn(delay: 800.ms),
+                      ],
                     ],
 
                     const Spacer(),

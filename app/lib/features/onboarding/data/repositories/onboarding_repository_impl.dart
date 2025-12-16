@@ -20,7 +20,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       ..valenceScore = state.valenceScore
       ..activeModuleId = state.activeModuleId
       ..assignedPlantId = state.assignedPlantId
-      ..tutorialCompleted = true;
+      ..tutorialCompleted = true
+      ..growthStage = state.growthStage;
 
     await _dataSource.saveOnboardingData(model);
   }
@@ -45,6 +46,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       activeModuleId: data.activeModuleId,
       assignedPlantId: data.assignedPlantId,
       isCompleted: data.tutorialCompleted,
+      growthStage: data.growthStage ?? 0,
     );
   }
 }
