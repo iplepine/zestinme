@@ -42,6 +42,15 @@ class LocalDbService {
     });
   }
 
+  // Pending Caring Query
+  Future<List<EmotionRecord>> getUncaredEmotionRecords() async {
+    return await _isar.emotionRecords
+        .filter()
+        .caredAtIsNull()
+        .sortByTimestampDesc()
+        .findAll();
+  }
+
   // Range Query for Calibration/History
   Future<List<EmotionRecord>> getEmotionRecordsByDateRange(
     DateTime start,
