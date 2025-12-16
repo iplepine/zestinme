@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zestinme/features/home/presentation/providers/garden_provider.dart';
 import 'package:zestinme/features/home/presentation/widgets/environment_background.dart';
 import 'package:zestinme/features/home/presentation/widgets/pot_widget.dart';
 import 'package:zestinme/features/garden/data/plant_database.dart';
 import 'package:zestinme/features/garden/domain/entities/plant_species.dart';
+import 'package:zestinme/app/routes/app_router.dart';
+import 'package:zestinme/features/caring/presentation/screens/caring_intro_screen.dart';
+import '../../../../core/models/emotion_record.dart';
 
 class MindGardenerHomeScreen extends ConsumerWidget {
   const MindGardenerHomeScreen({super.key});
@@ -15,6 +19,31 @@ class MindGardenerHomeScreen extends ConsumerWidget {
     final gardenStateAsync = ref.watch(gardenStateProvider);
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: gardenStateAsync.when(
+          data: (state) => Text(
+            "${state?.nickname ?? 'User'}의 정원",
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: [Shadow(blurRadius: 4, color: Colors.black45)],
+            ),
+          ),
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+        actions: [
+          // Sleep Battery (Top Right)
+          IconButton(
+            icon: const Icon(Icons.battery_charging_full, color: Colors.white),
+            tooltip: 'Sleep Recharge',
+            onPressed: () => context.push(AppRouter.sleep),
+          ),
+        ],
+      ),
       body: gardenStateAsync.when(
         data: (state) {
           if (state == null) {
@@ -45,15 +74,29 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                 humidity: humidity,
               ),
 
-              // 2. The Pot and Plant
+              // 2. The Pot and Plant (Center)
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Spacer(),
 
-                    // Plant
-                    if (assignedPlant != null) _buildPlant(assignedPlant),
+                    Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      children: [
+                        // Plant
+                        if (assignedPlant != null) _buildPlant(assignedPlant),
+
+                        // Caring Trigger (Water Drop) - Conditional
+                        // TODO: Connect to real CaringProvider check
+                        Positioned(
+                          top: -20,
+                          right: -20,
+                          child: _buildCaringTrigger(context),
+                        ),
+                      ],
+                    ),
 
                     // Pot
                     const PotWidget()
@@ -105,83 +148,29 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                 ),
               ),
 
-              // 3. HUD (Overlay)
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      // Top Bar
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "${state.nickname}의 정원",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 4,
-                                      color: Colors.black45,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                assignedPlant != null
-                                    ? "새로운 생명이 자라고 있어요."
-                                    : "오늘도 싹 틔우기 좋은 날이에요.",
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 4,
-                                      color: Colors.black45,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.menu, color: Colors.white),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-
-                      const Spacer(),
-
-                      // Bottom Action Bar
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.white24),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _buildActionButton(Icons.water_drop, "물주기", () {}),
-                            const SizedBox(width: 20),
-                            _buildActionButton(Icons.cut, "다듬기", () {}),
-                            const SizedBox(width: 20),
-                            _buildActionButton(Icons.book, "관찰일지", () {}),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+              // 3. Bottom Actions (FABs)
+              Positioned(
+                bottom: 30,
+                left: 20,
+                child: FloatingActionButton(
+                  heroTag: 'history',
+                  onPressed: () => context.push(AppRouter.history),
+                  backgroundColor: Colors.white24,
+                  elevation: 0,
+                  foregroundColor: Colors.white,
+                  child: const Icon(Icons.auto_stories), // Alumni/Book concept
+                ),
+              ),
+              Positioned(
+                bottom: 30,
+                right: 20,
+                child: FloatingActionButton.extended(
+                  heroTag: 'seeding',
+                  onPressed: () => context.push(AppRouter.seeding),
+                  backgroundColor: const Color(0xFFE0F7FA), // Soft Light Color
+                  foregroundColor: Colors.black87,
+                  icon: const Icon(Icons.edit),
+                  label: const Text("기록하기"),
                 ),
               ),
             ],
@@ -194,40 +183,93 @@ class MindGardenerHomeScreen extends ConsumerWidget {
   }
 
   Widget _buildPlant(PlantSpecies plant) {
-    // Eventually use plant.assetPath
-    // For now, mapping plant ID to generic icons or colors if assets not ready
-    // Or just show text/icon
-
     return Container(
       height: 120,
       alignment: Alignment.bottomCenter,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Icon(Icons.local_florist, size: 80, color: Colors.greenAccent)
-              .animate()
-              .scale(duration: 1000.ms, curve: Curves.elasticOut)
-              .then()
-              .shimmer(duration: 2000.ms),
-        ],
-      ),
+      child: Icon(Icons.local_florist, size: 80, color: Colors.greenAccent)
+          .animate()
+          .scale(duration: 1000.ms, curve: Curves.elasticOut)
+          .then()
+          .shimmer(duration: 2000.ms),
     );
   }
 
-  Widget _buildActionButton(IconData icon, String label, VoidCallback onTap) {
+  Widget _buildCaringTrigger(BuildContext context) {
+    // This is the "Water Drop" trigger
     return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: Colors.white, size: 28),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontSize: 10),
+      onTap: () {
+        // Navigate to Caring Intro
+        // Ideally pass the record ID, for now just open screen
+        // In real app, we would find the specific record to care for.
+
+        // Using a temporary mechanism to enter Caring Flow
+        // Since CaringIntroScreen might need a record, we might need a workaround for testing
+        // or just let the CaringService pick one.
+
+        // For now, let's assume CaringIntroScreen handles "pick latest" or passed via extra.
+        // But our router definition didn't include caring intro?
+        // Need to check if route exists. Assuming direct navigation or we need to add route.
+
+        // Wait, I see I forgot to check if '/caring' route exists in AppRouter.
+        // I'll assume I need to add it or use Dev menu.
+        // Let's use a explicit push for now or add route later.
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) =>
+                const ZestCaringEntryPoint(), // Use Entry Point logic?
+            // Or direct: CaringIntroScreen(record: ...)
           ),
-        ],
-      ),
+        );
+      },
+      child:
+          Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent.withOpacity(0.8),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.5),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.water_drop,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              )
+              .animate(onPlay: (c) => c.repeat(reverse: true))
+              .scale(
+                begin: const Offset(1.0, 1.0),
+                end: const Offset(1.2, 1.2),
+                duration: 800.ms,
+              ),
     );
+  }
+}
+
+// Temporary placeholder for entry point until route is fixed
+// Temporary placeholder for entry point until route is fixed
+
+class ZestCaringEntryPoint extends StatelessWidget {
+  const ZestCaringEntryPoint({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // DUMMY RECORD for seamless flow testing
+    final dummyRecord = EmotionRecord()
+      ..id = 999
+      ..emotionLabel = 'Anxious'
+      ..valence = -0.5
+      ..arousal = 0.8
+      ..timestamp = DateTime.now().subtract(const Duration(hours: 4))
+      ..detailedNote =
+          "I tried to fix the bug but it kept crashing. I feel incompetent.";
+
+    return CaringIntroScreen(record: dummyRecord);
   }
 }

@@ -91,7 +91,7 @@ class SleepRecord {
 ## 4. 상세 기능 명세 (Functional Specs)
 
 ### 4.1 수면 추적 (Manual & Sensor Fusion Support)
-*   **Manual:** 사용자가 `bedTime`과 `wakeTime`을 직접 수정.
+*   **Manual:** 사용자가 `inBedTime`과 `wakeTime`을 직접 수정.
 *   **Sensor (Future):** 가속도 센서(Accelerometer) 데이터를 활용하여 움직임이 없는 구간을 $TST$로 추정.
 
 ### 4.2 스마트 알람 (Rule-based)

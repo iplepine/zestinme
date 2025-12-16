@@ -18,7 +18,7 @@ class DevScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _buildNavTile(context, '🌿 Home Dashboard', '/'),
+          _buildNavTile(context, '🌿 Mind Gardener (Home)', '/'),
           _buildNavTile(context, '🌱 Seeding (New Catch)', '/seeding'),
           _buildNavTile(
             context,

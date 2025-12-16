@@ -5,14 +5,14 @@ import '../../features/seeding/presentation/screens/seeding_screen.dart';
 import '../../features/sleep_record/presentation/screens/sleep_record_screen.dart';
 import '../../features/dev/presentation/screens/dev_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
-import '../../features/happy_record/presentation/dashboard/home_dashboard_page.dart';
-import '../../features/main/presentation/main_screen.dart';
+
 import '../../features/auth/presentation/login_page.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/onboarding/presentation/providers/onboarding_provider.dart';
+import '../../features/home/presentation/screens/mind_gardener_home_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -39,7 +39,7 @@ GoRouter goRouter(GoRouterRef ref) {
         '/seeding',
         '/history',
         '/login',
-        '/old-home',
+
         '/sleep', // Allow Sleep Screen
         '/',
       ];
@@ -66,7 +66,7 @@ GoRouter goRouter(GoRouterRef ref) {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const HomeDashboardPage(),
+        builder: (context, state) => const MindGardenerHomeScreen(),
       ),
       GoRoute(
         path: '/onboarding',
@@ -89,10 +89,6 @@ GoRouter goRouter(GoRouterRef ref) {
 
       // Legacy Routes (kept for reference if needed, or can be removed)
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
-      GoRoute(
-        path: '/old-home',
-        builder: (context, state) => const MainScreen(),
-      ),
     ],
   );
 }
