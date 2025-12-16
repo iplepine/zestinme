@@ -6,12 +6,16 @@ class CoachingCard extends StatefulWidget {
   final String question;
   final VoidCallback onAnswerSubmitted;
   final ValueChanged<String> onAnswerChanged;
+  final String submitLabel;
+  final IconData submitIcon;
 
   const CoachingCard({
     super.key,
     required this.question,
     required this.onAnswerSubmitted,
     required this.onAnswerChanged,
+    this.submitLabel = "가치 발견",
+    this.submitIcon = Icons.auto_awesome,
   });
 
   @override
@@ -44,6 +48,26 @@ class _CoachingCardState extends State<CoachingCard>
       TweenSequenceItem(tween: ConstantTween(-pi / 2), weight: 50),
       TweenSequenceItem(tween: Tween(begin: -pi / 2, end: 0.0), weight: 50),
     ]).animate(_controller);
+  }
+
+  // NOTE: Logic to update text controller if question changes (for parent rebuilds)
+  @override
+  void didUpdateWidget(CoachingCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.question != oldWidget.question) {
+      // If question changed (new stage), reset card to front and clear text?
+      // For now, let parent handle state reset.
+      // But we should clear the text controller if the parent says so,
+      // however parent clears the _answer string but text controller has its own state.
+      // Ideally parent passes initialValue.
+      // We will just clear it if the question is different, assuming new question = empty answer.
+      _textController.clear();
+      if (!_isFront) {
+        // Force flip back to front instantly or animate?
+        // Let's animate back to front to show new question.
+        _flipCard();
+      }
+    }
   }
 
   @override
@@ -236,8 +260,8 @@ class _CoachingCardState extends State<CoachingCard>
               const Spacer(),
               FilledButton.icon(
                 onPressed: widget.onAnswerSubmitted,
-                icon: const Icon(Icons.auto_awesome, size: 18),
-                label: const Text("가치 발견"), // Shortened for better fit
+                icon: Icon(widget.submitIcon, size: 18),
+                label: Text(widget.submitLabel),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppTheme.primaryColor,
                   foregroundColor: Colors.black,

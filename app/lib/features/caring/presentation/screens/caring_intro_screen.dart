@@ -30,6 +30,11 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
   bool _showCard = false;
   String _answer = '';
 
+  // Multi-stage State
+  int _currentStage = 0;
+  int _maxDepth = 0; // 0, 1, 2
+  String _currentQuestion = '';
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +54,13 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
       begin: 1.0,
       end: 1.05,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    // Initialize Logic
+    _maxDepth = CaringService.calculateCoachingDepth(widget.record);
+    _currentQuestion = CaringService.selectCoachingQuestion(
+      widget.record,
+      _currentStage,
+    );
   }
 
   @override
@@ -64,7 +76,31 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
   }
 
   void _onAnswerSubmitted() {
-    // Show Bottom Sheet
+    if (_answer.isNotEmpty) {
+      // TODO: Save intermediate answer to DB or List
+      // For now, we just proceed. Ideally we append to coachingAnswer using a delimiter or JSON.
+    }
+
+    if (_currentStage < _maxDepth) {
+      // Go to Next Stage
+      setState(() {
+        _currentStage++;
+        _currentQuestion = CaringService.selectCoachingQuestion(
+          widget.record,
+          _currentStage,
+        );
+        _answer = ''; // Reset answer for new question
+        // Note: Ideally we should flip the card back to front or animate transition.
+        // For MVP, we'll just update the state which updates the card content.
+        // A key change on the widget can force rebuild/animation if needed.
+      });
+    } else {
+      // Final Stage -> Value Discovery
+      _showValueDiscovery();
+    }
+  }
+
+  void _showValueDiscovery() {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -83,17 +119,17 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
 
   Future<void> _completeCaring() async {
     // Save via Provider
-    final question = CaringService.selectCoachingQuestion(widget.record);
+    // Note: We are only saving the *last* question/answer pair in this MVP implementation
+    // or we should aggregate them. For now, let's just save the final one or the one that triggered completion.
 
-    // Safety check for answer (though UI shouldn't allow empty submit ideally)
-    if (_answer.isEmpty) return;
+    if (_answer.isEmpty && _currentStage == 0)
+      return; // Prevent empty save if nothing happened
 
-    // Save
     await ref
         .read(caringProvider.notifier)
         .completeCaring(
           record: widget.record,
-          question: question,
+          question: _currentQuestion,
           answer: _answer,
           valueTags: [], // TODO: Pass values from Sheet
         );
@@ -118,7 +154,6 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
   Widget build(BuildContext context) {
     // Night Garden Theme Colors
     const backgroundColor = Color(0xFF101418); // Deep Night
-    final question = CaringService.selectCoachingQuestion(widget.record);
 
     return Theme(
       data: AppTheme.darkTheme,
@@ -157,9 +192,7 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
             SafeArea(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 600),
-                child: _showCard
-                    ? _buildCardView(question)
-                    : _buildIntroContent(),
+                child: _showCard ? _buildCardView() : _buildIntroContent(),
               ),
             ),
           ],
@@ -236,7 +269,7 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
                   ),
                 ),
               ),
-              // Visual correction: Shift up slightly to optically balance with text
+              // Visual correction
               const SizedBox(height: 20),
             ],
           ),
@@ -246,7 +279,7 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
         Positioned(
           left: 0,
           right: 0,
-          bottom: 40, // Consistent bottom padding
+          bottom: 40,
           child: Center(
             child: FilledButton.icon(
               onPressed: _onStartCaring,
@@ -267,25 +300,54 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
     );
   }
 
-  Widget _buildCardView(String question) {
+  Widget _buildCardView() {
+    // Button Label Logic
+    final isLastStage = _currentStage >= _maxDepth;
+    final buttonLabel = isLastStage ? "가치 발견" : "더 깊이 보기";
+    final buttonIcon = isLastStage ? Icons.auto_awesome : Icons.arrow_downward;
+
     return Padding(
-      key: const ValueKey('Card'),
+      key: ValueKey(
+        'Card_$_currentStage',
+      ), // Unique Key to force rebuild/transition if we animate
       padding: const EdgeInsets.all(24.0),
       child: Column(
         children: [
-          // Spacer flex ratios determine vertical position.
-          // Less flex above + More flex below = Shift Upwards
           const Spacer(flex: 2),
 
+          // Progress Dots (Optional, for now just simple dots indicator)
+          if (_maxDepth > 0)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(_maxDepth + 1, (index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: index <= _currentStage
+                          ? AppTheme.primaryColor
+                          : Colors.white.withOpacity(0.2),
+                    ),
+                  );
+                }),
+              ),
+            ),
+
           CoachingCard(
-            question: question,
+            question: _currentQuestion,
+            submitLabel: buttonLabel,
+            submitIcon: buttonIcon,
             onAnswerChanged: (val) {
               _answer = val;
             },
             onAnswerSubmitted: _onAnswerSubmitted,
           ),
 
-          const Spacer(flex: 3), // More space below pushes it up
+          const Spacer(flex: 3),
         ],
       ),
     );

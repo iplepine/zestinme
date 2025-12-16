@@ -110,7 +110,7 @@ class SeedingNotifier extends _$SeedingNotifier {
       // But simple logic for now: always update based on the last added or first one.
       // Let's use the most recently added one logic if we append, but usually it's better to stick to the 'primary' emotion (first one).
       // Let's just use the first tag.
-      newQuestion = CoachingQuestions.getQuestionForTag(currentTags.first);
+      newQuestion = CoachingQuestions.getQuestion(currentTags.first, 0);
     }
 
     state = state.copyWith(
