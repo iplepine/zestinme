@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/models/emotion_record.dart';
+import '../../../../features/caring/presentation/screens/caring_intro_screen.dart';
 
 class DevScreen extends StatelessWidget {
   const DevScreen({super.key});
@@ -24,7 +26,31 @@ class DevScreen extends StatelessWidget {
             '/sleep',
           ), // Added Sleep Screen
           _buildNavTile(context, '🚀 Onboarding', '/onboarding'),
-          _buildNavTile(context, '� Garden Journal (History)', '/history'),
+          _buildNavTile(context, ' Garden Journal (History)', '/history'),
+          const Divider(color: Colors.white24),
+
+          ListTile(
+            title: const Text(
+              '💧 Test Caring Flow (Dummy)',
+              style: TextStyle(color: Colors.cyanAccent),
+            ),
+            trailing: const Icon(Icons.science, color: Colors.cyanAccent),
+            onTap: () {
+              // Creating a dummy record
+              final dummyRecord = EmotionRecord()
+                ..timestamp = DateTime.now().subtract(const Duration(hours: 5))
+                ..emotionLabel = 'Anxious'
+                ..valence = 3.0
+                ..arousal = 7.0;
+
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => CaringIntroScreen(record: dummyRecord),
+                ),
+              );
+            },
+          ),
+
           const Divider(color: Colors.white24),
           _buildNavTile(context, '🔒 Login (Legacy)', '/login'),
         ],

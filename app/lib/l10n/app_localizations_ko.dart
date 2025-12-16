@@ -209,13 +209,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get seeding_mood_tired => '지침...';
 
   @override
-  String get seeding_mood_angry => '화난';
+  String get seeding_mood_angry => '분노';
 
   @override
-  String get seeding_mood_anxious => '불안한';
+  String get seeding_mood_anxious => '불안';
 
   @override
-  String get seeding_mood_excited => '신나는';
+  String get seeding_mood_excited => '신남';
 
   @override
   String get seeding_mood_joyful => '기쁨';
@@ -230,67 +230,67 @@ class AppLocalizationsKo extends AppLocalizations {
   String get seeding_mood_relieved => '안도';
 
   @override
-  String get seeding_mood_resentful => '억울한';
+  String get seeding_mood_resentful => '억울함';
 
   @override
-  String get seeding_mood_overwhelmed => '압도된';
+  String get seeding_mood_overwhelmed => '압도됨';
 
   @override
-  String get seeding_mood_jealous => '질투나는';
+  String get seeding_mood_jealous => '질투';
 
   @override
-  String get seeding_mood_annoyed => '짜증난';
+  String get seeding_mood_annoyed => '짜증';
 
   @override
-  String get seeding_mood_sad => '슬픈';
+  String get seeding_mood_sad => '슬픔';
 
   @override
-  String get seeding_mood_disappointed => '실망한';
+  String get seeding_mood_disappointed => '실망';
 
   @override
-  String get seeding_mood_bored => '지루한';
+  String get seeding_mood_bored => '지루함';
 
   @override
-  String get seeding_mood_lonely => '외로운';
+  String get seeding_mood_lonely => '외로움';
 
   @override
   String get seeding_mood_guilty => '죄책감';
 
   @override
-  String get seeding_mood_envious => '부러운';
+  String get seeding_mood_envious => '부러움';
 
   @override
-  String get seeding_mood_proud => '자랑스러운';
+  String get seeding_mood_proud => '뿌듯함';
 
   @override
-  String get seeding_mood_inspired => '영감 받은';
+  String get seeding_mood_inspired => '영감';
 
   @override
-  String get seeding_mood_enthusiastic => '열정적인';
+  String get seeding_mood_enthusiastic => '열정';
 
   @override
-  String get seeding_mood_curious => '호기심 찬';
+  String get seeding_mood_curious => '호기심';
 
   @override
-  String get seeding_mood_amused => '유쾌한';
+  String get seeding_mood_amused => '즐거움';
 
   @override
-  String get seeding_mood_relaxed => '편안한';
+  String get seeding_mood_relaxed => '편안함';
 
   @override
-  String get seeding_mood_grateful => '감사하는';
+  String get seeding_mood_grateful => '감사';
 
   @override
-  String get seeding_mood_content => '만족스러운';
+  String get seeding_mood_content => '만족';
 
   @override
-  String get seeding_mood_serene => '평온한';
+  String get seeding_mood_serene => '평온';
 
   @override
-  String get seeding_mood_trusting => '신뢰하는';
+  String get seeding_mood_trusting => '신뢰';
 
   @override
-  String get seeding_mood_reflective => '사색적인';
+  String get seeding_mood_reflective => '사색';
 
   @override
   String get seeding_hint_trigger => '무엇이 이 기분을 만들었나요?';

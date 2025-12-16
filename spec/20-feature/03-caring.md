@@ -39,11 +39,12 @@
 
 ## 3. 비즈니스 로직 (Business Logic)
 
-### 3.1 Trigger Condition (알림 조건)
-*   **Default Rule:** 감정 기록 후 **4시간** 뒤.
-*   **Exceptions:**
-    *   *수면 시간 (Sleep Mode):* 사용자의 수면 설정 시간(예: 23:00 ~ 07:00)에는 알림을 보내지 않고, 기상 후(08:00)에 모아서 알림.
-    *   *Too Many:* 미완료 Caring이 3개 이상 쌓이면, "정원에 목마른 식물들이 기다려요"라며 묶음 알림(Batch Notification) 발송.
+### 3.1 Trigger Condition & Exceptions
+*   **Default Rule:** 감정 기록 후 **4시간** 경과 시 (Incubation).
+*   **Nightly Wrap-up (취침 전 정리):**
+    *   사용자가 '수면 기록(Sleep Record)'을 시작하거나 밤 10시 이후 앱을 실행하면, 4시간이 지나지 않았더라도 **당일의 모든 미완료(Pending) 씨앗을 돌볼 수 있도록 허용**합니다.
+    *   *Rationale:* "하루의 감정 찌꺼기를 안고 잠들지 않도록 돕습니다."
+*   **Batching:** 미완료 Caring이 3개 이상이면 묶음 알림 발송.
 
 ### 3.2 Question Selection (Coaching Algorithm)
 *   입력된 `Emotion Tag`를 Key로 하여 `CoachingQuestions` 테이블(Constant)에서 질문을 추출합니다.

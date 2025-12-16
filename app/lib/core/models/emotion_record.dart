@@ -36,6 +36,15 @@ class EmotionRecord {
   List<String>? bodySensations;
   String? automaticThought;
 
+  // Caring (Nurturing) Fields
+  DateTime? caredAt; // When nurturing was completed
+  String? coachingQuestionId; // ID of the question asked
+  String? coachingAnswer; // User's answer/reflection
+  List<String>? valueTags; // Discovered core values
+
+  @ignore
+  bool get isCared => caredAt != null;
+
   // Action
   String? actionTaken;
 }
