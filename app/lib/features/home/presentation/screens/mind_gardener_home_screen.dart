@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:zestinme/features/home/presentation/providers/garden_provider.dart';
-import 'package:zestinme/features/home/presentation/widgets/environment_background.dart';
+import 'package:zestinme/features/home/presentation/widgets/scenic_background.dart';
 import 'package:zestinme/features/home/presentation/widgets/mystery_plant_widget.dart';
 import 'package:zestinme/features/home/presentation/widgets/small_pond_widget.dart';
 import 'package:zestinme/features/home/presentation/widgets/wind_chime_widget.dart';
@@ -31,9 +31,10 @@ class MindGardenerHomeScreen extends ConsumerWidget {
             return const Center(child: Text("정원을 찾을 수 없습니다."));
           }
 
-          final sunlight = state.sunlightLevel;
-          final temperature = state.temperatureLevel;
-          final humidity = state.humidityLevel;
+          // Weather variables unused in Aurora mode for now
+          // final sunlight = state.sunlightLevel;
+          // final temperature = state.temperatureLevel;
+          // final humidity = state.humidityLevel;
 
           PlantSpecies? assignedPlant;
           if (state.assignedPlantId != null) {
@@ -50,11 +51,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
             fit: StackFit.expand, // Fill screen
             children: [
               // --- Layer 0: Background (Sky & Atmosphere) ---
-              EnvironmentBackground(
-                sunlight: sunlight,
-                temperature: temperature,
-                humidity: humidity,
-              ),
+              const ScenicBackground(),
 
               // --- Layer 1: Mid-Ground (Plant & Ground) ---
 

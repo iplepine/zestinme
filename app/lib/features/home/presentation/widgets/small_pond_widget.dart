@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zestinme/core/widgets/interactive_prop.dart';
 
 class SmallPondWidget extends StatelessWidget {
   final VoidCallback onTap;
@@ -7,7 +8,7 @@ class SmallPondWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InteractiveProp(
       onTap: onTap,
       child: Container(
         width: 120,

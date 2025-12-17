@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zestinme/core/widgets/interactive_prop.dart';
 
 class WindChimeWidget extends StatelessWidget {
   final VoidCallback onTap;
@@ -7,8 +8,10 @@ class WindChimeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InteractiveProp(
       onTap: onTap,
+      animationType: PropAnimationType.swing,
+      intensity: 0.5,
       child: Container(
         width: 60,
         height: 120,

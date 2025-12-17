@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zestinme/core/widgets/interactive_prop.dart';
 
 class SleepBatteryWidget extends StatelessWidget {
   final double chargeLevel; // 0.0 to 1.0
@@ -23,8 +24,9 @@ class SleepBatteryWidget extends StatelessWidget {
       batteryColor = Colors.grey.withOpacity(0.5); // Empty/Unknown
     }
 
-    return GestureDetector(
+    return InteractiveProp(
       onTap: onTap,
+      animationType: PropAnimationType.float,
       child: Container(
         padding: const EdgeInsets.all(8),
         child: CustomPaint(

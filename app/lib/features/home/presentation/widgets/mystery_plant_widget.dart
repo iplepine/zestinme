@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:zestinme/core/widgets/interactive_prop.dart';
 
 class MysteryPlantWidget extends StatelessWidget {
   final int growthStage;
@@ -26,8 +27,10 @@ class MysteryPlantWidget extends StatelessWidget {
         // 1. Plant Body (Clickable implies "Record Mind" or just Interaction)
         // Spec says: Center Object -> Function: Seeding (Record).
         // Spec says: Idle -> Tap Interaction -> [Record Sheet]
-        GestureDetector(
+        // Spec says: Idle -> Tap Interaction -> [Record Sheet]
+        InteractiveProp(
           onTap: onPlantTap,
+          animationType: PropAnimationType.pulse,
           child: AnimatedContainer(
             duration: const Duration(seconds: 1),
             width: 200 + (growthStage * 20.0),
@@ -86,14 +89,7 @@ class MysteryPlantWidget extends StatelessWidget {
         break;
     }
 
-    return Icon(icon, size: 100 + (stage * 30.0), color: color)
-        .animate(onPlay: (c) => c.repeat(reverse: true))
-        .scaleXY(
-          begin: 1.0,
-          end: 1.05,
-          duration: 2000.ms,
-          curve: Curves.easeInOut,
-        );
+    return Icon(icon, size: 100 + (stage * 30.0), color: color);
   }
 
   Widget _buildWaterDrop() {
