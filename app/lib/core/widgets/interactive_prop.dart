@@ -13,6 +13,8 @@ class InteractiveProp extends StatefulWidget {
   final VoidCallback? onTap;
   final PropAnimationType animationType;
   final double intensity; // 0.0 ~ 1.0 (Movement range)
+  final Alignment alignment;
+  final Duration duration;
 
   const InteractiveProp({
     super.key,
@@ -20,6 +22,8 @@ class InteractiveProp extends StatefulWidget {
     this.onTap,
     this.animationType = PropAnimationType.none,
     this.intensity = 1.0,
+    this.alignment = Alignment.center,
+    this.duration = const Duration(seconds: 4),
   });
 
   @override
@@ -34,11 +38,17 @@ class _InteractivePropState extends State<InteractiveProp>
   @override
   void initState() {
     super.initState();
-    // Idle Animation Controller (Continuous)
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 4),
-    )..repeat(reverse: true);
+    _controller = AnimationController(vsync: this, duration: widget.duration)
+      ..repeat(reverse: true);
+  }
+
+  @override
+  void didUpdateWidget(InteractiveProp oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.duration != widget.duration) {
+      _controller.duration = widget.duration;
+      _controller.repeat(reverse: true);
+    }
   }
 
   @override
@@ -84,7 +94,7 @@ class _InteractivePropState extends State<InteractiveProp>
             // Rotate slightly (-5 deg ~ 5 deg)
             return Transform.rotate(
               angle: math.sin(t * math.pi * 2) * 0.05 * widget.intensity,
-              alignment: Alignment.topCenter, // Swing from top
+              alignment: widget.alignment, // Use custom alignment
               child: child,
             );
           case PropAnimationType.pulse:

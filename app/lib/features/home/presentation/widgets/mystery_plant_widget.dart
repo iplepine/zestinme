@@ -28,13 +28,14 @@ class MysteryPlantWidget extends StatelessWidget {
         // Spec says: Center Object -> Function: Seeding (Record).
         // Spec says: Idle -> Tap Interaction -> [Record Sheet]
         // Spec says: Idle -> Tap Interaction -> [Record Sheet]
-        InteractiveProp(
+        GestureDetector(
+          // Outer hit box if needed, or rely on children
           onTap: onPlantTap,
-          animationType: PropAnimationType.pulse,
           child: AnimatedContainer(
             duration: const Duration(seconds: 1),
-            width: 200 + (growthStage * 20.0),
-            height: 300 + (growthStage * 30.0),
+            width: 300,
+            height: 400,
+            alignment: Alignment.bottomCenter,
             child: _buildPlantImage(growthStage),
           ),
         ),
@@ -66,30 +67,49 @@ class MysteryPlantWidget extends StatelessWidget {
   }
 
   Widget _buildPlantImage(int stage) {
-    // Placeholder shapes for now
-    IconData icon;
-    Color color;
-    switch (stage) {
-      case 0:
-        icon = Icons.circle; // Seed
-        color = Colors.brown;
-        break;
-      case 1:
-        icon = Icons.grass; // Sprout
-        color = Colors.lightGreen;
-        break;
-      case 2:
-        icon = Icons.local_florist; // Growing
-        color = Colors.green;
-        break;
-      case 3:
-      default:
-        icon = Icons.filter_vintage; // Bloom
-        color = Colors.pinkAccent;
-        break;
-    }
+    // 1. Determine Assets (Demo: Crystal Pot & Rosemary)
+    const potAsset = 'assets/images/pots/pot_crystal.png';
+    String plantAsset;
 
-    return Icon(icon, size: 100 + (stage * 30.0), color: color);
+    // Map stage to asset
+    // Demo: Show Rosemary Full for ALL stages so user can see the asset
+    // (In production, replace with proper stage assets)
+    plantAsset = 'assets/images/plants/rosemary_full.png';
+
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      clipBehavior: Clip.none,
+      children: [
+        // Layer A: Pot (Base) - Truly Static
+        Image.asset(
+          potAsset,
+          width: 180,
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+        ),
+
+        // Layer B: Plant (Growth)
+        Positioned(
+          bottom: 60, // Align with pot rim
+          child: InteractiveProp(
+            animationType: PropAnimationType.swing,
+            // Image has padding, so root is likely near center-bottom, not absolute bottom.
+            // (0.0, 0.5) roughly pivots around the lower-mid section (stem).
+            alignment: const Alignment(0.0, 0.5),
+            intensity: 1.8, // Reduced sway (~5 deg)
+            duration: const Duration(seconds: 6), // Slower, more relaxing
+            onTap: onPlantTap,
+            child: Image.asset(
+              plantAsset,
+              width: 180 + (stage * 15.0),
+              height: 180 + (stage * 15.0),
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildWaterDrop() {

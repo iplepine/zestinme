@@ -11,6 +11,7 @@ class WindChimeWidget extends StatelessWidget {
     return InteractiveProp(
       onTap: onTap,
       animationType: PropAnimationType.swing,
+      alignment: Alignment.topCenter, // Wind chime hangs from top
       intensity: 0.5,
       child: Container(
         width: 60,
