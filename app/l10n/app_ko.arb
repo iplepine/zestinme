@@ -37,6 +37,13 @@
   "temperature": "온도",
   "giveWaterButton": "물 주기",
   "pruneButton": "가지치기",
+  
+  "home_checkIn": "체크인",
+  "home_history": "아카이브",
+  "home_caring": "다듬기",
+  "home_seeding": "마음 기록",
+  "home_sleep": "수면 충전",
+  "home_garden_title_format": "{user}의 내면 정원",
 
   "onboarding_step1Title": "지금 이 순간,\n당신의 마음은 어떤 이름인가요?",
   "onboarding_step2Title": "그 '{emotion}'{particle}\n어디에서 시작되었나요?",

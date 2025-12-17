@@ -12,6 +12,7 @@ import 'package:zestinme/features/caring/presentation/screens/caring_intro_scree
 import 'package:zestinme/features/home/presentation/providers/home_provider.dart';
 import 'package:zestinme/features/home/presentation/widgets/caring_trigger_widget.dart';
 import 'package:zestinme/features/sleep_record/presentation/widgets/sleep_battery_widget.dart';
+import 'package:zestinme/core/localization/app_localizations.dart';
 
 class MindGardenerHomeScreen extends ConsumerWidget {
   const MindGardenerHomeScreen({super.key});
@@ -27,7 +28,10 @@ class MindGardenerHomeScreen extends ConsumerWidget {
         elevation: 0,
         title: gardenStateAsync.when(
           data: (state) => Text(
-            "${state?.nickname ?? 'User'}의 정원",
+            AppLocalizations.of(context).home_garden_title_format.replaceAll(
+              '{user}',
+              state?.nickname ?? 'User',
+            ),
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -42,11 +46,14 @@ class MindGardenerHomeScreen extends ConsumerWidget {
           Consumer(
             builder: (context, ref, _) {
               final homeState = ref.watch(homeProvider);
-              return SleepBatteryWidget(
-                chargeLevel: homeState.sleepEfficiency,
-                onTap: () => context
-                    .push(AppRouter.sleep)
-                    .then((_) => ref.read(homeProvider.notifier).refresh()),
+              return Tooltip(
+                message: AppLocalizations.of(context).home_sleep,
+                child: SleepBatteryWidget(
+                  chargeLevel: homeState.sleepEfficiency,
+                  onTap: () => context
+                      .push(AppRouter.sleep)
+                      .then((_) => ref.read(homeProvider.notifier).refresh()),
+                ),
               );
             },
           ),
@@ -226,6 +233,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                   backgroundColor: Colors.white24,
                   elevation: 0,
                   foregroundColor: Colors.white,
+                  tooltip: AppLocalizations.of(context).home_history,
                   child: const Icon(Icons.auto_stories), // Alumni/Book concept
                 ),
               ),
@@ -233,7 +241,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                 bottom: 30,
                 right: 20,
                 child: FloatingActionButton.extended(
-                  label: const Text("기록하기"),
+                  label: Text(AppLocalizations.of(context).home_seeding),
                   heroTag: 'seeding',
                   onPressed: () => context
                       .push(AppRouter.seeding)

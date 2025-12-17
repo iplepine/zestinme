@@ -41,7 +41,11 @@
   "home_checkIn": "Check-in",
   "home_reflection": "Reflection",
   "home_letGo": "Let Go",
-  "home_history": "History",
+  "home_history": "Archive",
+  "home_caring": "Pruning",
+  "home_seeding": "Record Mind",
+  "home_sleep": "Recharge",
+  "home_garden_title_format": "{user}'s Inner Garden",
 
   "home_question_default": "How is your heart today?",
   "home_question_tired": "Are you pushing yourself too hard?",

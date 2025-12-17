@@ -118,7 +118,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_letGo => 'Let Go';
 
   @override
-  String get home_history => 'History';
+  String get home_history => 'Archive';
+
+  @override
+  String get home_caring => 'Pruning';
+
+  @override
+  String get home_seeding => 'Record Mind';
+
+  @override
+  String get home_sleep => 'Recharge';
+
+  @override
+  String home_garden_title_format(Object user) {
+    return '$user\'s Inner Garden';
+  }
 
   @override
   String get home_question_default => 'How is your heart today?';

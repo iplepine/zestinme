@@ -317,8 +317,32 @@ abstract class AppLocalizations {
   /// No description provided for @home_history.
   ///
   /// In en, this message translates to:
-  /// **'History'**
+  /// **'Archive'**
   String get home_history;
+
+  /// No description provided for @home_caring.
+  ///
+  /// In en, this message translates to:
+  /// **'Pruning'**
+  String get home_caring;
+
+  /// No description provided for @home_seeding.
+  ///
+  /// In en, this message translates to:
+  /// **'Record Mind'**
+  String get home_seeding;
+
+  /// No description provided for @home_sleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Recharge'**
+  String get home_sleep;
+
+  /// No description provided for @home_garden_title_format.
+  ///
+  /// In en, this message translates to:
+  /// **'{user}\'s Inner Garden'**
+  String home_garden_title_format(Object user);
 
   /// No description provided for @home_question_default.
   ///

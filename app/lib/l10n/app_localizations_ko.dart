@@ -108,7 +108,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get pruneButton => '가지치기';
 
   @override
-  String get home_checkIn => 'Check-in';
+  String get home_checkIn => '체크인';
 
   @override
   String get home_reflection => 'Reflection';
@@ -117,7 +117,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get home_letGo => 'Let Go';
 
   @override
-  String get home_history => 'History';
+  String get home_history => '아카이브';
+
+  @override
+  String get home_caring => '다듬기';
+
+  @override
+  String get home_seeding => '마음 기록';
+
+  @override
+  String get home_sleep => '수면 충전';
+
+  @override
+  String home_garden_title_format(Object user) {
+    return '$user의 내면 정원';
+  }
 
   @override
   String get home_question_default => 'How is your heart today?';
