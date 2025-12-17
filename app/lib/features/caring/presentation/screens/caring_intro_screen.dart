@@ -55,11 +55,31 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
       end: 1.05,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    // Initialize Logic
+    // Initialize Logic (Calculations only)
     _maxDepth = CaringService.calculateCoachingDepth(widget.record);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_currentQuestion.isEmpty) {
+      _updateQuestion();
+    }
+  }
+
+  void _updateQuestion() {
+    final l10n = AppLocalizations.of(context);
+    // If context is invalid during dispose/init, safe check (though didChange usually safe)
+    // But l10n might be null if not found (unlikely in MaterialApp)
+
+    final localizedEmotion = widget.record.emotionLabel != null && l10n != null
+        ? l10n.getLocalizedEmotion(widget.record.emotionLabel!)
+        : widget.record.emotionLabel;
+
     _currentQuestion = CaringService.selectCoachingQuestion(
       widget.record,
       _currentStage,
+      fallbackContext: localizedEmotion,
     );
   }
 
@@ -85,10 +105,8 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
       // Go to Next Stage
       setState(() {
         _currentStage++;
-        _currentQuestion = CaringService.selectCoachingQuestion(
-          widget.record,
-          _currentStage,
-        );
+        _currentStage++;
+        _updateQuestion();
         _answer = ''; // Reset answer for new question
         // Note: Ideally we should flip the card back to front or animate transition.
         // For MVP, we'll just update the state which updates the card content.

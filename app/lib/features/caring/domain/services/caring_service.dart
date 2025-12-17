@@ -57,17 +57,21 @@ class CaringService {
   }
 
   /// Selects a question based on depth and formats it with context.
-  static String selectCoachingQuestion(EmotionRecord record, int stage) {
+  static String selectCoachingQuestion(
+    EmotionRecord record,
+    int stage, {
+    String? fallbackContext,
+  }) {
     // 1. Get Template
     final key = record.emotionLabel ?? 'Anxious'; // Default fallback
     String template = CoachingQuestions.getQuestion(key, stage);
 
     // 2. Inject Context (The "Mirror" Effect)
-    // Use detailedNote if available, otherwise use emotion label itself
+    // Use detailedNote if available, otherwise use provided fallback or emotion label
     final context =
         (record.detailedNote != null && record.detailedNote!.isNotEmpty)
         ? record.detailedNote!
-        : (record.emotionLabel ?? '이 기분'); // Fallback context
+        : (fallbackContext ?? record.emotionLabel ?? '이 기분');
 
     return template.replaceAll('{context}', context);
   }
