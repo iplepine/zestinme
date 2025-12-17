@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:zestinme/features/home/presentation/providers/garden_provider.dart';
 import 'package:zestinme/features/home/presentation/widgets/environment_background.dart';
-import 'package:zestinme/features/home/presentation/widgets/pot_widget.dart';
+import 'package:zestinme/features/home/presentation/widgets/mystery_plant_widget.dart';
+import 'package:zestinme/features/home/presentation/widgets/small_pond_widget.dart';
+import 'package:zestinme/features/home/presentation/widgets/wind_chime_widget.dart';
 import 'package:zestinme/features/garden/data/plant_database.dart';
 import 'package:zestinme/features/garden/domain/entities/plant_species.dart';
 import 'package:zestinme/app/routes/app_router.dart';
 import 'package:zestinme/features/caring/presentation/screens/caring_intro_screen.dart';
 import 'package:zestinme/features/home/presentation/providers/home_provider.dart';
-import 'package:zestinme/features/home/presentation/widgets/caring_trigger_widget.dart';
 import 'package:zestinme/features/sleep_record/presentation/widgets/sleep_battery_widget.dart';
 import 'package:zestinme/core/localization/app_localizations.dart';
 
@@ -23,45 +24,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: gardenStateAsync.when(
-          data: (state) => Text(
-            AppLocalizations.of(context).home_garden_title_format.replaceAll(
-              '{user}',
-              state?.nickname ?? 'User',
-            ),
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              shadows: [Shadow(blurRadius: 4, color: Colors.black45)],
-            ),
-          ),
-          loading: () => const SizedBox.shrink(),
-          error: (_, __) => const SizedBox.shrink(),
-        ),
-        actions: [
-          // Sleep Battery (Top Right)
-          Consumer(
-            builder: (context, ref, _) {
-              final homeState = ref.watch(homeProvider);
-              return Tooltip(
-                message: AppLocalizations.of(context).home_sleep,
-                child: SleepBatteryWidget(
-                  chargeLevel: homeState.sleepEfficiency,
-                  onTap: () => context
-                      .push(AppRouter.sleep)
-                      .then((_) => ref.read(homeProvider.notifier).refresh()),
-                ),
-              );
-            },
-          ),
-          const SizedBox(
-            width: 16,
-          ), // Margin provided by Appbar? simpler to add spacing if needed
-        ],
-      ),
+      // Layer 3: System UI (Overlay) would go here if needed, but we use direct Stack for full control
       body: gardenStateAsync.when(
         data: (state) {
           if (state == null) {
@@ -84,165 +47,156 @@ class MindGardenerHomeScreen extends ConsumerWidget {
           }
 
           return Stack(
+            fit: StackFit.expand, // Fill screen
             children: [
-              // 1. Environment Background
+              // --- Layer 0: Background (Sky & Atmosphere) ---
               EnvironmentBackground(
                 sunlight: sunlight,
                 temperature: temperature,
                 humidity: humidity,
               ),
 
-              // 2. The Pot and Plant (Center)
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Spacer(),
+              // --- Layer 1: Mid-Ground (Plant & Ground) ---
 
-                    Stack(
-                      alignment: Alignment.center,
-                      clipBehavior: Clip.none,
-                      children: [
-                        // Plant
-                        if (assignedPlant != null) _buildPlant(assignedPlant),
-
-                        // Caring Trigger (Water Drop) - Conditional
-                        Consumer(
-                          builder: (context, ref, child) {
-                            final homeState = ref.watch(homeProvider);
-                            if (!homeState.isCaringNeeded)
-                              return const SizedBox.shrink();
-
-                            return Positioned(
-                              top: -20,
-                              right: -20,
-                              child: CaringTriggerWidget(
-                                onTap: () {
-                                  // Navigate to Caring Flow with the first pending record
-                                  if (homeState.uncaredRecords.isNotEmpty) {
-                                    final record =
-                                        homeState.uncaredRecords.first;
-                                    Navigator.of(context)
-                                        .push(
-                                          MaterialPageRoute(
-                                            builder: (_) => CaringIntroScreen(
-                                              record: record,
-                                            ),
-                                          ),
-                                        )
-                                        .then(
-                                          (_) => ref
-                                              .read(homeProvider.notifier)
-                                              .refresh(),
-                                        );
-                                  }
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-
-                    // Pot
-                    const PotWidget()
-                        .animate(onPlay: (c) => c.repeat(reverse: true))
-                        .moveY(
-                          begin: 0,
-                          end: -5,
-                          duration: 2000.ms,
-                          curve: Curves.easeInOut,
-                        ),
-
-                    // Plant Info
-                    if (assignedPlant != null) ...[
-                      const SizedBox(height: 20),
-                      // Mystery Logic: Reveal only if fully grown (Stage 3)
-                      // Default to 0 if not set.
-                      if ((state.growthStage) < 3) ...[
-                        Text(
-                              "이름 없는 씨앗",
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                shadows: [
-                                  Shadow(blurRadius: 4, color: Colors.black54),
-                                ],
-                              ),
-                            )
-                            .animate()
-                            .fadeIn(delay: 500.ms)
-                            .moveY(begin: 10, end: 0),
-                        const SizedBox(height: 8),
-                        const Text(
-                          "??? (아직 알 수 없음)",
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic,
+              // Plant (Center Bottom)
+              Positioned(
+                bottom: 120, // Sit on "Ground"
+                left: 0,
+                right: 0,
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    final homeState = ref.watch(homeProvider);
+                    return MysteryPlantWidget(
+                      growthStage: state.growthStage,
+                      isThirsty: homeState.isCaringNeeded,
+                      plantName: assignedPlant?.name,
+                      onPlantTap: () => context
+                          .push(AppRouter.seeding)
+                          .then(
+                            (_) => ref.read(homeProvider.notifier).refresh(),
                           ),
-                        ).animate().fadeIn(delay: 800.ms),
-                      ] else ...[
-                        // Revealed Info
-                        Text(
-                              assignedPlant.name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                shadows: [
-                                  Shadow(blurRadius: 4, color: Colors.black54),
-                                ],
-                              ),
-                            )
-                            .animate()
-                            .fadeIn(delay: 500.ms)
-                            .moveY(begin: 10, end: 0),
-
-                        const SizedBox(height: 8),
-
-                        Text(
-                          assignedPlant.flowerLanguage.isNotEmpty
-                              ? "꽃말: ${assignedPlant.flowerLanguage}"
-                              : assignedPlant.scientificName,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic,
-                            shadows: [
-                              Shadow(blurRadius: 4, color: Colors.black54),
-                            ],
-                          ),
-                        ).animate().fadeIn(delay: 800.ms),
-                      ],
-                    ],
-
-                    const Spacer(),
-                  ],
+                      onWaterTap: () {
+                        // Navigate to Caring (Pruning)
+                        if (homeState.uncaredRecords.isNotEmpty) {
+                          final record = homeState.uncaredRecords.first;
+                          Navigator.of(context)
+                              .push(
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      CaringIntroScreen(record: record),
+                                ),
+                              )
+                              .then(
+                                (_) =>
+                                    ref.read(homeProvider.notifier).refresh(),
+                              );
+                        }
+                      },
+                    );
+                  },
                 ),
               ),
 
-              // 3. Bottom Actions (FABs)
+              // Small Pond (Bottom Center)
               Positioned(
-                bottom: 30,
+                bottom: 40,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: SmallPondWidget(
+                    onTap: () {
+                      // TODO: Show Self-Mirror Card
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("자아의 거울은 준비 중입니다.")),
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+              // --- Layer 2: Foreground (Props & UI) ---
+
+              // Title (Top Center)
+              Positioned(
+                top: 60,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Text(
+                    AppLocalizations.of(context).homeGardenTitleFormat
+                        .replaceAll('{user}', state.nickname),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.2,
+                      shadows: [Shadow(blurRadius: 4, color: Colors.black45)],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Moon Lantern (Top Left)
+              Positioned(
+                top: 60,
+                left: 20,
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    final homeState = ref.watch(homeProvider);
+                    return Tooltip(
+                      message: AppLocalizations.of(context).homeSleep,
+                      child: SleepBatteryWidget(
+                        chargeLevel: homeState.sleepEfficiency,
+                        onTap: () => context
+                            .push(AppRouter.sleep)
+                            .then(
+                              (_) => ref.read(homeProvider.notifier).refresh(),
+                            ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // Wind Chime (Mid Right)
+              Positioned(
+                top: 150,
+                right: 20,
+                child: WindChimeWidget(
+                  onTap: () {
+                    // TODO: Show Ventilation Timer
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("마음 환기는 준비 중입니다.")),
+                    );
+                  },
+                ),
+              ),
+
+              // Archive Button (Bottom Left - Roots Gesture hint)
+              Positioned(
+                bottom: 40,
                 left: 20,
                 child: FloatingActionButton(
                   heroTag: 'history',
+                  mini: true,
                   onPressed: () => context.push(AppRouter.history),
-                  backgroundColor: Colors.white24,
+                  backgroundColor: Colors.white12,
                   elevation: 0,
-                  foregroundColor: Colors.white,
-                  tooltip: AppLocalizations.of(context).home_history,
-                  child: const Icon(Icons.auto_stories), // Alumni/Book concept
+                  foregroundColor: Colors.white70,
+                  tooltip: AppLocalizations.of(context).homeHistory,
+                  child: const Icon(Icons.history),
                 ),
               ),
+
+              // Seeding Button (Bottom Right)
               Positioned(
-                bottom: 30,
+                bottom: 40,
                 right: 20,
                 child: FloatingActionButton.extended(
-                  label: Text(AppLocalizations.of(context).home_seeding),
+                  label: Text(AppLocalizations.of(context).homeSeeding),
                   heroTag: 'seeding',
+                  backgroundColor: Colors.white, // Stand out
+                  foregroundColor: Colors.black87,
                   onPressed: () => context
                       .push(AppRouter.seeding)
                       .then((_) => ref.read(homeProvider.notifier).refresh()),
@@ -254,18 +208,6 @@ class MindGardenerHomeScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text("오류가 발생했습니다: $err")),
       ),
-    );
-  }
-
-  Widget _buildPlant(PlantSpecies plant) {
-    return Container(
-      height: 120,
-      alignment: Alignment.bottomCenter,
-      child: Icon(Icons.local_florist, size: 80, color: Colors.greenAccent)
-          .animate()
-          .scale(duration: 1000.ms, curve: Curves.elasticOut)
-          .then()
-          .shimmer(duration: 2000.ms),
     );
   }
 }

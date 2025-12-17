@@ -2,62 +2,70 @@
 
 | Attribute | Value |
 | :--- | :--- |
-| **Version** | 1.2 |
-| **Status** | Final Spec |
-| **Date** | 2025-12-16 |
+| **Version** | 1.3 |
+| **Status** | Implementation Phase |
+| **Date** | 2025-12-18 |
 | **Author** | Mind-Gardener Committee |
-| **Related** | `spec/20-feature/00-tutorial.md`, `spec/50-ui/03-caring-flow.md`, `spec/50-ui/04-sleep-screen.md` |
+| **Related** | `spec/20-feature/01-home.md` |
 
-## 1. 기획 의도 (Design Intent)
+## 1. 개요 (Overview)
 
-> **"당신의 마음이 숨 쉬는 곳"**
+> **"The Living Mirror"**
 
-홈 화면은 사용자의 정신 상태(Mental State)가 **시각화된 정원(Biosphere)**입니다.
-사용자는 이곳에서 자신의 '마음 식물'을 돌보며, 스스로를 돌보는 감각을 익힙니다. 이것은 앱의 **Main Hub** 역할을 합니다.
+홈 화면은 기능의 목록이 아닌, **'공간(Space)'**입니다.
+UI 요소들은 버튼이 아닌 **'오브젝트(Object)'**로서 존재하며, 정원의 깊이감(Depth) 속에 배치됩니다.
 
-**Core Philosophy:** "The Mirror"
-*   식물을 조작하는 것이 아니라, 식물을 통해 나를 **'자각(Awareness)'**하는 것이 목표입니다.
+---
 
-## 2. 화면 구성 (Layout)
+## 2. 화면 구성 (Layered Architecture)
 
-### 2.1 Top Area: Mental Weather & Recharge
-*   **좌측 (Weather):** 
-    *   현재 정원의 환경 상태 (햇빛/온도/습도 게이지).
-*   **우측 (Sleep Battery):** [NEW]
-    *   **Icon:** `Icons.battery_charging_full` (수면 효율에 따라 잔량/색상 변화).
-    *   **Action:** 탭 시 **수면 기록 화면 (`/sleep`)**으로 이동.
-    *   **Metaphor:** "나의 에너지를 충전하는 곳".
+화면은 `Stack` 기반의 3단 레이어로 구성됩니다.
 
-### 2.2 Center Area: The Plant & Caring Trigger
-*   **위치:** 중앙 60%
-*   **구성:**
-    *   **Main Visual:** 현재 키우고 있는 식물 (성장 단계에 따라 변화).
-    *   **Background:** 시간대와 날씨(Mental Weather)를 반영한 동적 배경.
-    *   **Pot:** 사용자가 선택하거나 획득한 화분.
-*   **Caring Trigger (Water Drop):** [NEW]
-    *   **Condition:** 돌봄(Caring)이 필요한 감정 기록(Seed)이 있을 때 식물 주변에 💧(물방울) 아이콘 등장.
-    *   **Animation:** 은은하게 반짝이거나(Pulse), 식물 위를 부유함.
-    *   **Action:** 탭 시 **돌보기 화면 (`/caring`)** 및 코칭 플로우 시작.
+### 2.1 Layer 0: Background (Atmosphere)
+*   **Weather Shader:** 감정의 Valence(긍/부정) x Arousal(에너지)에 따라 실시간 렌더링.
+    *   맑음(Sunny), 밤(Night), 폭풍(Storm), 흐림(Rainy).
+*   **Soundscape:** 날씨에 맞는 백색소음 자동 재생.
 
-### 2.3 Bottom Area: Actions (FAB)
-*   **좌측 (History):**
-    *   **Icon:** `Icons.auto_stories` (앨범/관찰일지).
-    *   **Action:** **지난 기록 (`/history`)** 화면으로 이동.
-*   **우측 (Seeding):**
-    *   **Icon:** `Icons.edit` (또는 `Icons.spa`).
-    *   **Action:** **새 감정 기록 (`/seeding`)** 화면으로 이동.
-*   **Note:** 기존의 하단 버튼 바("물주기/다듬기")는 제거되고 FAB로 통합됨.
+### 2.2 Layer 1: Mid-Ground (The Garden)
+*   **Ground:** 식물이 심어진 땅. 하단에서 1/3 지점.
+*   **🌱 Mystery Plant (Center):**
+    *   화면의 주인공. 사용자의 돌봄에 따라 성장.
+    *   **Interaction:**
+        *   **Tap:** `Seeding (마음 기록)` 화면으로 이동.
+        *   **Thirsty (물방울):** `Pruning (다듬기)` 진입 트리거.
+*   **🪞 Small Pond (Bottom Center):**
+    *   식물 뿌리 근처의 작은 연못.
+    *   **Action:** 탭 시 **자아 정체성 카드 (Self-Mirror)** 팝업.
+
+### 2.3 Layer 2: Foreground (Props & UI)
+*   **Header Area:**
+    *   **Title (Center):** `"{User}의 내면 정원"` (스크롤 시 Fade Out 가능).
+    *   **🔋 Moon Lantern (Top Left):**
+        *   나무에 걸린 랜턴 형태. 수면 효율(Sleep Efficiency)에 따라 밝기 변화.
+        *   **Action:** 탭 시 `Recharge (수면 충전)` 화면으로 이동.
+*   **Middle Area:**
+    *   **🍃 Wind Chime (Mid Right):**
+        *   화면 우측 가장자리에 걸린 풍경.
+        *   **Action:** 탭 시 `Ventilation (마음 환기)` 타이머 실행.
+*   **Footer Area (FABs):**
+    *   **Left (Archive):** `Icons.history` (뿌리/아카이브).
+    *   **Right (Record):** `Icons.edit` ("마음 기록" / Seeding).
+
+---
 
 ## 3. 핵심 인터랙션 (Core Interactions)
 
-### 3.1 Caring Loop (순환)
-*   **Trigger (물방울)** -> **Action (돌보기)** -> **Reward (성장/빛남)**
-*   홈 화면은 이 순환의 시작점이자 도착점입니다.
+### 3.1 Growth Loop
+1.  **Watering (기록):** 우측 하단 FAB 또는 식물 터치 -> 감정 기록.
+2.  **Environment (날씨):** 기록 즉시 배경 날씨 변화.
+3.  **Pruning (다듬기):** 4시간 후 식물에 **물방울** 생성 -> 터치하여 회고 -> **성장(Level Up)**.
 
-### 3.2 묻고 답하기 (Self-Talk)
-*   식물을 탭하면, 식물이 현재 상태(Visual)에 기반한 **상태 메시지**나 **짧은 위로**를 띄웁니다.
+### 3.2 Roots Gesture (Archive)
+*   **Swipe Up:** 화면을 위로 쓸어 올리면 카메라가 땅속으로 들어가며 **Archive (Monthly View)**로 전환.
 
-## 4. Design System
-*   **Theme:** `AppTheme.darkTheme` (Night Garden)
-*   **Typography:** Rounded Fonts (감성적).
-*   **Colors:** Deep Blue, Charcoal Background + Vignette.
+---
+
+## 4. Design Details
+*   **Theme:** `AppTheme.darkTheme` (기본값).
+*   **Motion:** 모든 오브젝트는 미세하게 움직임(Breathing/Floating)을 가져야 함.
+*   **Feedback:** 햅틱 반응 필수 (물방울 터치 시 톡! 하는 느낌 등).

@@ -39,7 +39,6 @@ GoRouter goRouter(GoRouterRef ref) {
         '/seeding',
         '/history',
         '/login',
-
         '/sleep', // Allow Sleep Screen
         '/',
       ];

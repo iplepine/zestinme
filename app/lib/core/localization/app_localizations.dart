@@ -54,10 +54,15 @@ class AppLocalizations {
   String get pruneButton => _get('pruneButton');
 
   // Home Screen Getters
+  // Home Screen Getters
   String get homeCheckIn => _get('home_checkIn');
   String get homeReflection => _get('home_reflection');
   String get homeLetGo => _get('home_letGo');
   String get homeHistory => _get('home_history');
+  String get homeSeeding => _get('home_seeding');
+  String get homeSleep => _get('home_sleep');
+  String get homeCaring => _get('home_caring');
+  String get homeGardenTitleFormat => _get('home_garden_title_format');
 
   String get homeQuestionDefault => _get('home_question_default');
   String get homeQuestionTired => _get('home_question_tired');
@@ -88,10 +93,15 @@ class AppLocalizations {
       'pruneButton': '가지치기',
 
       // Home Screen - Insight Tools
+      // Home Screen - Insight Tools
       'home_checkIn': '퀵 체크',
       'home_reflection': '깊은 기록',
       'home_letGo': '비워내기',
-      'home_history': '회고',
+      'home_history': '아카이브',
+      'home_seeding': '마음 기록',
+      'home_sleep': '수면 충전',
+      'home_caring': '다듬기',
+      'home_garden_title_format': '{user}의 내면 정원',
 
       // Home Screen - Self-Talk Questions
       'home_question_default': '오늘 당신의 마음은 어떤가요?',
@@ -143,10 +153,15 @@ class AppLocalizations {
       'pruneButton': 'Prune',
 
       // Home Screen - Insight Tools
+      // Home Screen - Insight Tools
       'home_checkIn': 'Check-in',
       'home_reflection': 'Reflection',
       'home_letGo': 'Let Go',
-      'home_history': 'History',
+      'home_history': 'Archive',
+      'home_seeding': 'Record Mind',
+      'home_sleep': 'Recharge',
+      'home_caring': 'Pruning',
+      'home_garden_title_format': '{user}\'s Inner Garden',
 
       // Home Screen - Self-Talk Questions
       'home_question_default': 'How is your heart today?',

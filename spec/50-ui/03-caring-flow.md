@@ -1,88 +1,64 @@
-# 1.3 Emotion Refinement: Caring (돌보기) UI Spec
+# 1.3 Emotion Refinement: Pruning (다듬기) UI Spec
 
 | Attribute | Value |
 | :--- | :--- |
-| **Version** | 1.3 |
+| **Version** | 1.4 |
 | **Status** | Final Design Spec |
-| **Date** | 2025-12-16 |
+| **Date** | 2025-12-18 |
 | **Author** | Mind-Gardener Committee |
 | **Theme Ref** | `AppTheme.darkTheme` (Deep & Focused) |
 
 ## 1. Overview
-*   **Goal:** 사용자가 기록된 감정에 대한 코칭 질문에 답하고, 가치를 발견하는 흐름을 시각적으로 구현.
-*   **Key Metaphor:** "식물에게 물을 주듯, 내 마음을 돌본다."
-*   **Theme:** **Night Garden (심야의 정원)** - 주변을 어둡게 처리하여 몰입감 조성.
+> **"마음을 다듬어, 성장의 양분으로 삼는다."**
+
+*   **Goal:** 숙성된(4시간 경과) 감정 기록을 다시 회고하고 코칭 질문에 답하여 **식물을 성장**시키는 과정.
+*   **Key Metaphor:** **Pruning (가지치기/다듬기)**.
+    *   묵혀둔 감정을 정리해주는 행위.
+*   **Trigger:** 홈 화면 식물 주변에 뜬 **물방울(Water Drop)** 터치.
 
 ---
 
-## 2. Layout Structure (Root)
+## 2. Layout Structure (Night Garden)
 
-### 2.1 Scaffold
-*   **BackgroundColor:** `AppTheme.darkScheme.background` (`#101418`)
-*   **Status Bar:** Light Content (White icons)
-*   **ResizeToAvoidBottomInset:** `false` (카드 뷰가 올라감)
+### 2.1 Background
+*   **Effect:** 집중을 위한 **Dark Vibe**.
+*   **Color:** `#101418` (Deep Charcoal) + 은은한 감정 컬러 Glow.
 
-### 2.2 Background Layer
-*   **Effect:** 감정의 잔향 (Emotional Resonance)
-*   **Implementation:** 화면 중앙에 기록된 감정 컬러(`EmotionColor`)의 Radial Gradient를 아주 은은하게 배치.
+### 2.2 Hero Content (The Plant)
+*   **Position:** Top Center.
+*   **Widget:** `MysteryPlantWidget` (Interactive).
+*   **Animation:** 'Breathing' (사용자의 답변 진행도에 따라 빛이 강해짐).
 
 ---
 
-## 3. UI Flow & Component Specs
+## 3. Interaction Flow (The Pruning Loop)
 
-### 3.1 Header (Navigation)
-*   **Type:** `AppBar` (Transparent)
-*   **Leading:**
-    *   **First Stage:** `CloseIcon` (`Icons.close`) - "그만하기"
-    *   **Later Stages:** `BackIcon` (`Icons.arrow_back`) - "이전 질문"
-*   **Title:** (Empty) - 식물과 질문에 집중.
+### 3.1 Intro
+*   **Msg:** "지난번 기록한 '{Emotion}' 감정, 지금은 어떤가요?"
+*   **Content:** 과거 기록(메모, 태그) 리마인드.
 
-### 3.2 Hero Content (The Plant)
-*   **Position:** Top Center
-*   **Widget:** `CaringPlantWidget`
-*   **Size:** 120x120 dp
-*   **Animation:** 'Breathing' (Scale 1.0 -> 1.05 -> 1.0, Duration: 4s loop)
+### 3.2 Coaching (Pruning)
+*   **Card UI:** 플립 가능한 질문 카드.
+*   **Question Logic:** 감정의 깊이(Depth)에 따른 단계별 질문.
+    *   **Level 1:** 사실 확인 (Fact checking).
+    *   **Level 2:** 의미 탐색 (Finding meaning).
+    *   **Level 3:** 행동 설계 (Action plan).
+*   **Answer:** 텍스트 입력 또는 객관식 선택.
 
-### 3.3 Progress Indicator (Dots) [NEW]
-*   **Location:** Below Plant.
-*   **Widget:** `Row` of Dots.
-*   **State:**
-    *   Active Dot: `white` (Opacity 1.0)
-    *   Inactive Dot: `white` (Opacity 0.3)
-*   **Count:** `maxDepth` (1~3)에 따라 동적 생성.
+### 3.3 Value Discovery (Tagging)
+*   **Action:** 답변 완료 후, 이 경험에서 발견한 **'가치(Value)'** 태그 선택.
+    *   *Ex) 인내, 용기, 솔직함, 배움.*
 
-### 3.4 Card: The Coaching Question (Flip Interaction)
-*   **Layout:**
-    *   **Width:** Screen Width - 48dp (Horizontal Margin 24dp)
-    *   **Height:** Min 200dp
-    *   **Decoration:** Dark Surface (`#14181C`), Rounded `24.0`, Border `1dp`.
-
-#### State A: Question (Front)
-*   **Content:**
-    *   **Icon:** `Dr. Mind` or Stage Icon.
-    *   **Text:** Contextual Question ("Ex: '{context}'라고 하셨는데...")
-*   **Interaction:** Tap -> **Flip Animation**.
-
-#### State B: Answer Input (Back)
-*   **TextField:** `InputDecoration.collapsed`, MaxLines 5.
-*   **Action Button:** (Dynamic Label)
-    *   **Progression:** "다음 질문 보기" (`Icons.arrow_forward`)
-    *   **Completion:** "가치 발견하기" (`Icons.auto_awesome`)
-
-### 3.5 Value Discovery Sheet (Slide Up)
-*   **Trigger:** 마지막 단계 완료 시.
-*   **Content:** Tag Cloud (추천 가치 태그).
-*   **Confirm:** "물 주기 (완료)" -> Reward Animation Trigger.
+### 3.4 Outro (Growth Reward) 🌟
+*   **Animation:**
+    1.  사용자가 선택한 가치 태그가 빛(Light)이 되어 식물에게 흡수됨.
+    2.  식물이 진동하며 **Level Up (성장)**.
+    3.  새로운 잎이 돋아나거나 꽃봉오리가 커짐.
+*   **Feedback:** "마음이 한 뼘 더 자랐어요."
 
 ---
 
 ## 4. Animation Choreography
-
-1.  **Entry:** Background Fade In -> Plant Scale Up -> Intro Text Slide Up.
-2.  **Flip:** Card rotates Y-axis (pi). Text clears on flip back.
-3.  **Reward:**
-    *   Water Drop falls.
-    *   Plant Glows (Gold/Green).
-    *   Msg: "마음이 자라났어요."
-
----
+1.  **Entry:** Background Fade In -> Plant Scale Up.
+2.  **Flip:** 질문 카드 뒤집기 (Pruning motion).
+3.  **Growth:** **Particle Explosion** (성공/보상 연출).

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zestinme/features/sleep_record/domain/models/sleep_record.dart';
+import 'package:zestinme/core/models/sleep_record.dart'; // Correct Import
 import 'package:zestinme/features/sleep_record/presentation/widgets/sleep_history_chart.dart';
 
 void main() {
@@ -9,28 +9,26 @@ void main() {
 
     setUp(() {
       mockRecords = [
-        SleepRecord(
-          id: '1',
-          sleepTime: DateTime(2024, 1, 1, 22, 0),
-          wakeTime: DateTime(2024, 1, 2, 7, 0),
-          freshness: 8,
-          fatigue: 3,
-          sleepSatisfaction: 7,
-          content: '좋은 잠을 잤다',
-          disruptionFactors: null,
-          createdAt: DateTime(2024, 1, 2),
-        ),
-        SleepRecord(
-          id: '2',
-          sleepTime: DateTime(2024, 1, 2, 23, 0),
-          wakeTime: DateTime(2024, 1, 3, 8, 0),
-          freshness: 9,
-          fatigue: 2,
-          sleepSatisfaction: 8,
-          content: '더 좋은 잠',
-          disruptionFactors: null,
-          createdAt: DateTime(2024, 1, 3),
-        ),
+        SleepRecord()
+          ..id = 1
+          ..date = DateTime(2024, 1, 2)
+          ..inBedTime = DateTime(2024, 1, 1, 22, 0)
+          ..wakeTime = DateTime(2024, 1, 2, 7, 0)
+          ..selfRefreshmentScore =
+              80 // 8 -> 80
+          ..qualityScore =
+              4 // 7/10 -> 4/5
+          ..memo = '좋은 잠을 잤다'
+          ..durationMinutes = 540, // 9 hours
+        SleepRecord()
+          ..id = 2
+          ..date = DateTime(2024, 1, 3)
+          ..inBedTime = DateTime(2024, 1, 2, 23, 0)
+          ..wakeTime = DateTime(2024, 1, 3, 8, 0)
+          ..selfRefreshmentScore = 90
+          ..qualityScore = 5
+          ..memo = '더 좋은 잠'
+          ..durationMinutes = 540,
       ];
     });
 
@@ -90,23 +88,23 @@ void main() {
     group('데이터 정렬', () {
       testWidgets('최신 데이터가 오른쪽으로 가도록 정렬된다', (tester) async {
         // Given
-        final oldRecord = SleepRecord(
-          id: 'old',
-          sleepTime: DateTime(2024, 1, 1, 22, 0),
-          wakeTime: DateTime(2024, 1, 2, 7, 0),
-          freshness: 8,
-          sleepSatisfaction: 7,
-          createdAt: DateTime(2024, 1, 1),
-        );
+        final oldRecord = SleepRecord()
+          ..id =
+              3 // Use int
+          ..date = DateTime(2024, 1, 1)
+          ..inBedTime = DateTime(2024, 1, 1, 22, 0)
+          ..wakeTime = DateTime(2024, 1, 2, 7, 0)
+          ..selfRefreshmentScore =
+              80 // freshness 8 -> 80
+          ..qualityScore = 4; // 7/10 -> 4/5
 
-        final newRecord = SleepRecord(
-          id: 'new',
-          sleepTime: DateTime(2024, 1, 2, 22, 0),
-          wakeTime: DateTime(2024, 1, 3, 7, 0),
-          freshness: 9,
-          sleepSatisfaction: 8,
-          createdAt: DateTime(2024, 1, 2),
-        );
+        final newRecord = SleepRecord()
+          ..id = 4
+          ..date = DateTime(2024, 1, 2)
+          ..inBedTime = DateTime(2024, 1, 2, 22, 0)
+          ..wakeTime = DateTime(2024, 1, 3, 7, 0)
+          ..selfRefreshmentScore = 90
+          ..qualityScore = 5;
 
         final records = [oldRecord, newRecord];
 
