@@ -32,6 +32,7 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
   final SpeechToText _speechToText = SpeechToText();
   bool _isListening = false;
   bool _isSpeechEnabled = false;
+  String _baselineText = '';
 
   @override
   void initState() {
@@ -44,8 +45,19 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
     if (mounted) setState(() {});
   }
 
+  @override
+  void dispose() {
+    // dispose 시 백그라운드 리스닝이 남지 않도록 정리
+    _speechToText.stop();
+    _speechToText.cancel();
+    super.dispose();
+  }
+
   void _startListening() async {
     if (!_isSpeechEnabled) return;
+    if (_isListening) return;
+
+    _baselineText = widget.controller.text;
 
     // Haptic Feedback: Start
     HapticFeedback.mediumImpact();
@@ -63,13 +75,24 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
     });
 
     await _speechToText.listen(
-      pauseFor: const Duration(seconds: 3), // Auto-stop after 3s silence
+      // Press & hold 방식: 사용자가 버튼을 떼는 순간 종료하므로,
+      // 무음 감지로 너무 빨리 멈추지 않게 pauseFor 를 길게 둡니다.
+      pauseFor: const Duration(minutes: 5),
+      listenMode: ListenMode.dictation,
+      partialResults: true,
       onResult: (result) {
         if (mounted) {
+          final recognized = result.recognizedWords.trim();
+          final nextText = recognized.isEmpty
+              ? _baselineText
+              : (_baselineText.trim().isEmpty
+                    ? recognized
+                    : '${_baselineText.trim()} $recognized');
+
           // Update controller
-          widget.controller.text = result.recognizedWords;
+          widget.controller.text = nextText;
           // Notify change
-          widget.onChanged?.call(result.recognizedWords);
+          widget.onChanged?.call(nextText);
 
           // Force cursor to end
           widget.controller.selection = TextSelection.fromPosition(
@@ -84,6 +107,7 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
   }
 
   void _stopListening() async {
+    if (!_isListening) return;
     await _speechToText.stop();
     // Haptic Feedback: Stop
     HapticFeedback.lightImpact();
@@ -91,14 +115,6 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
     setState(() {
       _isListening = false;
     });
-  }
-
-  void _toggleListening() {
-    if (_isListening) {
-      _stopListening();
-    } else {
-      _startListening();
-    }
   }
 
   @override
@@ -123,15 +139,34 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
 
     // Merge suffix icon
     final inputDecoration = baseDecoration.copyWith(
-      suffixIcon: IconButton(
-        icon: Icon(
-          _isListening ? Icons.mic : Icons.mic_none,
-          color: _isListening
-              ? Colors.redAccent
-              : (widget.style?.color?.withOpacity(0.5) ?? Colors.white54),
+      suffixIcon: Tooltip(
+        message: _isSpeechEnabled
+            ? (_isListening ? '손을 떼면 입력이 끝나요' : '길게 눌러 말하기')
+            : '음성 입력을 사용할 수 없어요',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapDown: _isSpeechEnabled ? (_) => _startListening() : null,
+          onTapUp: _isSpeechEnabled ? (_) => _stopListening() : null,
+          onTapCancel: _isSpeechEnabled ? _stopListening : null,
+          child: Semantics(
+            button: true,
+            enabled: _isSpeechEnabled,
+            label: '음성 입력',
+            hint: '길게 눌러 말하기',
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Icon(
+                _isListening ? Icons.mic : Icons.mic_none,
+                color: !_isSpeechEnabled
+                    ? Colors.white24
+                    : (_isListening
+                          ? Colors.redAccent
+                          : (widget.style?.color?.withOpacity(0.5) ??
+                                Colors.white54)),
+              ),
+            ),
+          ),
         ),
-        onPressed: _isSpeechEnabled ? _toggleListening : null,
-        tooltip: '음성 입력 (STT)',
       ),
     );
 
@@ -147,23 +182,33 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
           maxLines: widget.maxLines,
           maxLength: widget.maxLength,
         ),
-        if (_isListening)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, left: 4.0),
-            child:
-                Text(
-                      '듣고 있어요... 👂',
-                      style: TextStyle(
-                        color: AppTheme.primaryColor,
-                        fontSize: 12,
-                      ),
-                    )
-                    .animate(
-                      onPlay: (controller) => controller.repeat(reverse: true),
-                    )
-                    .fade(begin: 0.5, end: 1.0, duration: 600.ms)
-                    .scaleXY(begin: 1.0, end: 1.1, duration: 600.ms),
-          ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0, left: 4.0),
+          child: _isListening
+              ? Text(
+                    '말하는 동안 버튼을 누르고 계세요',
+                    style: TextStyle(
+                      color: AppTheme.primaryColor,
+                      fontSize: 12,
+                    ),
+                  )
+                  .animate(
+                    onPlay: (controller) => controller.repeat(reverse: true),
+                  )
+                  .fade(begin: 0.5, end: 1.0, duration: 600.ms)
+                  .scaleXY(begin: 1.0, end: 1.1, duration: 600.ms)
+              : Text(
+                  _isSpeechEnabled
+                      ? '마이크를 길게 눌러 말해보세요'
+                      : '음성 입력을 사용할 수 없어요 (권한을 확인해주세요)',
+                  style: TextStyle(
+                    color: _isSpeechEnabled
+                        ? Colors.white38
+                        : Colors.white30,
+                    fontSize: 12,
+                  ),
+                ),
+        ),
       ],
     );
   }
