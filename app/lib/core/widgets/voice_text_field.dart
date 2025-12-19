@@ -30,19 +30,54 @@ class VoiceTextField extends StatefulWidget {
 
 class _VoiceTextFieldState extends State<VoiceTextField> {
   final SpeechToText _speechToText = SpeechToText();
+
   bool _isListening = false;
   bool _isSpeechEnabled = false;
+  bool _isInitializingSpeech = false;
+  bool _hasCheckedSpeech = false;
   String _baselineText = '';
 
   @override
   void initState() {
     super.initState();
-    _initSpeech();
   }
 
-  void _initSpeech() async {
-    _isSpeechEnabled = await _speechToText.initialize();
-    if (mounted) setState(() {});
+  void _showSnackBar(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<bool> _ensureSpeechReady() async {
+    if (_isSpeechEnabled && _speechToText.hasPermission) return true;
+    if (_isInitializingSpeech) return false;
+
+    setState(() {
+      _isInitializingSpeech = true;
+    });
+
+    final available = await _speechToText.initialize();
+    _isSpeechEnabled = available;
+    _hasCheckedSpeech = true;
+
+    if (mounted) {
+      setState(() {
+        _isInitializingSpeech = false;
+      });
+    }
+
+    if (!available) {
+      _showSnackBar('이 기기에서 음성 인식을 사용할 수 없어요.');
+      return false;
+    }
+
+    if (!_speechToText.hasPermission) {
+      _showSnackBar('마이크 권한이 필요해요. 길게 눌렀을 때 권한을 허용해주세요.');
+      return false;
+    }
+
+    return true;
   }
 
   @override
@@ -54,8 +89,10 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
   }
 
   void _startListening() async {
-    if (!_isSpeechEnabled) return;
     if (_isListening) return;
+
+    final ready = await _ensureSpeechReady();
+    if (!ready) return;
 
     _baselineText = widget.controller.text;
 
@@ -101,6 +138,7 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
         }
       },
     );
+
     setState(() {
       _isListening = true;
     });
@@ -109,12 +147,26 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
   void _stopListening() async {
     if (!_isListening) return;
     await _speechToText.stop();
+
     // Haptic Feedback: Stop
     HapticFeedback.lightImpact();
 
     setState(() {
       _isListening = false;
     });
+  }
+
+  String _tooltipMessage() {
+    if (_isInitializingSpeech) return '마이크 준비 중...';
+
+    if (!_hasCheckedSpeech) {
+      return _isListening ? '손을 떼면 입력이 끝나요' : '길게 눌러 말하기';
+    }
+
+    if (!_isSpeechEnabled) return '음성 입력을 사용할 수 없어요';
+    if (!_speechToText.hasPermission) return '마이크 권한이 필요해요';
+
+    return _isListening ? '손을 떼면 입력이 끝나요' : '길게 눌러 말하기';
   }
 
   @override
@@ -137,32 +189,35 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
           ),
         );
 
+    final canUseSpeech =
+        !_hasCheckedSpeech || (_isSpeechEnabled && _speechToText.hasPermission);
+
     // Merge suffix icon
     final inputDecoration = baseDecoration.copyWith(
       suffixIcon: Tooltip(
-        message: _isSpeechEnabled
-            ? (_isListening ? '손을 떼면 입력이 끝나요' : '길게 눌러 말하기')
-            : '음성 입력을 사용할 수 없어요',
+        message: _tooltipMessage(),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTapDown: _isSpeechEnabled ? (_) => _startListening() : null,
-          onTapUp: _isSpeechEnabled ? (_) => _stopListening() : null,
-          onTapCancel: _isSpeechEnabled ? _stopListening : null,
+          onTapDown: _isInitializingSpeech ? null : (_) => _startListening(),
+          onTapUp: _isInitializingSpeech ? null : (_) => _stopListening(),
+          onTapCancel: _isInitializingSpeech ? null : _stopListening,
           child: Semantics(
             button: true,
-            enabled: _isSpeechEnabled,
+            enabled: !_isInitializingSpeech,
             label: '음성 입력',
             hint: '길게 눌러 말하기',
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Icon(
                 _isListening ? Icons.mic : Icons.mic_none,
-                color: !_isSpeechEnabled
+                color: _isInitializingSpeech
                     ? Colors.white24
-                    : (_isListening
-                          ? Colors.redAccent
-                          : (widget.style?.color?.withOpacity(0.5) ??
-                                Colors.white54)),
+                    : (!canUseSpeech
+                          ? Colors.white24
+                          : (_isListening
+                                ? Colors.redAccent
+                                : (widget.style?.color?.withOpacity(0.5) ??
+                                      Colors.white54))),
               ),
             ),
           ),
@@ -198,13 +253,11 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
                   .fade(begin: 0.5, end: 1.0, duration: 600.ms)
                   .scaleXY(begin: 1.0, end: 1.1, duration: 600.ms)
               : Text(
-                  _isSpeechEnabled
+                  canUseSpeech
                       ? '마이크를 길게 눌러 말해보세요'
                       : '음성 입력을 사용할 수 없어요 (권한을 확인해주세요)',
                   style: TextStyle(
-                    color: _isSpeechEnabled
-                        ? Colors.white38
-                        : Colors.white30,
+                    color: canUseSpeech ? Colors.white38 : Colors.white30,
                     fontSize: 12,
                   ),
                 ),

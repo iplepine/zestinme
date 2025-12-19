@@ -126,6 +126,7 @@ class SleepRecord {
 
 ### 4.4 Future Improvements
 *   [ ] **Voice Input (STT):** Allow users to input Memo via voice.
+    *   **Permission Timing:** 마이크 권한 요청은 **메모 입력(텍스트필드 노출) 시점이 아니라, 마이크 버튼 탭 시점**에만 수행한다.
 *   [ ] **Sleep Sound Analysis:** Measure noise levels during sleep.
 *   **Tonight's Target:** 오늘 밤 권장 취침 시간($T_{bed}$) 카운트다운.
 
