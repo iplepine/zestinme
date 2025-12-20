@@ -12,7 +12,10 @@ class RollingHintTextField extends StatefulWidget {
     super.key,
     required this.l10n,
     required this.onChanged,
+    this.onInputStarted,
   });
+
+  final VoidCallback? onInputStarted;
 
   @override
   State<RollingHintTextField> createState() => _RollingHintTextFieldState();
@@ -111,6 +114,7 @@ class _RollingHintTextFieldState extends State<RollingHintTextField> {
         const SizedBox(height: 8),
         VoiceTextField(
           controller: _controller,
+          onInputStarted: widget.onInputStarted,
           onChanged: widget.onChanged,
           style: const TextStyle(color: Colors.white),
           maxLength: 300,

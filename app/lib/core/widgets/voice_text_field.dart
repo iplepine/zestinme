@@ -21,7 +21,10 @@ class VoiceTextField extends StatefulWidget {
     this.maxLength,
     this.decoration,
     this.style,
+    this.onInputStarted,
   });
+
+  final VoidCallback? onInputStarted;
 
   @override
   State<VoiceTextField> createState() => _VoiceTextFieldState();
@@ -44,6 +47,9 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
   }
 
   void _onFocusChange() {
+    if (_focusNode.hasFocus) {
+      widget.onInputStarted?.call();
+    }
     if (mounted) setState(() {});
   }
 
@@ -98,6 +104,7 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
     if (_speechController.isListening) {
       await _speechController.stop();
     } else {
+      widget.onInputStarted?.call();
       _focusNode.requestFocus();
       await _speechController.start(widget.controller.text);
     }
@@ -180,40 +187,51 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
                   width: 56,
                   constraints: const BoxConstraints(minHeight: 56),
                   alignment: Alignment.center,
-                  child: Icon(
-                    _speechController.isListening ? Icons.mic : Icons.mic_none,
-                    color: _speechController.isListening
-                        ? Colors.redAccent
-                        : (widget.style?.color?.withOpacity(0.5) ??
-                              Colors.white54),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (_speechController.isListening)
+                        Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.redAccent.withOpacity(0.2),
+                              ),
+                            )
+                            .animate(
+                              onPlay: (controller) => controller.repeat(),
+                            )
+                            .scale(
+                              begin: const Offset(1.0, 1.0),
+                              end: const Offset(2.0, 2.0),
+                              duration: 1000.ms,
+                              curve: Curves.easeOut,
+                            )
+                            .fadeOut(duration: 1000.ms),
+                      _speechController.isListening
+                          ? Icon(Icons.mic, color: Colors.redAccent)
+                                .animate(
+                                  onPlay: (controller) =>
+                                      controller.repeat(reverse: true),
+                                )
+                                .scale(
+                                  begin: const Offset(1.0, 1.0),
+                                  end: const Offset(1.1, 1.1),
+                                  duration: 600.ms,
+                                  curve: Curves.easeInOut,
+                                )
+                          : Icon(
+                              Icons.mic_none,
+                              color:
+                                  widget.style?.color?.withOpacity(0.5) ??
+                                  Colors.white54,
+                            ),
+                    ],
                   ),
                 ),
               ),
             ],
-          ),
-        ),
-        // 4. Listening Status Hint
-        Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: SizedBox(
-            height: 24 * MediaQuery.textScalerOf(context).scale(1),
-            child: Visibility(
-              visible: _speechController.isListening,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0, left: 4.0),
-                child:
-                    Text(
-                          '듣고 있어요... 👂',
-                          style: TextStyle(
-                            color: AppTheme.primaryColor,
-                            fontSize: 12,
-                          ),
-                        )
-                        .animate(onPlay: (c) => c.repeat(reverse: true))
-                        .fade(begin: 0.5, end: 1.0, duration: 600.ms)
-                        .scaleXY(begin: 1.0, end: 1.1, duration: 600.ms),
-              ),
-            ),
           ),
         ),
       ],

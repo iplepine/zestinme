@@ -22,6 +22,13 @@ class SeedingContent extends ConsumerStatefulWidget {
 class _SeedingContentState extends ConsumerState<SeedingContent> {
   Offset _center = Offset.zero;
   double _radius = 0.0;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   String _getLocalizedTag(AppLocalizations l10n, String tag) {
     switch (tag) {
@@ -93,6 +100,20 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
   // Calculate pulse duration based on arousal
   Duration _getPulseDuration(double arousal) {
     return (2000 - ((arousal + 1) / 2 * 1500)).round().ms;
+  }
+
+  void _scrollToBottom() {
+    // Scroll to bottom when keyboard appears or input starts
+    // Add a small delay to ensure UI (like keyboard) has started animating
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted && _scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    });
   }
 
   @override
@@ -366,6 +387,7 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
             ],
           ),
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,6 +439,7 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                 // 2. Note
                 RollingHintTextField(
                   l10n: l10n,
+                  onInputStarted: _scrollToBottom,
                   onChanged: (value) {
                     ref
                         .read(seedingNotifierProvider.notifier)
