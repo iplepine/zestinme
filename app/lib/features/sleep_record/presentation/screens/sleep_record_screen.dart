@@ -27,13 +27,27 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialRecord != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialRecord != null) {
         ref
             .read(sleepNotifierProvider.notifier)
             .initializeWithRecord(widget.initialRecord!);
-      });
-    }
+      } else {
+        // Smart Time Default:
+        // 04:00 ~ 18:00 -> Set WakeTime = Now (Running late or just woke up)
+        // 18:00 ~ 04:00 -> Set BedTime = Now (Going to bed)
+        final now = DateTime.now();
+        final hour = now.hour;
+        final state = ref.read(sleepNotifierProvider);
+        final notifier = ref.read(sleepNotifierProvider.notifier);
+
+        if (hour >= 4 && hour < 18) {
+          notifier.updateTimes(state.inBedTime, now);
+        } else {
+          notifier.updateTimes(now, state.wakeTime);
+        }
+      }
+    });
   }
 
   @override
