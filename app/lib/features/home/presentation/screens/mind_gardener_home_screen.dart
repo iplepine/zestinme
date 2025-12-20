@@ -23,8 +23,10 @@ class MindGardenerHomeScreen extends ConsumerWidget {
     final gardenStateAsync = ref.watch(gardenStateProvider);
 
     return Scaffold(
+      extendBody: true,
       extendBodyBehindAppBar: true,
-      // Layer 3: System UI (Overlay) would go here if needed, but we use direct Stack for full control
+      backgroundColor:
+          Colors.transparent, // Ensure background is visible behind bars
       body: gardenStateAsync.when(
         data: (state) {
           if (state == null) {
@@ -57,7 +59,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
               // Plant (Center Bottom)
               Positioned(
-                bottom: 120, // Sit on "Ground"
+                bottom: 120 + MediaQuery.of(context).padding.bottom,
                 left: 0,
                 right: 0,
                 child: Consumer(
@@ -96,7 +98,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
               // Small Pond (Bottom Center)
               Positioned(
-                bottom: 40,
+                bottom: 40 + MediaQuery.of(context).padding.bottom,
                 left: 0,
                 right: 0,
                 child: Center(
@@ -115,7 +117,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
               // Title (Top Center)
               Positioned(
-                top: 60,
+                top: 60 + MediaQuery.of(context).padding.top,
                 left: 0,
                 right: 0,
                 child: Center(
@@ -135,7 +137,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
               // Moon Lantern (Top Left)
               Positioned(
-                top: 60,
+                top: 60 + MediaQuery.of(context).padding.top,
                 left: 20,
                 child: Consumer(
                   builder: (context, ref, _) {
@@ -157,7 +159,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
               // Wind Chime (Mid Right)
               Positioned(
-                top: 150,
+                top: 150 + MediaQuery.of(context).padding.top,
                 right: 20,
                 child: WindChimeWidget(
                   onTap: () {
@@ -171,7 +173,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
               // Archive Button (Bottom Left - Roots Gesture hint)
               Positioned(
-                bottom: 40,
+                bottom: 40 + MediaQuery.of(context).padding.bottom,
                 left: 20,
                 child: FloatingActionButton(
                   heroTag: 'history',
@@ -187,7 +189,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
               // Seeding Button (Bottom Right)
               Positioned(
-                bottom: 40,
+                bottom: 40 + MediaQuery.of(context).padding.bottom,
                 right: 20,
                 child: FloatingActionButton.extended(
                   label: Text(AppLocalizations.of(context).homeSeeding),

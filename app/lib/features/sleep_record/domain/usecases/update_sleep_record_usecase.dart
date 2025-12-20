@@ -1,4 +1,4 @@
-import '../models/sleep_record.dart';
+import '../../../../core/models/sleep_record.dart';
 import '../repositories/sleep_record_repository.dart';
 
 class UpdateSleepRecordUseCase {

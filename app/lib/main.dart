@@ -21,7 +21,7 @@ void main() async {
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarDividerColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light, // 기본값, 테마에 따라 조정 필요
+      statusBarIconBrightness: Brightness.light,
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );

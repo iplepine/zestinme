@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../domain/models/sleep_record.dart';
+import 'package:zestinme/core/models/sleep_record.dart';
 
 class SleepHistoryChart extends StatefulWidget {
   final List<SleepRecord> records;
@@ -28,14 +28,14 @@ class _SleepHistoryChartState extends State<SleepHistoryChart> {
     }
 
     final sortedRecords = List<SleepRecord>.from(widget.records)
-      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      ..sort((a, b) => a.date.compareTo(b.date));
 
     final spots = sortedRecords
         .asMap()
         .entries
         .map(
           (entry) => FlSpot(
-            entry.value.createdAt.millisecondsSinceEpoch.toDouble(),
+            entry.value.date.millisecondsSinceEpoch.toDouble(),
             entry.value.averageScore,
           ),
         )
@@ -60,8 +60,7 @@ class _SleepHistoryChartState extends State<SleepHistoryChart> {
                 show: true,
                 getDotPainter: (spot, percent, barData, index) {
                   final recordIndex = sortedRecords.indexWhere(
-                    (r) =>
-                        r.createdAt.millisecondsSinceEpoch.toDouble() == spot.x,
+                    (r) => r.date.millisecondsSinceEpoch.toDouble() == spot.x,
                   );
 
                   final isSelected = recordIndex == _selectedSpotIndex;
@@ -87,24 +86,10 @@ class _SleepHistoryChartState extends State<SleepHistoryChart> {
       }
 
       for (int i = 0; i < sortedRecords.length; i++) {
-        final record = sortedRecords[i];
-        final isRecordCompleted = record.fatigue != null;
         final spot = spots[i];
-
-        if (isCurrentSegmentCompleted == null) {
-          isCurrentSegmentCompleted = isRecordCompleted;
-        }
-
-        if (isRecordCompleted != isCurrentSegmentCompleted) {
-          if (currentSpots.isNotEmpty) {
-            currentSpots.add(spot);
-          }
-          addLineBar();
-          currentSpots = [spot];
-          isCurrentSegmentCompleted = isRecordCompleted;
-        } else {
-          currentSpots.add(spot);
-        }
+        currentSpots.add(spot);
+        isCurrentSegmentCompleted =
+            true; // Assume all core records are completed for now
       }
       addLineBar();
     }
@@ -135,10 +120,7 @@ class _SleepHistoryChartState extends State<SleepHistoryChart> {
             getTooltipItems: (touchedSpots) {
               return touchedSpots.map((spot) {
                 final record = sortedRecords[spot.spotIndex];
-                final date = DateFormat(
-                  'M/d(E)',
-                  'ko_KR',
-                ).format(record.createdAt);
+                final date = DateFormat('M/d(E)', 'ko_KR').format(record.date);
                 final score = record.averageScore.toStringAsFixed(1);
 
                 return LineTooltipItem(

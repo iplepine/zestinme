@@ -14,6 +14,7 @@ class SpeechRecognitionController extends ChangeNotifier {
   String _committedText = '';
   String _currentSessionText = '';
   int _currentSessionId = 0;
+  Timer? _silenceTimer;
 
   // Getters
   bool get isListening => _isListening;
@@ -70,6 +71,8 @@ class SpeechRecognitionController extends ChangeNotifier {
     if (!_isListening) return;
 
     _isListening = false;
+    _silenceTimer?.cancel();
+    _silenceTimer = null;
     await _speechToText.stop();
 
     // Final commit
@@ -84,16 +87,30 @@ class SpeechRecognitionController extends ChangeNotifier {
 
     await _speechToText.listen(
       listenMode: ListenMode.dictation,
-      pauseFor: const Duration(seconds: 10),
+      pauseFor: const Duration(seconds: 3),
       listenFor: const Duration(minutes: 5),
       cancelOnError: false,
       onResult: (result) {
         if (_isListening && _currentSessionId == sessionId) {
+          // Speech detected, cancel silence timer
+          _silenceTimer?.cancel();
+          _silenceTimer = null;
+
           _currentSessionText = result.recognizedWords;
           notifyListeners();
         }
       },
     );
+
+    // Initial Silence Timer: If no speech is detected within 5 seconds, stop.
+    _silenceTimer?.cancel();
+    _silenceTimer = Timer(const Duration(seconds: 5), () {
+      if (_isListening &&
+          _currentSessionId == sessionId &&
+          _currentSessionText.isEmpty) {
+        stop();
+      }
+    });
   }
 
   Future<void> _processSessionEnd() async {
@@ -138,6 +155,7 @@ class SpeechRecognitionController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _silenceTimer?.cancel();
     _speechToText.cancel();
     super.dispose();
   }

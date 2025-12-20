@@ -40,6 +40,11 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
     _speechController = SpeechRecognitionController();
 
     _speechController.addListener(_onSpeechUpdate);
+    _focusNode.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    if (mounted) setState(() {});
   }
 
   @override
@@ -105,10 +110,28 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
       mainAxisSize: MainAxisSize.min,
       children: [
         // 1. Input Container
-        Container(
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(12),
+            color: _focusNode.hasFocus
+                ? Colors.white.withOpacity(0.1)
+                : Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: _focusNode.hasFocus
+                  ? Colors.white.withOpacity(0.5)
+                  : Colors.transparent,
+              width: 1.5,
+            ),
+            boxShadow: _focusNode.hasFocus
+                ? [
+                    BoxShadow(
+                      color: AppTheme.primaryColor.withOpacity(0.2),
+                      blurRadius: 12,
+                      spreadRadius: 2,
+                    ),
+                  ]
+                : [],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,10 +149,14 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
                         hintText: widget.hintText,
                         hintStyle: const TextStyle(color: Colors.white24),
                         border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
                         filled: false,
                         contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
+                          horizontal: 20,
+                          vertical: 16,
                         ),
                       ),
                   maxLines: widget.maxLines,

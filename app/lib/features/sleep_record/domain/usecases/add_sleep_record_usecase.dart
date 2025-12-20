@@ -1,5 +1,5 @@
 import '../../../../core/errors/failures.dart';
-import '../models/sleep_record.dart';
+import '../../../../core/models/sleep_record.dart';
 import '../repositories/sleep_record_repository.dart';
 
 class AddSleepRecordUseCase {
@@ -10,8 +10,8 @@ class AddSleepRecordUseCase {
   Future<void> call(SleepRecord record) async {
     // 1. 겹치는 시간대의 기록이 있는지 Repository에 요청한다.
     final overlappingRecords = await _repository.getOverlappingRecords(
-      record.id,
-      record.sleepTime,
+      record.id.toString(),
+      record.inBedTime,
       record.wakeTime,
     );
 

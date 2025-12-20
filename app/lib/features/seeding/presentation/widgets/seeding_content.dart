@@ -345,7 +345,15 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
             Container(
               width: double.infinity,
               constraints: BoxConstraints(maxHeight: availableHeight * 0.85),
-              padding: const EdgeInsets.all(24.0),
+              padding: EdgeInsets.fromLTRB(
+                24.0,
+                24.0,
+                24.0,
+                24.0 +
+                    (bottomInset > 0
+                        ? 0
+                        : MediaQuery.of(context).padding.bottom),
+              ),
               decoration: BoxDecoration(
                 color: AppColors.seedingCardBackground,
                 borderRadius: const BorderRadius.only(

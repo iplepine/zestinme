@@ -1,4 +1,4 @@
-import 'package:zestinme/features/sleep_record/domain/models/sleep_record.dart';
+import 'package:zestinme/core/models/sleep_record.dart';
 import 'package:intl/intl.dart';
 
 /// 앱 전체에서 사용하는 에러 타입들
@@ -28,7 +28,7 @@ class SleepTimeOverlapException implements Exception {
 
   @override
   String toString() {
-    final sleepTime = DateFormat.Hm().format(overlappingRecord.sleepTime);
+    final sleepTime = DateFormat.Hm().format(overlappingRecord.inBedTime);
     final wakeTime = DateFormat.Hm().format(overlappingRecord.wakeTime);
     return '이미 ${sleepTime} ~ ${wakeTime} 기록과 시간이 겹칩니다.';
   }

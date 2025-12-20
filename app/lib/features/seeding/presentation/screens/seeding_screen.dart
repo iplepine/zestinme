@@ -33,6 +33,7 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
     return Theme(
       data: AppTheme.darkTheme,
       child: Scaffold(
+        extendBody: true,
         extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: false,
         appBar: AppBar(

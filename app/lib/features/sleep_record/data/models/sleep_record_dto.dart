@@ -8,38 +8,34 @@ class SleepRecordDto {
   final String id;
 
   @HiveField(1)
-  final DateTime sleepTime;
+  final DateTime inBedTime;
 
   @HiveField(2)
   final DateTime wakeTime;
 
   @HiveField(3)
-  final int freshness;
+  final int qualityScore;
 
   @HiveField(4)
-  final int sleepSatisfaction;
+  final int? selfRefreshmentScore;
 
   @HiveField(5)
-  final String? disruptionFactors;
+  final List<String> tags;
 
   @HiveField(6)
-  final int? fatigue;
+  final String? memo;
 
   @HiveField(7)
-  final String? content;
-
-  @HiveField(8)
-  final DateTime createdAt;
+  final DateTime date;
 
   SleepRecordDto({
     required this.id,
-    required this.sleepTime,
+    required this.inBedTime,
     required this.wakeTime,
-    required this.freshness,
-    required this.sleepSatisfaction,
-    this.disruptionFactors,
-    this.fatigue,
-    this.content,
-    required this.createdAt,
+    required this.qualityScore,
+    this.selfRefreshmentScore,
+    this.tags = const [],
+    this.memo,
+    required this.date,
   });
 }

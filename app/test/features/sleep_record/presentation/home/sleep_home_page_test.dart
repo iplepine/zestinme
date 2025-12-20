@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zestinme/features/sleep_record/domain/models/sleep_record.dart';
+import 'package:zestinme/core/models/sleep_record.dart';
 import 'package:zestinme/features/sleep_record/presentation/controller/sleep_home_controller.dart';
 import 'package:zestinme/features/sleep_record/presentation/home/sleep_home_page.dart';
-import 'package:zestinme/features/sleep_record/presentation/state/sleep_home_state.dart';
 import 'package:zestinme/features/sleep_record/presentation/widgets/sleep_history_chart.dart';
+import 'package:zestinme/features/sleep_record/presentation/state/sleep_home_state.dart';
+import 'package:zestinme/core/services/local_db_service.dart';
 
-class TestSleepHomeController extends StateNotifier<SleepHomeState> {
-  TestSleepHomeController() : super(const SleepHomeState.loading());
+class FakeLocalDbService extends Fake implements LocalDbService {}
+
+class TestSleepHomeController extends SleepHomeController {
+  TestSleepHomeController() : super(FakeLocalDbService());
+
+  @override
+  Future<void> fetchRecords() async {
+    // Do nothing or set initial state
+  }
 
   void setState(SleepHomeState newState) {
     state = newState;
@@ -55,17 +63,13 @@ void main() {
     testWidgets('데이터 상태일 때 SleepHistoryChart를 표시한다', (tester) async {
       // Given
       final mockRecords = [
-        SleepRecord(
-          id: '1',
-          sleepTime: DateTime(2024, 1, 1, 22, 0),
-          wakeTime: DateTime(2024, 1, 2, 7, 0),
-          freshness: 8,
-          fatigue: 3,
-          sleepSatisfaction: 7,
-          content: '좋은 잠을 잤다',
-          disruptionFactors: null,
-          createdAt: DateTime(2024, 1, 2),
-        ),
+        SleepRecord()
+          ..id = 1
+          ..inBedTime = DateTime(2024, 1, 1, 22, 0)
+          ..wakeTime = DateTime(2024, 1, 2, 7, 0)
+          ..qualityScore = 4
+          ..selfRefreshmentScore = 80
+          ..date = DateTime(2024, 1, 2),
       ];
 
       testController.setState(SleepHomeState.data(mockRecords));
@@ -95,7 +99,7 @@ void main() {
       );
 
       // Then
-      expect(find.text('Error: 테스트 에러'), findsOneWidget);
+      expect(find.textContaining('오류가 발생했습니다: 테스트 에러'), findsOneWidget);
     });
 
     testWidgets('AppBar에 올바른 제목이 표시된다', (tester) async {
@@ -111,7 +115,10 @@ void main() {
       );
 
       // Then
-      expect(find.text('Sleep Tracker'), findsOneWidget);
+      expect(
+        find.descendant(of: find.byType(AppBar), matching: find.text('수면 기록')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('Scaffold이 올바르게 렌더링된다', (tester) async {

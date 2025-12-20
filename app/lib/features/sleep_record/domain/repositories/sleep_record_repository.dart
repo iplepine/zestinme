@@ -1,4 +1,4 @@
-import '../models/sleep_record.dart';
+import '../../../../core/models/sleep_record.dart';
 
 abstract class SleepRecordRepository {
   Future<void> addRecord(SleepRecord record);

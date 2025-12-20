@@ -431,7 +431,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                         ),
                 ),
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40 + MediaQuery.of(context).padding.bottom),
             ],
           ),
         ),

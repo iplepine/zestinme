@@ -36,4 +36,17 @@ class SleepRecord {
 
   List<String> tags = []; // Factors
   String? memo; // Optional note
+
+  // --- UI Compatibility ---
+  double get averageScore {
+    final List<double> scores = [qualityScore * 2.0];
+    if (selfRefreshmentScore != null) {
+      scores.add(selfRefreshmentScore! / 10.0);
+    }
+    return scores.reduce((a, b) => a + b) / scores.length;
+  }
+
+  double get totalSleepHours {
+    return wakeTime.difference(inBedTime).inMinutes / 60.0;
+  }
 }
