@@ -40,8 +40,11 @@ class HistoryListItem extends StatelessWidget {
             children: [
               // Emoji Placeholder
               Container(
-                width: 48,
-                height: 48,
+                width:
+                    48 *
+                    MediaQuery.textScalerOf(context).scale(1) /
+                    1.0, // Scale proportionally
+                height: 48 * MediaQuery.textScalerOf(context).scale(1) / 1.0,
                 decoration: const BoxDecoration(
                   color: Colors.white54,
                   shape: BoxShape.circle,

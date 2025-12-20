@@ -112,6 +112,9 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
         // 1. Input Container
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.only(
+            bottom: 10,
+          ), // Add breathing room for counter
           decoration: BoxDecoration(
             color: _focusNode.hasFocus
                 ? Colors.white.withOpacity(0.1)
@@ -158,6 +161,12 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
                           horizontal: 20,
                           vertical: 16,
                         ),
+                        counterStyle: TextStyle(
+                          color:
+                              widget.style?.color?.withOpacity(0.6) ??
+                              Colors.white.withOpacity(0.6),
+                          fontSize: 12,
+                        ),
                       ),
                   maxLines: widget.maxLines,
                   maxLength: widget.maxLength,
@@ -169,7 +178,7 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
                 onTap: _handleMicTap,
                 child: Container(
                   width: 56,
-                  height: 56,
+                  constraints: const BoxConstraints(minHeight: 56),
                   alignment: Alignment.center,
                   child: Icon(
                     _speechController.isListening ? Icons.mic : Icons.mic_none,
@@ -184,23 +193,26 @@ class _VoiceTextFieldState extends State<VoiceTextField> {
           ),
         ),
         // 4. Listening Status Hint
-        SizedBox(
-          height: 24,
-          child: Visibility(
-            visible: _speechController.isListening,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0, left: 4.0),
-              child:
-                  Text(
-                        '듣고 있어요... 👂',
-                        style: TextStyle(
-                          color: AppTheme.primaryColor,
-                          fontSize: 12,
-                        ),
-                      )
-                      .animate(onPlay: (c) => c.repeat(reverse: true))
-                      .fade(begin: 0.5, end: 1.0, duration: 600.ms)
-                      .scaleXY(begin: 1.0, end: 1.1, duration: 600.ms),
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: SizedBox(
+            height: 24 * MediaQuery.textScalerOf(context).scale(1),
+            child: Visibility(
+              visible: _speechController.isListening,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0, left: 4.0),
+                child:
+                    Text(
+                          '듣고 있어요... 👂',
+                          style: TextStyle(
+                            color: AppTheme.primaryColor,
+                            fontSize: 12,
+                          ),
+                        )
+                        .animate(onPlay: (c) => c.repeat(reverse: true))
+                        .fade(begin: 0.5, end: 1.0, duration: 600.ms)
+                        .scaleXY(begin: 1.0, end: 1.1, duration: 600.ms),
+              ),
             ),
           ),
         ),

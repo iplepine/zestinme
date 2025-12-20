@@ -394,44 +394,47 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
               const SizedBox(height: 40),
 
               // 5. Save Button
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+              ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 56),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
-                  ),
-                  onPressed: sleepState.isSaving
-                      ? null
-                      : () async {
-                          HapticFeedback.mediumImpact();
-                          await notifier.saveRecord();
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('수면 기록이 저장되었습니다. ⚡️'),
-                                backgroundColor: Color(0xFF1E2632),
-                              ),
-                            );
-                            context.pop();
-                          }
-                        },
-                  child: sleepState.isSaving
-                      ? const CircularProgressIndicator()
-                      : const Text(
-                          '충전 완료',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                    onPressed: sleepState.isSaving
+                        ? null
+                        : () async {
+                            HapticFeedback.mediumImpact();
+                            await notifier.saveRecord();
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('수면 기록이 저장되었습니다. ⚡️'),
+                                  backgroundColor: Color(0xFF1E2632),
+                                ),
+                              );
+                              context.pop();
+                            }
+                          },
+                    child: sleepState.isSaving
+                        ? const CircularProgressIndicator()
+                        : const Text(
+                            '충전 완료',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
+                  ),
                 ),
+                // End Constraints/SizedBox
               ),
-              SizedBox(height: 40 + MediaQuery.of(context).padding.bottom),
+              SizedBox(height: 120 + MediaQuery.of(context).padding.bottom),
             ],
           ),
         ),
@@ -587,7 +590,7 @@ class _MemoSectionState extends State<_MemoSection> {
           controller: _controller,
           onChanged: widget.onChanged,
           hintText: '더 남기고 싶은 기록이 있나요?',
-          maxLength: 50,
+          maxLength: 200,
           style: const TextStyle(color: Colors.white),
         ),
       ],

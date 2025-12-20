@@ -16,31 +16,54 @@ class ZestFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (val) {
-        onSelected(val);
-        HapticFeedback.selectionClick();
-      },
-      elevation: 0,
-      pressElevation: 0,
-      showCheckmark: false,
-      // Dark Glass: Translucent black for better visibility on dark backgrounds
-      backgroundColor: Colors.black.withValues(alpha: 0.3),
-      surfaceTintColor: Colors.transparent,
-      selectedColor: AppColors.seedingChipSelected,
-      labelStyle: TextStyle(
-        color: isSelected ? AppColors.seedingChipTextSelected : Colors.white,
-        fontWeight: FontWeight.w500,
-      ),
-      shape: RoundedRectangleBorder(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          onSelected(!isSelected);
+          HapticFeedback.selectionClick();
+        },
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: isSelected
-              ? Colors.transparent
-              : Colors.white.withValues(alpha: 0.2), // Subtle glass border
-          width: 1,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          constraints: BoxConstraints(
+            minHeight: 36 * MediaQuery.textScalerOf(context).scale(1),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.seedingChipSelected
+                : Colors.black.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected
+                  ? Colors.transparent
+                  : Colors.white.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: isSelected
+                      ? AppColors.seedingChipTextSelected
+                      : Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14 * MediaQuery.textScalerOf(context).scale(1) > 20
+                      ? 20 // Cap font size mostly for chips if needed, but app clamp handles it
+                      : 14, // Base size
+                ),
+                // Let the container grow; text will wrap naturally.
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ),
     );

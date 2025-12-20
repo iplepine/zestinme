@@ -341,146 +341,139 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
       alignment: Alignment.bottomCenter,
       child: Padding(
         padding: EdgeInsets.only(bottom: bottomInset),
-        child:
-            Container(
-              width: double.infinity,
-              constraints: BoxConstraints(maxHeight: availableHeight * 0.85),
-              padding: EdgeInsets.fromLTRB(
-                24.0,
-                24.0,
-                24.0,
-                24.0 +
-                    (bottomInset > 0
-                        ? 0
-                        : MediaQuery.of(context).padding.bottom),
+        child: Container(
+          width: double.infinity,
+          constraints: BoxConstraints(maxHeight: availableHeight * 0.85),
+          padding: EdgeInsets.fromLTRB(
+            24.0,
+            24.0,
+            24.0,
+            24.0 +
+                (bottomInset > 0 ? 0 : MediaQuery.of(context).padding.bottom),
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.seedingCardBackground,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 10,
+                offset: const Offset(0, -5),
               ),
-              decoration: BoxDecoration(
-                color: AppColors.seedingCardBackground,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5),
+            ],
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                ],
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        margin: const EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
+                ),
 
-                    // 1. Tags
-                    Text(
-                      l10n.seeding_promptTags,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+                // 1. Tags
+                Text(
+                  l10n.seeding_promptTags,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 16),
 
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: recommendedTags.map((tag) {
-                        final localizedTag = _getLocalizedTag(l10n, tag);
-                        final isSelected = seedingState.selectedTags.contains(
-                          tag,
-                        );
-                        return ZestFilterChip(
-                          label: localizedTag,
-                          isSelected: isSelected,
-                          onSelected: (_) {
-                            ref
-                                .read(seedingNotifierProvider.notifier)
-                                .toggleTag(tag);
-                          },
-                        );
-                      }).toList(),
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    // 2. Note
-                    RollingHintTextField(
-                      l10n: l10n,
-                      onChanged: (value) {
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  alignment: WrapAlignment.start,
+                  children: recommendedTags.map((tag) {
+                    final localizedTag = _getLocalizedTag(l10n, tag);
+                    final isSelected = seedingState.selectedTags.contains(tag);
+                    return ZestFilterChip(
+                      label: localizedTag,
+                      isSelected: isSelected,
+                      onSelected: (_) {
                         ref
                             .read(seedingNotifierProvider.notifier)
-                            .updateNote(value);
+                            .toggleTag(tag);
                       },
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    // 3. Plant Button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton(
-                        onPressed: seedingState.isSaving
-                            ? null
-                            : () async {
-                                HapticFeedback.mediumImpact();
-                                await ref
-                                    .read(seedingNotifierProvider.notifier)
-                                    .saveRecord();
-
-                                if (widget.onComplete != null) {
-                                  widget.onComplete!();
-                                } else {
-                                  // Default behavior
-                                  // NOTE: We cannot use context.go here easily if this widget is decoupled.
-                                  // But assuming typical usage, we can leave it to caller or use a callback.
-                                  // For now, I will NOT include context.go here.
-                                  // I will assume SeedingScreen wraps this and passes onComplete = context.go(...).
-                                }
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(28),
-                          ),
-                        ),
-                        child: seedingState.isSaving
-                            ? const CircularProgressIndicator()
-                            : Text(
-                                l10n.seeding_buttonPlant,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                      ),
-                    ),
-                  ],
+                    );
+                  }).toList(),
                 ),
-              ),
-            ).animate().slideY(
-              begin: 1.0,
-              end: 0.0,
-              duration: 500.ms,
-              curve: Curves.easeOutCubic,
+
+                const SizedBox(height: 32),
+
+                // 2. Note
+                RollingHintTextField(
+                  l10n: l10n,
+                  onChanged: (value) {
+                    ref
+                        .read(seedingNotifierProvider.notifier)
+                        .updateNote(value);
+                  },
+                ),
+
+                const SizedBox(height: 32),
+
+                // 3. Plant Button
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 56),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: seedingState.isSaving
+                          ? null
+                          : () async {
+                              HapticFeedback.mediumImpact();
+                              await ref
+                                  .read(seedingNotifierProvider.notifier)
+                                  .saveRecord();
+
+                              if (widget.onComplete != null) {
+                                widget.onComplete!();
+                              } else {
+                                // Default behavior
+                                // NOTE: We cannot use context.go here easily if this widget is decoupled.
+                                // But assuming typical usage, we can leave it to caller or use a callback.
+                                // For now, I will NOT include context.go here.
+                                // I will assume SeedingScreen wraps this and passes onComplete = context.go(...).
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                      ),
+                      child: seedingState.isSaving
+                          ? const CircularProgressIndicator()
+                          : Text(
+                              l10n.seeding_buttonPlant,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+          ),
+        ).animate().slideY(begin: 1.0, end: 0.0, duration: 500.ms, curve: Curves.easeOutCubic),
       ),
     );
   }

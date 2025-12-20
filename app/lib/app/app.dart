@@ -19,6 +19,15 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       routerConfig: router,
       title: 'ZestInMe',
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        // Calculate the current scale factor
+        final scale = mediaQuery.textScaler.scale(1.0).clamp(1.0, 1.4);
+        return MediaQuery(
+          data: mediaQuery.copyWith(textScaler: TextScaler.linear(scale)),
+          child: child!,
+        );
+      },
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       localizationsDelegates: const [
