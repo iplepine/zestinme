@@ -243,78 +243,58 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
   }
 
   Widget _buildIntroContent() {
-    return Stack(
+    return SingleChildScrollView(
       key: const ValueKey('Intro'),
-      fit: StackFit.expand,
-      children: [
-        // 1. Centered Content (Icon + Text) to match Background
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Hero Plant (Breathing)
-              ScaleTransition(
-                scale: _scaleAnimation,
-                child: const Icon(
-                  Icons.spa, // Placeholder for Plant Asset
-                  size: 120,
-                  color: Colors.white, // Or emotion specific color
-                ),
-              ),
-              const SizedBox(height: 40),
-              // Intro Text
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Builder(
-                    builder: (context) {
-                      final l10n = AppLocalizations.of(context)!;
-                      final localizedEmotion =
-                          widget.record.emotionLabel != null
-                          ? l10n.getLocalizedEmotion(
-                              widget.record.emotionLabel!,
-                            )
-                          : '기록된 감정';
-
-                      return Text(
-                        "아까 '$localizedEmotion' 감정이 찾아왔었죠.\n지금 마음은 어떤가요?",
-                        style: AppTheme.darkTheme.textTheme.headlineSmall
-                            ?.copyWith(color: Colors.white, height: 1.5),
-                        textAlign: TextAlign.center,
-                      );
-                    },
-                  ),
-                ),
-              ),
-              // Visual correction
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
-
-        // 2. Bottom Button
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 40,
-          child: Center(
-            child: FilledButton.icon(
-              onPressed: _onStartCaring,
-              icon: const Icon(Icons.auto_awesome),
-              label: const Text("마음 들여다보기"),
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.1),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 16,
-                ),
-              ),
+      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 40.0),
+      child: Column(
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          // 1. Hero Plant (Breathing)
+          ScaleTransition(
+            scale: _scaleAnimation,
+            child: const Icon(
+              Icons.spa, // Placeholder for Plant Asset
+              size: 120,
+              color: Colors.white,
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 40),
+          // 2. Intro Text
+          FadeTransition(
+            opacity: _fadeAnimation,
+            child: Builder(
+              builder: (context) {
+                final l10n = AppLocalizations.of(context)!;
+                final localizedEmotion = widget.record.emotionLabel != null
+                    ? l10n.getLocalizedEmotion(widget.record.emotionLabel!)
+                    : '기록된 감정';
+
+                return Text(
+                  "아까 '$localizedEmotion' 감정이 찾아왔었죠.\n지금 마음은 어떤가요?",
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    height: 1.5,
+                  ),
+                  textAlign: TextAlign.center,
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 60),
+          // 3. Bottom Button
+          FilledButton.icon(
+            onPressed: _onStartCaring,
+            icon: const Icon(Icons.auto_awesome),
+            label: const Text("마음 들여다보기"),
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.white.withOpacity(0.1),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).padding.bottom + 40),
+        ],
+      ),
     );
   }
 

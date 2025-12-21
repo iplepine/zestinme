@@ -32,69 +32,83 @@ class HistoryListItem extends StatelessWidget {
       }
     }
 
-    return ZestGlassCard(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppColors.radiusMd),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              // Emoji Placeholder
-              Container(
-                width: 48 * MediaQuery.textScalerOf(context).scale(1),
-                height: 48 * MediaQuery.textScalerOf(context).scale(1),
-                decoration: BoxDecoration(
-                  color: intensityColor.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: intensityColor.withOpacity(0.5)),
-                ),
-                child: Center(
-                  child: Text(
-                    record.emotionLabel?.substring(0, 1) ?? '😐',
-                    style: TextStyle(
-                      fontSize: 24 * MediaQuery.textScalerOf(context).scale(1),
+    final localizedEmotion = l10n.getLocalizedEmotion(
+      record.emotionLabel ?? 'Untitled',
+    );
+    final detailText =
+        record.automaticThought ??
+        record.activities?.join(', ') ??
+        'No details';
+
+    return Semantics(
+      label: "기록: $localizedEmotion, $detailText, 시간: $timeString",
+      button: true,
+      onTap: onTap,
+      child: ZestGlassCard(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppColors.radiusMd),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                // Emoji Placeholder
+                ExcludeSemantics(
+                  child: Container(
+                    width: 48 * MediaQuery.textScalerOf(context).scale(1),
+                    height: 48 * MediaQuery.textScalerOf(context).scale(1),
+                    decoration: BoxDecoration(
+                      color: intensityColor.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: intensityColor.withOpacity(0.5),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        record.emotionLabel?.substring(0, 1) ?? '😐',
+                        style: TextStyle(
+                          fontSize:
+                              24 * MediaQuery.textScalerOf(context).scale(1),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.getLocalizedEmotion(
-                        record.emotionLabel ?? 'Untitled',
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        localizedEmotion,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: AppColors.fontWeightBold,
+                          color: Colors.white,
+                        ),
                       ),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: AppColors.fontWeightBold,
-                        color: Colors.white,
+                      const SizedBox(height: 4),
+                      Text(
+                        detailText,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      record.automaticThought ??
-                          record.activities?.join(', ') ??
-                          'No details',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                timeString,
-                style: const TextStyle(fontSize: 12, color: Colors.white54),
-              ),
-            ],
+                const SizedBox(width: 8),
+                Text(
+                  timeString,
+                  style: const TextStyle(fontSize: 12, color: Colors.white54),
+                ),
+              ],
+            ),
           ),
         ),
       ),

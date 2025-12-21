@@ -13,6 +13,14 @@
 - **Widgets**: 텍스트가 포함된 모든 컨테이너(Button, Card, TextField 등)는 고정 높이(`height`) 대신 `constraints`(`minHeight`)를 사용해야 한다.
 - **Scroll**: 텍스트 확대로 인해 콘텐츠가 화면을 넘어갈 수 있으므로, 항상 `SingleChildScrollView` 등으로 스크롤 가능성을 열어둔다.
 
+### 1.3. Screen Reader (Semantics)
+- **Interactive Labels**: 모든 버튼(`IconButton`, `FilledButton` 등)과 탭 기능이 있는 요소는 `semanticLabel`을 반드시 포함해야 한다.
+- **Visual-only content**: 단순히 배경을 꾸미는 아이콘이나 이미지는 `ExcludeSemantics`를 사용하여 스크린 리더가 건너뛰도록 한다.
+- **Complex Data**: 날씨 게이지와 같이 시각적 정보가 중요한 요소는 `Semantics(label: "...", value: "...")`를 사용하여 수치를 음성으로 설명한다.
+
+### 1.4. Touch Targets
+- **Size**: 모든 유동적인 터치 영역(Button, Chip)은 최소 **48x48 dp**의 크기를 확보하거나, 패딩을 통해 유효 터치 영역을 확장해야 한다.
+
 ## 2. Visual Identity: Atmospheric Realism
 
 ### 2.1. Color Strategy: "Midnight Mist" (V2)

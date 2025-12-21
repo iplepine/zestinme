@@ -154,48 +154,58 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
               ),
 
             // 6. Draggable Seed
-            GestureDetector(
-              onPanStart: (details) {
-                setState(() {
-                  _hasInteracted = true;
-                });
-                ref.read(seedingNotifierProvider.notifier).startDrag();
-              },
-              onPanUpdate: (details) {
-                _handleDrag(details.globalPosition);
-              },
-              onPanEnd: (details) =>
-                  ref.read(seedingNotifierProvider.notifier).endDrag(),
-              behavior: HitTestBehavior.translucent,
-              child: SizedBox.expand(
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left:
-                          _calculateSeedPosition(
-                            seedingState.valence,
-                            constraints.maxWidth,
-                          ).dx -
-                          30,
-                      top:
-                          _calculateSeedPosition(
-                            seedingState.arousal,
-                            constraints.maxHeight,
-                            isY: true,
-                          ).dy -
-                          30,
-                      child: _buildSeedIcon(seedingState.arousal, pulseDuration)
-                          .animate(
-                            onPlay: (controller) =>
-                                controller.repeat(reverse: true),
-                          )
-                          .scaleXY(
-                            end: 1.2,
-                            duration: pulseDuration,
-                            curve: Curves.easeInOut,
-                          ),
-                    ),
-                  ],
+            Semantics(
+              label: "기분 선택 영역",
+              value: _getMoodLabel(
+                context,
+                seedingState.valence,
+                seedingState.arousal,
+              ),
+              hint: "화면을 드래그하여 지금의 기분을 선택하세요. 상단으로 갈수록 활기차고, 우측으로 갈수록 긍정적입니다.",
+              child: GestureDetector(
+                onPanStart: (details) {
+                  setState(() {
+                    _hasInteracted = true;
+                  });
+                  ref.read(seedingNotifierProvider.notifier).startDrag();
+                },
+                onPanUpdate: (details) {
+                  _handleDrag(details.globalPosition);
+                },
+                onPanEnd: (details) =>
+                    ref.read(seedingNotifierProvider.notifier).endDrag(),
+                behavior: HitTestBehavior.translucent,
+                child: SizedBox.expand(
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left:
+                            _calculateSeedPosition(
+                              seedingState.valence,
+                              constraints.maxWidth,
+                            ).dx -
+                            30,
+                        top:
+                            _calculateSeedPosition(
+                              seedingState.arousal,
+                              constraints.maxHeight,
+                              isY: true,
+                            ).dy -
+                            30,
+                        child:
+                            _buildSeedIcon(seedingState.arousal, pulseDuration)
+                                .animate(
+                                  onPlay: (controller) =>
+                                      controller.repeat(reverse: true),
+                                )
+                                .scaleXY(
+                                  end: 1.2,
+                                  duration: pulseDuration,
+                                  curve: Curves.easeInOut,
+                                ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

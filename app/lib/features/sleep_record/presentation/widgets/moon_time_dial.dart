@@ -32,23 +32,35 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
         final size = Size(constraints.maxWidth, constraints.maxHeight);
         final center = Offset(size.width / 2, size.height / 2);
 
-        return GestureDetector(
-          onPanStart: (details) => _handlePanStart(details, center),
-          onPanUpdate: (details) => _handlePanUpdate(details, center),
-          onPanEnd: (_) {
-            if (_dragMode != _DragMode.none) {
-              HapticFeedback.mediumImpact();
-            }
-            setState(() => _dragMode = _DragMode.none);
-          },
-          child: CustomPaint(
-            size: size,
-            painter: MoonTimeDialPainter(
-              inBedTime: widget.inBedTime,
-              wakeTime: widget.wakeTime,
-              baseColor: Colors.white.withValues(alpha: 0.3),
-              activeColor: const Color(0xFF9575CD),
-              handlerColor: const Color(0xFFD1C4E9),
+        final duration = widget.wakeTime.difference(widget.inBedTime).inMinutes;
+        final hours = duration ~/ 60;
+        final minutes = duration % 60;
+
+        return Semantics(
+          label: "수면 시간 설정 다이얼",
+          value:
+              "취침: ${widget.inBedTime.hour}시 ${widget.inBedTime.minute}분, "
+              "기상: ${widget.wakeTime.hour}시 ${widget.wakeTime.minute}분. "
+              "총 수면 시간: $hours시간 $minutes분",
+          hint: "다이얼의 달 아이콘과 해 아이콘을 드래그하여 시간을 조정할 수 있습니다.",
+          child: GestureDetector(
+            onPanStart: (details) => _handlePanStart(details, center),
+            onPanUpdate: (details) => _handlePanUpdate(details, center),
+            onPanEnd: (_) {
+              if (_dragMode != _DragMode.none) {
+                HapticFeedback.mediumImpact();
+              }
+              setState(() => _dragMode = _DragMode.none);
+            },
+            child: CustomPaint(
+              size: size,
+              painter: MoonTimeDialPainter(
+                inBedTime: widget.inBedTime,
+                wakeTime: widget.wakeTime,
+                baseColor: Colors.white.withValues(alpha: 0.3),
+                activeColor: const Color(0xFF9575CD),
+                handlerColor: const Color(0xFFD1C4E9),
+              ),
             ),
           ),
         );
@@ -104,8 +116,10 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
     if (angleFrom12 < 0) angleFrom12 += 2 * pi;
 
     final targetMinutesFrom12 = (angleFrom12 / (2 * pi)) * 720;
-    final snappedTargetMinutesFrom12 =
-        _snapMinutesOnDial(targetMinutesFrom12, step: _minuteStep);
+    final snappedTargetMinutesFrom12 = _snapMinutesOnDial(
+      targetMinutesFrom12,
+      step: _minuteStep,
+    );
 
     // Get current time's minutes from 12
     DateTime currentBase;

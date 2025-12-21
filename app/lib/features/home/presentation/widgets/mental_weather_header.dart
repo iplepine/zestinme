@@ -19,51 +19,50 @@ class MentalWeatherHeader extends ConsumerWidget {
       context,
     ).scale(1).clamp(1.0, 1.4);
 
-    return GestureDetector(
-      onTap: () => _showGuideDialog(context),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.0 * scale,
-          vertical: 16.0 * scale,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-              child: _buildWeatherGauge(
-                context,
-                '☀️',
-                sunlight,
-                AppLocalizations.of(context).sunlight,
-              ),
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.0 * scale,
+        vertical: 16.0 * scale,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: _buildWeatherGauge(
+              context,
+              '☀️',
+              sunlight,
+              AppLocalizations.of(context).sunlight,
             ),
-            Expanded(
-              child: _buildWeatherGauge(
-                context,
-                '🌡️',
-                temperature,
-                AppLocalizations.of(context).temperature,
-              ),
+          ),
+          Expanded(
+            child: _buildWeatherGauge(
+              context,
+              '🌡️',
+              temperature,
+              AppLocalizations.of(context).temperature,
             ),
-            Expanded(
-              child: _buildWeatherGauge(
-                context,
-                '💧',
-                water,
-                AppLocalizations.of(context).water,
-              ),
+          ),
+          Expanded(
+            child: _buildWeatherGauge(
+              context,
+              '💧',
+              water,
+              AppLocalizations.of(context).water,
             ),
-            // Help Icon
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(
-                Icons.help_outline,
-                color: Colors.white.withOpacity(0.3),
-                size: 20 * scale,
-              ),
+          ),
+          // Help Icon
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: IconButton(
+              icon: const Icon(Icons.help_outline),
+              color: Colors.white.withOpacity(0.3),
+              iconSize: 20 * scale,
+              tooltip: "도움말",
+              onPressed: () => _showGuideDialog(context),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -162,41 +161,46 @@ class MentalWeatherHeader extends ConsumerWidget {
       context,
     ).scale(1).clamp(1.0, 1.4);
     final double gaugeHeight = 50.0 * scale;
+    final int percentage = (value * 100).round();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Container(
-              width: 12,
-              height: gaugeHeight,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
+    return Semantics(
+      label: label,
+      value: "$percentage%",
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Container(
+                width: 12,
+                height: gaugeHeight,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-            ),
-            Container(
-              width: 12,
-              height: gaugeHeight * value,
-              decoration: BoxDecoration(
-                color: _getGaugeColor(icon, value),
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: _getGaugeColor(icon, value).withOpacity(0.5),
-                    blurRadius: 8,
-                    spreadRadius: 1,
-                  ),
-                ],
+              Container(
+                width: 12,
+                height: gaugeHeight * value,
+                decoration: BoxDecoration(
+                  color: _getGaugeColor(icon, value),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _getGaugeColor(icon, value).withOpacity(0.5),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text(icon, style: TextStyle(fontSize: 16 * scale)),
-      ],
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(icon, style: TextStyle(fontSize: 16 * scale)),
+        ],
+      ),
     );
   }
 
