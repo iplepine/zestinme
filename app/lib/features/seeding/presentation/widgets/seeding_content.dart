@@ -7,8 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/seeding_provider.dart';
 import 'seeding_painters.dart';
-import 'rolling_hint_text_field.dart';
-import '../../../../core/widgets/zest_filter_chip.dart';
+import 'emotion_selection_sheet.dart';
 
 class SeedingContent extends ConsumerStatefulWidget {
   final VoidCallback? onComplete;
@@ -22,99 +21,16 @@ class SeedingContent extends ConsumerStatefulWidget {
 class _SeedingContentState extends ConsumerState<SeedingContent> {
   Offset _center = Offset.zero;
   double _radius = 0.0;
-  final ScrollController _scrollController = ScrollController();
   bool _hasInteracted = false;
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
-  }
-
-  String _getLocalizedTag(AppLocalizations l10n, String tag) {
-    switch (tag) {
-      // RED (High Energy, Negative)
-      case 'Angry':
-        return l10n.seeding_mood_angry;
-      case 'Anxious':
-        return l10n.seeding_mood_anxious;
-      case 'Resentful':
-        return l10n.seeding_mood_resentful;
-      case 'Overwhelmed':
-        return l10n.seeding_mood_overwhelmed;
-      case 'Jealous':
-        return l10n.seeding_mood_jealous;
-      case 'Annoyed':
-        return l10n.seeding_mood_annoyed;
-
-      // BLUE (Low Energy, Negative)
-      case 'Sad':
-        return l10n.seeding_mood_sad;
-      case 'Disappointed':
-        return l10n.seeding_mood_disappointed;
-      case 'Bored':
-        return l10n.seeding_mood_bored;
-      case 'Lonely':
-        return l10n.seeding_mood_lonely;
-      case 'Guilty':
-        return l10n.seeding_mood_guilty;
-      case 'Envious':
-        return l10n.seeding_mood_envious;
-
-      // YELLOW (High Energy, Positive)
-      case 'Excited':
-        return l10n.seeding_mood_excited;
-      case 'Proud': // Replaces Joyful/Passionate
-        return l10n.seeding_mood_proud;
-      case 'Inspired':
-        return l10n.seeding_mood_inspired;
-      case 'Enthusiastic':
-        return l10n.seeding_mood_enthusiastic;
-      case 'Curious':
-        return l10n.seeding_mood_curious;
-      case 'Amused':
-        return l10n.seeding_mood_amused;
-
-      // GREEN (Low Energy, Positive)
-      case 'Relaxed': // Replaces Calm
-        return l10n.seeding_mood_relaxed;
-      case 'Grateful':
-        return l10n.seeding_mood_grateful;
-      case 'Content':
-        return l10n.seeding_mood_content;
-      case 'Serene': // Replaces Peaceful
-        return l10n.seeding_mood_serene;
-      case 'Trusting':
-        return l10n.seeding_mood_trusting;
-      case 'Reflective':
-        return l10n.seeding_mood_reflective;
-
-      // Center
-      case 'Neutral':
-        return l10n.seeding_mood_neutral;
-
-      default:
-        return tag;
-    }
   }
 
   // Calculate pulse duration based on arousal
   Duration _getPulseDuration(double arousal) {
     return (2000 - ((arousal + 1) / 2 * 1500)).round().ms;
-  }
-
-  void _scrollToBottom() {
-    // Scroll to bottom when keyboard appears or input starts
-    // Add a small delay to ensure UI (like keyboard) has started animating
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (mounted && _scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOutCubic,
-        );
-      }
-    });
   }
 
   @override
@@ -138,6 +54,13 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
 
       if (prevZone != nextZone) {
         HapticFeedback.selectionClick();
+      }
+
+      // Check for Planted State Transition to show Sheet
+      if (!previous.isPlanted && next.isPlanted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showBottomSheet(context);
+        });
       }
     });
 
@@ -276,8 +199,7 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                 !_hasInteracted)
               _buildSwipeGuide(context),
 
-            // 6. Post-Planting Options (Chips)
-            if (seedingState.isPlanted) _buildEmotionChips(context, l10n),
+            // 6. Post-Planting Options (Now handled by modal bottom sheet)
           ],
         );
       },
@@ -360,157 +282,28 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
     );
   }
 
-  Widget _buildEmotionChips(BuildContext context, AppLocalizations l10n) {
-    final seedingState = ref.watch(seedingNotifierProvider);
-    final recommendedTags = ref
-        .read(seedingNotifierProvider.notifier)
-        .getRecommendedTags();
-
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    final availableHeight = MediaQuery.of(context).size.height - bottomInset;
-
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: EdgeInsets.only(bottom: bottomInset),
-        child: Container(
-          width: double.infinity,
-          constraints: BoxConstraints(maxHeight: availableHeight * 0.85),
-          padding: EdgeInsets.fromLTRB(
-            24.0,
-            24.0,
-            24.0,
-            24.0 +
-                (bottomInset > 0 ? 0 : MediaQuery.of(context).padding.bottom),
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.seedingCardBackground,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.5),
-                blurRadius: 10,
-                offset: const Offset(0, -5),
-              ),
-            ],
-          ),
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-
-                // 1. Tags
-                Text(
-                  l10n.seeding_promptTags,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  alignment: WrapAlignment.start,
-                  children: recommendedTags.map((tag) {
-                    final localizedTag = _getLocalizedTag(l10n, tag);
-                    final isSelected = seedingState.selectedTags.contains(tag);
-                    return ZestFilterChip(
-                      label: localizedTag,
-                      isSelected: isSelected,
-                      onSelected: (_) {
-                        ref
-                            .read(seedingNotifierProvider.notifier)
-                            .toggleTag(tag);
-                      },
-                    );
-                  }).toList(),
-                ),
-
-                const SizedBox(height: 32),
-
-                // 2. Note
-                RollingHintTextField(
-                  l10n: l10n,
-                  onInputStarted: _scrollToBottom,
-                  onChanged: (value) {
-                    ref
-                        .read(seedingNotifierProvider.notifier)
-                        .updateNote(value);
-                  },
-                ),
-
-                const SizedBox(height: 32),
-
-                // 3. Plant Button
-                ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 56),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: seedingState.isSaving
-                          ? null
-                          : () async {
-                              HapticFeedback.mediumImpact();
-                              await ref
-                                  .read(seedingNotifierProvider.notifier)
-                                  .saveRecord();
-
-                              if (widget.onComplete != null) {
-                                widget.onComplete!();
-                              } else {
-                                // Default behavior
-                                // NOTE: We cannot use context.go here easily if this widget is decoupled.
-                                // But assuming typical usage, we can leave it to caller or use a callback.
-                                // For now, I will NOT include context.go here.
-                                // I will assume SeedingScreen wraps this and passes onComplete = context.go(...).
-                              }
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            AppColors.seedingActionButtonBackground,
-                        foregroundColor: AppColors.seedingActionButtonText,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(28),
-                        ),
-                      ),
-                      child: seedingState.isSaving
-                          ? const CircularProgressIndicator()
-                          : Text(
-                              l10n.seeding_buttonPlant,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ).animate().slideY(begin: 1.0, end: 0.0, duration: 500.ms, curve: Curves.easeOutCubic),
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      showDragHandle: true,
+      enableDrag: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: EmotionSelectionSheet(onComplete: widget.onComplete),
       ),
-    );
+    ).then((_) {
+      if (mounted) {
+        final state = ref.read(seedingNotifierProvider);
+        // If the sheet was dismissed without saving, cancel planting
+        if (state.isPlanted && !state.isSaving) {
+          ref.read(seedingNotifierProvider.notifier).cancelPlanting();
+        }
+      }
+    });
   }
 
   Widget _buildSwipeGuide(BuildContext context) {

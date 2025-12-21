@@ -85,6 +85,10 @@ class SeedingNotifier extends _$SeedingNotifier {
     state = state.copyWith(isDragging: false, isPlanted: true);
   }
 
+  void cancelPlanting() {
+    state = state.copyWith(isDragging: false, isPlanted: false);
+  }
+
   void reset() {
     state = const SeedingState();
   }
