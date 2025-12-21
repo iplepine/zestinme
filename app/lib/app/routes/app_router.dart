@@ -13,6 +13,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/onboarding/presentation/providers/onboarding_provider.dart';
 import '../../features/home/presentation/screens/mind_gardener_home_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -23,6 +24,7 @@ class AppRouter {
   static const seeding = '/seeding';
   static const sleep = '/sleep'; // New Route
   static const dev = '/dev';
+  static const settings = '/settings';
 }
 
 @riverpod
@@ -41,6 +43,7 @@ GoRouter goRouter(GoRouterRef ref) {
         '/login',
         '/sleep', // Allow Sleep Screen
         '/',
+        '/settings',
       ];
       if (allowedRoutes.contains(state.matchedLocation)) return null;
 
@@ -85,6 +88,10 @@ GoRouter goRouter(GoRouterRef ref) {
         builder: (context, state) => const SleepRecordScreen(),
       ),
       GoRoute(path: '/dev', builder: (context, state) => const DevScreen()),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
+      ),
 
       // Legacy Routes (kept for reference if needed, or can be removed)
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),

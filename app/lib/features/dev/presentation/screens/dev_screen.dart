@@ -52,6 +52,7 @@ class DevScreen extends StatelessWidget {
           ),
 
           const Divider(color: Colors.white24),
+          _buildNavTile(context, '⚙️ Settings', '/settings'),
           _buildNavTile(context, '🔒 Login (Legacy)', '/login'),
         ],
       ),

@@ -6,6 +6,7 @@ import 'package:zestinme/l10n/app_localizations.dart' as new_l10n;
 import 'package:zestinme/core/localization/locale_provider.dart';
 import 'routes/app_router.dart';
 import 'theme/app_theme.dart';
+import 'theme/theme_provider.dart';
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -13,7 +14,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
-
+    final themeMode = ref.watch(themeModeProvider);
     final router = ref.watch(goRouterProvider);
 
     return MaterialApp.router(
@@ -30,6 +31,7 @@ class MyApp extends ConsumerWidget {
       },
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
       localizationsDelegates: const [
         legacy.AppLocalizations.delegate,
         new_l10n.AppLocalizations.delegate,
