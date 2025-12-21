@@ -9,6 +9,7 @@ class SpeechRecognitionController extends ChangeNotifier {
 
   bool _isListening = false;
   bool _isInitialized = false;
+  bool _isDisposed = false;
 
   // Buffering
   String _committedText = '';
@@ -28,33 +29,47 @@ class SpeechRecognitionController extends ChangeNotifier {
 
   /// Initialize the engine and handle permissions.
   Future<bool> initialize() async {
+    if (_isDisposed) return false;
     if (_isInitialized) return true;
 
-    _isInitialized = await _speechToText.initialize(
-      onStatus: _handleStatus,
-      onError: _handleError,
-    );
+    try {
+      _isInitialized = await _speechToText.initialize(
+        onStatus: _handleStatus,
+        onError: _handleError,
+      );
+    } catch (e) {
+      debugPrint('SpeechRecognitionController Initialization Error: $e');
+      _isInitialized = false;
+    }
     return _isInitialized;
   }
 
+  void _safeNotify() {
+    if (!_isDisposed) {
+      notifyListeners();
+    }
+  }
+
   void _handleStatus(String status) {
+    if (_isDisposed) return;
     if (status == 'done' || status == 'notListening') {
       _processSessionEnd();
     }
   }
 
   void _handleError(dynamic error) {
+    if (_isDisposed) return;
     debugPrint('SpeechRecognitionController Error: $error');
     stop(); // Stop on terminal error
   }
 
   /// Start listening.
   Future<void> start(String initialText) async {
-    if (_isListening) return;
+    if (_isDisposed || _isListening) return;
 
     if (!_isInitialized) {
       final ok = await initialize();
-      if (!ok) return;
+      if (!ok || _isDisposed) return;
     }
 
     _committedText = initialText;
@@ -63,25 +78,27 @@ class SpeechRecognitionController extends ChangeNotifier {
     _currentSessionId++;
 
     await _listen();
-    notifyListeners();
+    _safeNotify();
   }
 
   /// Stop listening and clean up.
   Future<void> stop() async {
-    if (!_isListening) return;
+    if (_isDisposed || !_isListening) return;
 
     _isListening = false;
     _silenceTimer?.cancel();
     _silenceTimer = null;
     await _speechToText.stop();
 
+    if (_isDisposed) return;
+
     // Final commit
     _commitCurrentSession();
-    notifyListeners();
+    _safeNotify();
   }
 
   Future<void> _listen() async {
-    if (!_isListening) return;
+    if (_isDisposed || !_isListening) return;
 
     final sessionId = _currentSessionId;
 
@@ -91,20 +108,24 @@ class SpeechRecognitionController extends ChangeNotifier {
       listenFor: const Duration(minutes: 5),
       cancelOnError: false,
       onResult: (result) {
+        if (_isDisposed) return;
         if (_isListening && _currentSessionId == sessionId) {
           // Speech detected, cancel silence timer
           _silenceTimer?.cancel();
           _silenceTimer = null;
 
           _currentSessionText = result.recognizedWords;
-          notifyListeners();
+          _safeNotify();
         }
       },
     );
 
+    if (_isDisposed) return;
+
     // Initial Silence Timer: If no speech is detected within 5 seconds, stop.
     _silenceTimer?.cancel();
     _silenceTimer = Timer(const Duration(seconds: 5), () {
+      if (_isDisposed) return;
       if (_isListening &&
           _currentSessionId == sessionId &&
           _currentSessionText.isEmpty) {
@@ -114,11 +135,12 @@ class SpeechRecognitionController extends ChangeNotifier {
   }
 
   Future<void> _processSessionEnd() async {
-    if (!_isListening) return;
+    if (_isDisposed || !_isListening) return;
 
     // Grace Period: Wait 1 second to catch trailing words
-    // The engine might be 'done' but still have a final result in flight.
     await Future.delayed(const Duration(seconds: 1));
+
+    if (_isDisposed) return;
 
     // Stall Detection: If this session heard something, restart.
     if (_currentSessionText.isNotEmpty) {
@@ -140,21 +162,24 @@ class SpeechRecognitionController extends ChangeNotifier {
   }
 
   Future<void> _restart() async {
-    if (!_isListening) return;
+    if (_isDisposed || !_isListening) return;
 
     _currentSessionId++;
 
     // Cooling delay for hardware release
     await Future.delayed(const Duration(milliseconds: 300));
 
+    if (_isDisposed) return;
+
     if (_isListening) {
       await _listen();
-      notifyListeners();
+      _safeNotify();
     }
   }
 
   @override
   void dispose() {
+    _isDisposed = true;
     _silenceTimer?.cancel();
     _speechToText.cancel();
     super.dispose();
