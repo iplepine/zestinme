@@ -13,22 +13,25 @@
 - **Widgets**: 텍스트가 포함된 모든 컨테이너(Button, Card, TextField 등)는 고정 높이(`height`) 대신 `constraints`(`minHeight`)를 사용해야 한다.
 - **Scroll**: 텍스트 확대로 인해 콘텐츠가 화면을 넘어갈 수 있으므로, 항상 `SingleChildScrollView` 등으로 스크롤 가능성을 열어둔다.
 
-## 2. Design System: Atmospheric Realism
+## 2. Visual Identity: Atmospheric Realism
 
-### 2.1. Color Strategy: "Prism & Void"
-- **Dark Theme (Baseline):** Deep Void (`0xFF050505`) 배경에 빛나는 광원 요소들을 배치.
+### 2.1. Color Strategy: "Midnight Mist" (V2)
+기존의 고대비 "Prism & Void"에서 더욱 차분하고 명상적인 **"Midnight Mist"**로 진화했습니다.
+
+- **Dark Theme (Baseline):** 깊은 새벽 숲의 안개를 연상시키는 Deep Indigo 배경에 은은한 등불의 온기를 배치.
 - **Light Theme:** 안개 낀 아침 같은 Soft Frost 배경에 차분한 색조를 사용.
 
-#### Dark Mode Tokens
-- **Background (Void):** `0xFF050505` (거의 검은색에 가까운 깊은 공간감)
-- **Surface (Glass):** `0xFF14181C` with Opacity (유리 질감의 카드 배경)
-- **Primary (Lemon):** `0xFFFFE135` (활력과 긍정의 포인트 컬러)
-- **Secondary (Lime):** `0xFF6CCB2C` (안정과 수확의 컬러)
-- **Accent (Glow):** 각 상태에 따른 그라데이션 및 발광 효과
+#### Dark Mode Tokens (Midnight Mist)
+- **Background (Deep Midnight):** `#0A121A` (깊은 공간감과 안개 낀 느낌)
+- **Surface (Misty Glass):** `#1A262F` with 60% Opacity (블러 처리된 전면 레이어)
+- **Primary (Lantern Glow):** `#FDF0D5` (따뜻한 등불의 빛, 핵심 액션 컬러)
+- **Secondary (Spirit Teal):** `#80DED9` (신비로운 자연의 기운, 포인트 컬러)
+- **Accent (Glow):** 주변 환경 광원 효과.
 
 ### 2.2. Materials & Surface
 - **Glassmorphism:** 모든 모달과 카드는 뒷 배경이 은은하게 비치는 블러(Blur) 처리가 된 유리 질감을 기본으로 한다.
-- **Elevation:** 단순한 그림자 대신, 하단 요소는 어둡고 상단 요소는 더 밝게 표현하여 계층 관계를 나타낸다.
+- **Mist Effect:** `glassBlur`를 `24.0` 이상으로 설정하여 전반적으로 몽환적인 안개 효과를 연출한다.
+- **Elevation:** 단순한 그림자 대신, 상단 레이어에 더 밝은 테두리(Border Opacity)와 광원 효과를 부여하여 계층을 나타낸다.
 
 ### 2.3. Typography
 - **Concept:** 정갈하면서도 감성적인 서체 활용.

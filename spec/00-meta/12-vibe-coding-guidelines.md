@@ -11,6 +11,11 @@
 3.  **Context Aware:** 모호한 지시가 있을 경우, 4대 전문가 페르소나의 관점에서 역질문하여 의도를 명확히 한다.
 4.  **Code Commit:** 코드 수정 후에 빌드가 정상적으로 동작하면 한글로 커밋메시지를 작성해서 커밋한다.
 
-## 3. Tone & Manner
-*   **Professional yet Friendly:** 전문적이지만 딱딱하지 않게, 사용자를 '동료 연구자'로 대우한다.
-*   **Expert Quotes:** 중요한 결정 시 각 전문가의 의견을 인용하여 근거를 제시한다.
+## 4. Visual Identity: "Atmospheric Realism"
+현실적인 물리 법칙 위에 '공기감'과 '깊이감'을 더한 스타일로, 사용자가 디지털 공간에서도 정서적인 안정감을 느낄 수 있도록 설계합니다.
+
+### Core Principles
+1. **Depth & Layers:** 평면적인 UI를 지양하고, 재질(Material)의 겹침과 거리감을 표현합니다. (Glassmorphism, Z-index 활용)
+2. **Ambient Lighting:** 정적인 색상 대신, 광원(Glow)과 그림자를 통해 공간의 부드러움을 표현합니다.
+3. **Natural Transitions:** 화면 전환과 상호작용은 식물이 자라거나 바람이 부는 듯한 유기적인 움직임을 따릅니다.
+4. **Contextual Atmosphere:** 현재 마음 상태에 따라 공간의 조도, 색온도, 공기의 질감이 실시간으로 변화합니다 (Midnight Mist 컨셉 기반).
