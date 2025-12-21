@@ -10,12 +10,14 @@ class HomeState {
   final List<EmotionRecord> uncaredRecords;
   final SleepRecord? todaySleep;
   final double sleepEfficiency; // 0.0 - 1.0 (for battery level)
+  final double sunlightLevel; // 0.0 (Night) ~ 1.0 (Day)
   final bool isLoading;
 
   HomeState({
     this.uncaredRecords = const [],
     this.todaySleep,
     this.sleepEfficiency = 0.0,
+    this.sunlightLevel = 1.0,
     this.isLoading = true,
   });
 
@@ -25,12 +27,15 @@ class HomeState {
     List<EmotionRecord>? uncaredRecords,
     SleepRecord? todaySleep,
     double? sleepEfficiency,
+    double? sunlightLevel,
     bool? isLoading,
   }) {
     return HomeState(
       uncaredRecords: uncaredRecords ?? this.uncaredRecords,
       todaySleep: todaySleep ?? this.todaySleep,
+      // Robust fallbacks for hot-reload state migration
       sleepEfficiency: sleepEfficiency ?? this.sleepEfficiency,
+      sunlightLevel: sunlightLevel ?? this.sunlightLevel,
       isLoading: isLoading ?? this.isLoading,
     );
   }
@@ -43,7 +48,21 @@ final homeProvider = StateNotifierProvider<HomeNotifier, HomeState>((ref) {
 
 class HomeNotifier extends StateNotifier<HomeState> {
   HomeNotifier() : super(HomeState()) {
+    // Ensure we start with a clean state even after hot reload
+    state = state.copyWith(sunlightLevel: _calculateDefaultSunlight());
     refresh();
+  }
+
+  double _calculateDefaultSunlight() {
+    final hour = DateTime.now().hour;
+    // 6 AM to 12 PM (0 -> 1), 12 PM to 6 PM (1 -> 0)
+    if (hour >= 6 && hour < 12) return (hour - 6) / 6.0;
+    if (hour >= 12 && hour < 18) return 1.0 - (hour - 12) / 6.0;
+    return 0.0; // Night
+  }
+
+  void updateSunlight(double value) {
+    state = state.copyWith(sunlightLevel: value.clamp(0.0, 1.0));
   }
 
   Future<void> refresh() async {
@@ -58,10 +77,7 @@ class HomeNotifier extends StateNotifier<HomeState> {
           .toList();
 
       // 2. Fetch Today's Sleep
-      // Logic: If before noon, show last night's sleep (using today's date if logged)
-      // If no record for today, show 0.
       final now = DateTime.now();
-      // Assuming SleepRecord date is the wake-up date
       final todayRecord = await db.getSleepRecordByDate(now);
 
       double efficiency = 0.0;

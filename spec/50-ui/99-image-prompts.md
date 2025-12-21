@@ -1,95 +1,63 @@
 # 🎨 Mind-Gardener Image Asset Prompts (Copy-Paste Ready)
 
-## 📐 Consistency Strategy (Future Reference)
-나중에 새로운 이미지를 만들 때 아래 토큰을 조합해서 사용하세요.
+## Global Constraints (반드시 포함)
+Background: pure black (#000000), flat color only
+No gradients, no texture, no vignette
 
-> **[Shared Style]**: `soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light`
-> **[Camera Angle]**: `isometric view, front view slightly looking down, centered, 30 degree angle`
-> **[Solid Background]**: `solid black background --ar 1:1` (누끼 따기용)
+Single plant object only
+No pot, no soil, no ground
+No environment, no background elements
 
----
+Soft atmospheric lighting
+Low contrast, readable silhouette
+No harsh highlights, no deep shadows
 
-## 1. Environment (환경)
+Semi-realistic, restrained detail
+Not photorealistic
+Not illustrated, not cartoon, not stylized
 
-### 🌃 Home Background (Main)
-*   **결과 파일명**: `assets/images/backgrounds/home_night.jpg`
+Centered composition
+Vertical orientation (9:16 safe)
+Plenty of empty space around the plant
+
+Designed as a “mystery growth state”
+The species must NOT be identifiable
+
+
+## 5. Mystery Plant Prompts (미스터리 식물 생성)
+
+### 🌿 M-HERB (미스터리 허브형)
 *   **Prompt**:
     ```text
-    A serene deep night forest garden, bioluminescent plants glowing softly in the distance, dark blue and violet gradient atmosphere, fireflies, minimal and clean composition for mobile app background, 4k, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light, no text --ar 9:16 --style raw
+    A mysterious young herb-like plant in an early growth state, slender, soft green stems growing upward, small, simple leaves with gentle curves, leaves are sparse and lightly spaced, overall shape feels light, calm, and breathable, the plant should look alive but incomplete, no flowers, no strong aroma cues, species must not be identifiable, centered composition, vertical orientation (9:16), background pure black (#000000), no pot, no soil, no ground, soft ambient lighting, muted green tones, low contrast, soft edges, semi-realistic botanical form, not photorealistic, not illustrated, designed as a mystery plant silhouette
     ```
 
-### 🌅 Dawn Background (Optional)
-*   **결과 파일명**: `assets/images/backgrounds/home_dawn.jpg`
+### 🌱 M-LEAF (미스터리 관엽형)
 *   **Prompt**:
     ```text
-    A misty garden at dawn, soft pastel pink and blue sky, morning dew on leaves, ethereal fog, tranquil, soft lighting, minimal mobile wallpaper style, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light --ar 9:16
+    A mysterious foliage-type plant in an early to mid growth state, one to three broad leaves emerging from a central stem, leaves are smooth, simple, and slightly oversized, leaf veins are subtle, not detailed, lower part feels lighter and unfinished, the plant should feel stable and calm, no flowers, no defining patterns, species must not be identifiable, centered composition, vertical orientation (9:16), background pure black (#000000), no pot, no soil, no ground, soft atmospheric lighting, muted green with slightly cool tones, no strong shadows, semi-realistic, restrained detail, designed as a neutral mystery plant
     ```
 
----
-
-## 2. Interactive Objects (오브젝트)
-
-### � Moon Lantern (수면 충전)
-*   **결과 파일명**: `assets/images/objects/moon_lantern.png`
+### 🌵 M-SUCC (미스터리 다육/선인장형)
 *   **Prompt**:
     ```text
-    A floating paper lantern shaped like a moon, emitting warm yellow light, dark night background, soft glow, ethereal, centered, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light, solid black background --ar 1:1
+    A mysterious succulent-like plant in an early growth stage, compact form with thick, fleshy structures, simple geometry, rounded or gently vertical shapes, minimal surface detail, low leaf count or no visible leaves, the plant feels resilient and contained, no spines, no flowers, species must not be identifiable, centered composition, vertical orientation (9:16), background pure black (#000000), no pot, no soil, no ground, soft diffuse lighting, muted green-gray tones, low contrast, matte surface, semi-realistic, not stylized, designed as a mystery growth form
     ```
 
-### 🎐 Wind Chime (마음 환기)
-*   **결과 파일명**: `assets/images/objects/wind_chime.png`
+### 🌸 M-ORCH (미스터리 난초형)
 *   **Prompt**:
     ```text
-    Crystal wind chime hanging from a thin invisible thread, reflecting moonlight, sparkling, elegant, dark background, cinematic lighting, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light, solid black background --ar 1:1
+    A mysterious orchid-like plant in an early, incomplete growth state, thin, elegant stems with asymmetrical balance, few narrow leaves, slightly elongated, a sense of air and space around the structure, no visible flowers or buds, the plant feels delicate and unfinished, species must not be identifiable, centered composition, vertical orientation (9:16), background pure black (#000000), no pot, no soil, no ground, soft ambient lighting, cool green tones with subtle variation, low contrast, gentle silhouette, semi-realistic botanical form, designed as an elegant mystery plant
     ```
 
-### 💧 Small Pond (자아의 거울)
-*   **결과 파일명**: `assets/images/objects/small_pond.png`
+### 🌳 M-TREE (미스터리 소형목/관목형)
 *   **Prompt**:
     ```text
-    A small calm pond of water reflecting the night sky and stars, round shape, stone edge, peaceful, still water, dark background, top-down view, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light, solid black background --ar 1:1
+    A mysterious young tree-like plant in an early growth stage, a single central stem branching lightly upward, very small leaves or leaf hints only, structure suggests future growth, not completion, no flowers, no fruit, species must not be identifiable, centered composition, vertical orientation (9:16), background pure black (#000000), no pot, no soil, no ground, soft, diffused lighting, muted natural green and brown tones, low contrast, semi-realistic, restrained detail, designed as a mystery plant silhouette
     ```
 
----
-
-## 3. Pots (화분)
-
-### 🏺 Simple Clay Pot (기본 화분)
-*   **결과 파일명**: `assets/images/pots/pot_clay.png`
+### 🌀 M-WEIRD (미스터리 이형/신비형)
 *   **Prompt**:
     ```text
-    An empty ceramic plant pot filled with dark fertile soil, simple and elegant design, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light, isometric view, front view slightly looking down, centered, 30 degree angle, solid black background --ar 1:1
-    ```
-
-### 🔮 Crystal Pot (고급 화분)
-*   **결과 파일명**: `assets/images/pots/pot_crystal.png`
-*   **Prompt**:
-    ```text
-    A translucent glowing crystal plant pot filled with magical soil, ethereal, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light, isometric view, front view slightly looking down, centered, 30 degree angle, solid black background --ar 1:1
-    ```
-
----
-
-## 4. Plants (식물)
-*팁: 배경 제거 후 화분 위에 얹어서 사용하세요.*
-
-### 🌿 Rosemary (로즈마리)
-*   **결과 파일명**: `assets/images/plants/rosemary_full.png`
-*   **Prompt**:
-    ```text
-    A Rosemary herb plant growing vertically, needle-like leaves, soft green glow, NO POT, roots or stem fading out at bottom, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light, isometric view, front view slightly looking down, centered, 30 degree angle, solid black background --ar 1:1
-    ```
-
-### 🌻 Sunflower (해바라기)
-*   **결과 파일명**: `assets/images/plants/sunflower_full.png`
-*   **Prompt**:
-    ```text
-    A glowing Sunflower with golden petals, bioluminescent center, tall sturdy stem, NO POT, stem fading out at bottom, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light, isometric view, front view slightly looking down, centered, 30 degree angle, solid black background --ar 1:1
-    ```
-
-### 🌱 Mystery Sprout (미지의 새싹)
-*   **결과 파일명**: `assets/images/plants/mystery_sprout.png`
-*   **Prompt**:
-    ```text
-    A small delicate mysterious sprout with two glowing blue leaves, NO POT, stem fading out at bottom, soft 3d render, bioluminescent, magical realism, minimal ui asset, dark fantasy aesthetic, c4d, blender, octane render, dreamlike, soft glowing light, isometric view, front view slightly looking down, centered, 30 degree angle, solid black background --ar 1:1
+    A mysterious non-standard plant form, still clearly botanical, unusual but organic structure, sparse leaves or abstract growth patterns, feels alive but unfamiliar, no flowers, no dramatic features, must still read as a plant, not alien, species must not be identifiable, centered composition, vertical orientation (9:16), background pure black (#000000), no pot, no soil, no ground, soft ambient lighting, muted, slightly desaturated greens, low contrast, semi-realistic, calm, restrained, designed as a mystery plant
     ```

@@ -29,6 +29,8 @@ class DevScreen extends StatelessWidget {
           _buildNavTile(context, ' Garden Journal (History)', '/history'),
           const Divider(color: Colors.white24),
 
+          _buildNavTile(context, '🧪 Plant Setting Dev', '/dev/plant-setting'),
+
           ListTile(
             title: const Text(
               '💧 Test Caring Flow (Dummy)',

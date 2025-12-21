@@ -1,90 +1,133 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'dart:async';
 
-class ScenicBackground extends StatefulWidget {
-  const ScenicBackground({super.key});
+class ScenicBackground extends StatelessWidget {
+  final double sunlight; // 0.0 (Night) ~ 1.0 (Day)
 
-  @override
-  State<ScenicBackground> createState() => _ScenicBackgroundState();
-}
-
-class _ScenicBackgroundState extends State<ScenicBackground> {
-  late String _currentAsset;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize immediately without setState
-    _currentAsset = _getAssetByTime();
-
-    // Check every minute to update background if time crosses threshold
-    _timer = Timer.periodic(
-      const Duration(minutes: 1),
-      (_) => _checkAndUpdate(),
-    );
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  String _getAssetByTime() {
-    final hour = DateTime.now().hour;
-    // 05:00 ~ 17:00 (Daytime) -> Dawn image
-    // 17:00 ~ 05:00 (Nighttime) -> Night image
-    final isDaytime = hour >= 5 && hour < 17;
-    return isDaytime
-        ? 'assets/images/backgrounds/home_dawn.png' // jpg -> png checked in find_by_name
-        : 'assets/images/backgrounds/home_night.png';
-  }
-
-  void _checkAndUpdate() {
-    final newAsset = _getAssetByTime();
-    if (_currentAsset != newAsset) {
-      if (mounted) {
-        setState(() {
-          _currentAsset = newAsset;
-        });
-      }
-    }
-  }
+  const ScenicBackground({super.key, required this.sunlight});
 
   @override
   Widget build(BuildContext context) {
+    // Atmospheric strengths
+    final vignetteStrength = lerpDouble(0.65, 0.15, sunlight)!;
+    final fogStrength = lerpDouble(0.20, 0.05, sunlight)!;
+
+    // Subtle overlay tint for blending (Night is deep void, Day is warm air)
+    final tintOpacity = lerpDouble(0.40, 0.10, sunlight)!;
+    final tintColor = Color.lerp(
+      const Color(0xFF07121C), // Night Tint
+      const Color(0xFFFFE7C2), // Day Tint
+      sunlight,
+    )!.withOpacity(tintOpacity);
+
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Background Image with Crossfade
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 1000),
+        // 1. Base Layer: Night Image (Always Present)
+        Image.asset(
+          'assets/images/backgrounds/home_night.png',
+          fit: BoxFit.cover,
+        ),
+
+        // 2. Blend Layer: Day Image (Opacity linked to sunlight)
+        Opacity(
+          opacity: sunlight.clamp(0.0, 1.0),
           child: Image.asset(
-            _currentAsset,
-            key: ValueKey(_currentAsset),
+            'assets/images/backgrounds/home_day.png',
             fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
           ),
         ),
 
-        // Optional Overlay Gradient to ensure text legibility
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.black.withOpacity(0.3), // Top darkening
-                Colors.transparent,
-                Colors.black.withOpacity(0.6), // Bottom darkening for buttons
-              ],
-              stops: const [0.0, 0.5, 1.0],
+        // 3. Subtle Tint Overlay (Unifies the look)
+        Container(color: tintColor),
+
+        // 4. Fog / Glow (Central Bloom)
+        IgnorePointer(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(0.0, -0.2),
+                radius: 1.2,
+                colors: [
+                  Colors.white.withOpacity(fogStrength),
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.8],
+              ),
+            ),
+          ),
+        ),
+
+        // 5. Sun/Moon Glow
+        _buildOrbGlow(sunlight),
+
+        // 6. Vignette (Depth)
+        IgnorePointer(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment.center,
+                radius: 1.3,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withOpacity(vignetteStrength),
+                ],
+                stops: const [0.4, 1.0],
+              ),
+            ),
+          ),
+        ),
+
+        // 7. Extra Atmosphere Gradient (Top-down)
+        IgnorePointer(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color.lerp(
+                    Colors.indigo,
+                    Colors.orangeAccent,
+                    sunlight,
+                  )!.withOpacity(0.1),
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.5),
+                ],
+                stops: const [0.0, 0.4, 1.0],
+              ),
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildOrbGlow(double sunlight) {
+    final orbColor = Color.lerp(
+      Colors.blueGrey.shade200, // Moon
+      Colors.orangeAccent.shade100, // Sun
+      sunlight,
+    )!;
+
+    return Positioned(
+      top: 80 - (sunlight * 40), // Rises during day
+      right: 40,
+      child: IgnorePointer(
+        child: Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                orbColor.withOpacity(0.4 * (0.4 + sunlight * 0.4)),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

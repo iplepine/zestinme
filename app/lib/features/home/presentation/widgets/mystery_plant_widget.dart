@@ -69,13 +69,13 @@ class MysteryPlantWidget extends StatelessWidget {
 
   Widget _buildPlantImage(int stage) {
     // 1. Determine Assets (Demo: Crystal Pot & Rosemary)
-    const potAsset = 'assets/images/pots/pot_crystal.png';
+    const potAsset = 'assets/images/pots/pot_default.png';
     String plantAsset;
 
     // Map stage to asset
     // Demo: Show Rosemary Full for ALL stages so user can see the asset
     // (In production, replace with proper stage assets)
-    plantAsset = 'assets/images/plants/rosemary_full.png';
+    plantAsset = 'assets/images/plants/mystery_herb_1.png';
 
     return Stack(
       alignment: Alignment.bottomCenter,

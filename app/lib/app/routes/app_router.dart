@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/seeding/presentation/screens/seeding_screen.dart';
 import '../../features/sleep_record/presentation/screens/sleep_record_screen.dart';
 import '../../features/dev/presentation/screens/dev_screen.dart';
+import '../../features/dev/presentation/screens/home_plant_setting_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
 
 import '../../features/auth/presentation/login_page.dart';
@@ -24,6 +25,7 @@ class AppRouter {
   static const seeding = '/seeding';
   static const sleep = '/sleep'; // New Route
   static const dev = '/dev';
+  static const plantSetting = '/dev/plant-setting';
   static const settings = '/settings';
 }
 
@@ -38,6 +40,7 @@ GoRouter goRouter(GoRouterRef ref) {
       // Developer Mode: Always allow /dev and debugging routes
       final allowedRoutes = [
         '/dev',
+        '/dev/plant-setting',
         '/seeding',
         '/history',
         '/login',
@@ -88,6 +91,10 @@ GoRouter goRouter(GoRouterRef ref) {
         builder: (context, state) => const SleepRecordScreen(),
       ),
       GoRoute(path: '/dev', builder: (context, state) => const DevScreen()),
+      GoRoute(
+        path: '/dev/plant-setting',
+        builder: (context, state) => const HomePlantSettingScreen(),
+      ),
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsScreen(),
