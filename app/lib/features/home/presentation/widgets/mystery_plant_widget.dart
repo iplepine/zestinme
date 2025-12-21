@@ -81,6 +81,32 @@ class MysteryPlantWidget extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       clipBehavior: Clip.none,
       children: [
+        // Layer 0: Backglow (Ambient Mist)
+        Positioned(
+              bottom: 40,
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.spiritTeal.withOpacity(0.15),
+                      blurRadius: 100,
+                      spreadRadius: 20,
+                    ),
+                  ],
+                ),
+              ),
+            )
+            .animate(onPlay: (c) => c.repeat(reverse: true))
+            .scale(
+              begin: const Offset(1, 1),
+              end: const Offset(1.2, 1.2),
+              duration: 4.seconds,
+              curve: Curves.easeInOut,
+            ),
+
         // Layer A: Pot (Base) - Truly Static
         Image.asset(
           potAsset,
@@ -118,11 +144,11 @@ class MysteryPlantWidget extends StatelessWidget {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: AppColors.ocean,
+            color: AppColors.spiritTeal,
             shape: BoxShape.circle,
-            boxShadow: AppColors.ambientGlow(AppColors.ocean),
+            boxShadow: AppColors.ambientGlow(AppColors.spiritTeal),
           ),
-          child: const Icon(Icons.water_drop, color: Colors.white),
+          child: const Icon(Icons.water_drop, color: AppColors.midnightDeep),
         )
         .animate(onPlay: (c) => c.repeat(reverse: true))
         .moveY(begin: 0, end: -10, duration: 1500.ms, curve: Curves.easeInOut);
