@@ -132,6 +132,10 @@ class SleepNotifier extends _$SleepNotifier {
 
   void updateTimes(DateTime inBedTime, DateTime wakeTime) {
     int duration = wakeTime.difference(inBedTime).inMinutes;
+    if (duration < 0) {
+      duration +=
+          1440; // Add 24 hours if wakeTime is logically "before" inBedTime
+    }
     state = state.copyWith(
       inBedTime: inBedTime,
       wakeTime: wakeTime,

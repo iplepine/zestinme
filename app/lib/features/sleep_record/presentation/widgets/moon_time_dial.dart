@@ -32,26 +32,30 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
         final size = Size(constraints.maxWidth, constraints.maxHeight);
         final center = Offset(size.width / 2, size.height / 2);
 
-        final duration = widget.wakeTime.difference(widget.inBedTime).inMinutes;
+        final duration = _calculateSmartDuration(
+          widget.inBedTime,
+          widget.wakeTime,
+        );
         final hours = duration ~/ 60;
         final minutes = duration % 60;
 
-        return Semantics(
-          label: "수면 시간 설정 다이얼",
-          value:
-              "취침: ${widget.inBedTime.hour}시 ${widget.inBedTime.minute}분, "
-              "기상: ${widget.wakeTime.hour}시 ${widget.wakeTime.minute}분. "
-              "총 수면 시간: $hours시간 $minutes분",
-          hint: "다이얼의 달 아이콘과 해 아이콘을 드래그하여 시간을 조정할 수 있습니다.",
-          child: GestureDetector(
-            onPanStart: (details) => _handlePanStart(details, center),
-            onPanUpdate: (details) => _handlePanUpdate(details, center),
-            onPanEnd: (_) {
-              if (_dragMode != _DragMode.none) {
-                HapticFeedback.mediumImpact();
-              }
-              setState(() => _dragMode = _DragMode.none);
-            },
+        return GestureDetector(
+          onPanStart: (details) => _handlePanStart(details, center),
+          onPanUpdate: (details) => _handlePanUpdate(details, center),
+          onPanEnd: (_) {
+            if (_dragMode != _DragMode.none) {
+              HapticFeedback.mediumImpact();
+            }
+            setState(() => _dragMode = _DragMode.none);
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Semantics(
+            label: "수면 시간 설정 다이얼",
+            value:
+                "취침: ${widget.inBedTime.hour}시 ${widget.inBedTime.minute}분, "
+                "기상: ${widget.wakeTime.hour}시 ${widget.wakeTime.minute}분. "
+                "총 수면 시간: $hours시간 $minutes분",
+            hint: "다이얼의 달 아이콘과 해 아이콘을 드래그하여 시간을 조정할 수 있습니다.",
             child: CustomPaint(
               size: size,
               painter: MoonTimeDialPainter(
@@ -72,19 +76,28 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
     final touchPos = details.localPosition;
     final touchAngle = _coordToAngle(touchPos, center);
 
+    // Radial distance check: only allow touch near the dial ring
+    final touchRadius = (touchPos - center).distance;
+    final outerRadius = center.dx; // center.dx is half width
+    final innerRadius =
+        outerRadius -
+        80; // Expanded touch area to 80px ring for better accessibility
+
+    if (touchRadius < innerRadius || touchRadius > outerRadius + 40) {
+      setState(() => _dragMode = _DragMode.none);
+      return;
+    }
+
     final bedAngle = _dateTimeToAngle(widget.inBedTime);
     final wakeAngle = _dateTimeToAngle(widget.wakeTime);
 
-    // Check distance in angular space
-    // Need minimum distance check? Or strict tolerance?
-    // Let's use simple angular distance.
     final distBed = _angularDistance(touchAngle, bedAngle);
     final distWake = _angularDistance(touchAngle, wakeAngle);
 
-    // Threshold (e.g. 1.2 radians approx 68 degrees for maximum touch area)
-    const threshold = 1.2;
+    // Reduced threshold to 0.8 radians (~45 degrees) for more precise picking
+    const threshold = 0.8;
 
-    if (distBed < threshold && distBed < distWake) {
+    if (distBed < threshold && distBed <= distWake) {
       setState(() => _dragMode = _DragMode.bed);
     } else if (distWake < threshold) {
       setState(() => _dragMode = _DragMode.wake);
@@ -147,7 +160,7 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
         widget.inBedTime.add(Duration(minutes: minutesToAdd)),
         step: _minuteStep,
       );
-      final duration = widget.wakeTime.difference(newBedTime).inMinutes;
+      final duration = _calculateSmartDuration(newBedTime, widget.wakeTime);
       // Constraint: Minimum 120 minutes (2 hours) sleep for meaningful data
       if (duration >= 120) {
         widget.onInBedTimeChanged(newBedTime);
@@ -157,7 +170,7 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
         widget.wakeTime.add(Duration(minutes: minutesToAdd)),
         step: _minuteStep,
       );
-      final duration = newWakeTime.difference(widget.inBedTime).inMinutes;
+      final duration = _calculateSmartDuration(widget.inBedTime, newWakeTime);
       // Constraint: Minimum 120 minutes (2 hours) sleep for meaningful data
       if (duration >= 120) {
         widget.onWakeTimeChanged(newWakeTime);
@@ -219,6 +232,16 @@ class _InteractiveMoonTimeDialState extends State<InteractiveMoonTimeDial> {
   double _angularDistance(double a, double b) {
     double diff = (a - b).abs();
     if (diff > pi) diff = 2 * pi - diff;
+    return diff;
+  }
+
+  int _calculateSmartDuration(DateTime bed, DateTime wake) {
+    int diff = wake.difference(bed).inMinutes;
+    // If negative, assume inBed happened on the previous day.
+    if (diff < 0) {
+      // Corrected: just add 24 hours (1440 mins) to handle cross-midnight.
+      return diff + 1440;
+    }
     return diff;
   }
 }
