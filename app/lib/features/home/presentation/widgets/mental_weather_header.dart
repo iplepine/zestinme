@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../providers/environment_provider.dart';
 
 class MentalWeatherHeader extends ConsumerWidget {
@@ -56,13 +57,16 @@ class MentalWeatherHeader extends ConsumerWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF2C3E50),
+          backgroundColor: AppColors.glassSurface.withOpacity(0.9),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppColors.radiusLg),
           ),
-          title: const Text(
+          title: Text(
             "마음의 날씨 (Mental Weather)",
-            style: TextStyle(color: Colors.white, fontSize: 18),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ),
           content: Column(

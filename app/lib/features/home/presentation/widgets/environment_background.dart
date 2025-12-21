@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 
 class EnvironmentBackground extends StatelessWidget {
   final double sunlight; // 0.0 (Night) ~ 1.0 (Day)
@@ -66,7 +67,7 @@ class EnvironmentBackground extends StatelessWidget {
   Color _getSkyColor() {
     // Sunlight: Dark Blue (Night) <-> Light Blue (Day)
     final baseColor = Color.lerp(
-      const Color(0xFF0D1B2A), // Deep Night
+      AppColors.voidBlack, // Deep Night (Baseline)
       const Color(0xFF4FC3F7), // Bright Day
       sunlight,
     )!;

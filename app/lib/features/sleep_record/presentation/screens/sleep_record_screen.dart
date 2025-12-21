@@ -50,9 +50,14 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
     final durationMins = sleepState.durationMinutes % 60;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E), // Deep Indigo
+      backgroundColor: AppColors.voidBlack,
       appBar: AppBar(
-        title: const Text('Recharge', style: TextStyle(color: Colors.white)),
+        title: Text(
+          'Recharge',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(color: Colors.white),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
