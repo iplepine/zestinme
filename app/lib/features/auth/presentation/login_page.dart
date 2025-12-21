@@ -87,8 +87,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   child: Column(
                     children: [
                       Container(
-                        width: 80,
-                        height: 80,
+                        width:
+                            80 *
+                            MediaQuery.textScalerOf(
+                              context,
+                            ).scale(1).clamp(0.8, 1.2),
+                        height:
+                            80 *
+                            MediaQuery.textScalerOf(
+                              context,
+                            ).scale(1).clamp(0.8, 1.2),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withOpacity(0.1),
                           shape: BoxShape.circle,
@@ -96,7 +104,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         child: Icon(
                           Icons.emoji_nature,
                           color: AppColors.primary,
-                          size: 40,
+                          size:
+                              40 *
+                              MediaQuery.textScalerOf(
+                                context,
+                              ).scale(1).clamp(0.8, 1.2),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -107,12 +119,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               fontWeight: AppColors.fontWeightMedium,
                               color: AppColors.foreground,
                             ),
+                        textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '상큼한 하루를 기록해보세요',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.mutedForeground,
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Text(
+                          '상큼한 하루를 기록해보세요',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: AppColors.mutedForeground),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ],
@@ -221,42 +237,39 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 const SizedBox(height: 24),
 
                 // 로그인 버튼
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      foregroundColor: AppColors.primaryForeground,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 56),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _handleLogin,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.primaryForeground,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
                       ),
-                      elevation: 0,
-                      shadowColor: Colors.transparent,
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.primaryForeground,
+                      child: _isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.primaryForeground,
+                                ),
+                              ),
+                            )
+                          : const Text(
+                              '로그인',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: AppColors.fontWeightMedium,
                               ),
                             ),
-                          )
-                        : const Text(
-                            '로그인',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: AppColors.fontWeightMedium,
-                            ),
-                          ),
+                    ),
                   ),
                 ),
 

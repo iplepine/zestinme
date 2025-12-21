@@ -43,11 +43,8 @@ class HistoryListItem extends StatelessWidget {
             children: [
               // Emoji Placeholder
               Container(
-                width:
-                    48 *
-                    MediaQuery.textScalerOf(context).scale(1) /
-                    1.0, // Scale proportionally
-                height: 48 * MediaQuery.textScalerOf(context).scale(1) / 1.0,
+                width: 48 * MediaQuery.textScalerOf(context).scale(1),
+                height: 48 * MediaQuery.textScalerOf(context).scale(1),
                 decoration: BoxDecoration(
                   color: intensityColor.withOpacity(0.2),
                   shape: BoxShape.circle,
@@ -56,7 +53,9 @@ class HistoryListItem extends StatelessWidget {
                 child: Center(
                   child: Text(
                     record.emotionLabel?.substring(0, 1) ?? '😐',
-                    style: const TextStyle(fontSize: 24),
+                    style: TextStyle(
+                      fontSize: 24 * MediaQuery.textScalerOf(context).scale(1),
+                    ),
                   ),
                 ),
               ),
@@ -84,12 +83,13 @@ class HistoryListItem extends StatelessWidget {
                         fontSize: 14,
                         color: Colors.white70,
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
               Text(
                 timeString,
                 style: const TextStyle(fontSize: 12, color: Colors.white54),

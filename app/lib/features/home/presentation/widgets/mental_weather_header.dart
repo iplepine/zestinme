@@ -15,36 +15,52 @@ class MentalWeatherHeader extends ConsumerWidget {
     final double temperature = environmentState.temperature;
     final double water = environmentState.water;
 
+    final double scale = MediaQuery.textScalerOf(
+      context,
+    ).scale(1).clamp(1.0, 1.4);
+
     return GestureDetector(
       onTap: () => _showGuideDialog(context),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.0 * scale,
+          vertical: 16.0 * scale,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildWeatherGauge(
-              context,
-              '☀️',
-              sunlight,
-              AppLocalizations.of(context).sunlight,
+            Expanded(
+              child: _buildWeatherGauge(
+                context,
+                '☀️',
+                sunlight,
+                AppLocalizations.of(context).sunlight,
+              ),
             ),
-            _buildWeatherGauge(
-              context,
-              '🌡️',
-              temperature,
-              AppLocalizations.of(context).temperature,
+            Expanded(
+              child: _buildWeatherGauge(
+                context,
+                '🌡️',
+                temperature,
+                AppLocalizations.of(context).temperature,
+              ),
             ),
-            _buildWeatherGauge(
-              context,
-              '💧',
-              water,
-              AppLocalizations.of(context).water,
+            Expanded(
+              child: _buildWeatherGauge(
+                context,
+                '💧',
+                water,
+                AppLocalizations.of(context).water,
+              ),
             ),
             // Help Icon
-            Icon(
-              Icons.help_outline,
-              color: Colors.white.withOpacity(0.3),
-              size: 20,
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Icon(
+                Icons.help_outline,
+                color: Colors.white.withOpacity(0.3),
+                size: 20 * scale,
+              ),
             ),
           ],
         ),
@@ -142,6 +158,11 @@ class MentalWeatherHeader extends ConsumerWidget {
     double value,
     String label,
   ) {
+    final double scale = MediaQuery.textScalerOf(
+      context,
+    ).scale(1).clamp(1.0, 1.4);
+    final double gaugeHeight = 50.0 * scale;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -150,7 +171,7 @@ class MentalWeatherHeader extends ConsumerWidget {
           children: [
             Container(
               width: 12,
-              height: 50,
+              height: gaugeHeight,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10),
@@ -158,7 +179,7 @@ class MentalWeatherHeader extends ConsumerWidget {
             ),
             Container(
               width: 12,
-              height: 50 * value,
+              height: gaugeHeight * value,
               decoration: BoxDecoration(
                 color: _getGaugeColor(icon, value),
                 borderRadius: BorderRadius.circular(10),
@@ -174,7 +195,7 @@ class MentalWeatherHeader extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 8),
-        Text(icon, style: const TextStyle(fontSize: 16)),
+        Text(icon, style: TextStyle(fontSize: 16 * scale)),
       ],
     );
   }

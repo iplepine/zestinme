@@ -104,11 +104,18 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                     seedingState.arousal,
                   ),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 28,
+                    fontSize:
+                        28 *
+                        MediaQuery.textScalerOf(context)
+                            .scale(1)
+                            .clamp(
+                              0.8,
+                              1.2,
+                            ), // Slightly less aggressive scaling for title
                     fontWeight: FontWeight.bold,
-                    shadows: [
+                    shadows: const [
                       Shadow(
                         offset: Offset(0, 2),
                         blurRadius: 4,
@@ -130,11 +137,11 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                   child: Text(
                     l10n.seeding_instruction,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24,
+                      fontSize: 18 * MediaQuery.textScalerOf(context).scale(1),
                       fontWeight: FontWeight.w300,
-                      shadows: [
+                      shadows: const [
                         Shadow(
                           offset: Offset(0, 2),
                           blurRadius: 4,

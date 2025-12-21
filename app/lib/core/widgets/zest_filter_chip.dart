@@ -27,7 +27,8 @@ class ZestFilterChip extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           constraints: BoxConstraints(
-            minHeight: 36 * MediaQuery.textScalerOf(context).scale(1),
+            minHeight:
+                40 * MediaQuery.textScalerOf(context).scale(1).clamp(0.8, 1.2),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
@@ -50,11 +51,8 @@ class ZestFilterChip extends StatelessWidget {
                       ? AppColors.chipSelectedText
                       : AppColors.chipIdleText,
                   fontWeight: FontWeight.w500,
-                  fontSize: 14 * MediaQuery.textScalerOf(context).scale(1) > 20
-                      ? 20 // Cap font size mostly for chips if needed, but app clamp handles it
-                      : 14, // Base size
+                  fontSize: 14, // System text scaling will apply naturally
                 ),
-                // Let the container grow; text will wrap naturally.
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
