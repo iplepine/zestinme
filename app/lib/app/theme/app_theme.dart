@@ -11,31 +11,32 @@ class AppTheme {
   // --- 1. Color Schemes ---
 
   static final ColorScheme lightScheme = ColorScheme.light(
-    primary: AppColors.lemonPrimary,
-    onPrimary: AppColors.primaryForeground,
-    secondary: AppColors.limeSecondary,
-    onSecondary: AppColors.secondaryForeground,
-    surface: AppColors.card,
-    onSurface: AppColors.cardForeground,
-    background: AppColors.background,
-    onBackground: AppColors.foreground,
-    error: AppColors.destructive,
-    onError: AppColors.destructiveForeground,
-    outline: AppColors.border,
+    primary: AppColors.lanternGlow,
+    onPrimary: AppColors.midnightDeep,
+    secondary: AppColors.spiritTeal,
+    onSecondary: AppColors.midnightDeep,
+    surface: AppColors.cardLight,
+    onSurface: AppColors.foregroundLight,
+    background: AppColors.backgroundLight,
+    onBackground: AppColors.foregroundLight,
+    error: AppColors.fire,
+    onError: Colors.white,
+    outline: AppColors.borderLight,
   );
 
   static final ColorScheme darkScheme = ColorScheme.dark(
-    primary: AppColors.lemonPrimary,
-    onPrimary: AppColors.voidBlack,
-    secondary: AppColors.limeSecondary,
-    onSecondary: AppColors.voidBlack,
-    surface: AppColors.glassSurface,
+    primary: AppColors.lanternGlow,
+    onPrimary: AppColors.midnightDeep,
+    secondary: AppColors.spiritTeal,
+    onSecondary: AppColors.midnightDeep,
+    surface: AppColors.mistySurface,
     onSurface: AppColors.foregroundDark,
-    background: AppColors.voidBlack,
+    background: AppColors.midnightDeep,
     onBackground: AppColors.foregroundDark,
     error: AppColors.fire,
     onError: Colors.white,
     outline: AppColors.borderDark,
+    surfaceVariant: AppColors.midnightDeep,
   );
 
   // --- 2. Themes ---
@@ -70,6 +71,7 @@ class AppTheme {
           ),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           elevation: isDark ? 0 : 2,
+          shadowColor: isDark ? scheme.primary.withOpacity(0.3) : null,
         ),
       ),
 
@@ -128,6 +130,21 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppColors.radiusLg),
         ),
         side: BorderSide(color: scheme.outline.withOpacity(0.2)),
+      ),
+
+      // List Tile (Robust to text scaling)
+      listTileTheme: ListTileThemeData(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        iconColor: scheme.onSurface.withOpacity(0.7),
+        titleTextStyle: TextStyle(
+          color: scheme.onSurface,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        subtitleTextStyle: TextStyle(
+          color: scheme.onSurface.withOpacity(0.6),
+          fontSize: 14,
+        ),
       ),
 
       // Text Theme

@@ -21,10 +21,7 @@ class TimelineWidget extends StatelessWidget {
         child: Text(
           "아직 수확한 마음이 없네요.\n오늘의 씨앗을 심어보세요.",
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.5),
-            height: 1.5,
-          ),
+          style: TextStyle(color: Colors.white.withOpacity(0.5), height: 1.5),
         ),
       );
     }
@@ -64,7 +61,7 @@ class TimelineWidget extends StatelessWidget {
                           width: 2,
                           color: Theme.of(
                             context,
-                          ).colorScheme.primary.withValues(alpha: 0.3),
+                          ).colorScheme.primary.withOpacity(0.3),
                         ),
                       ),
                   ],
@@ -102,13 +99,10 @@ class TimelineWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20), // More organic
-        border: Border.all(
-          color: accentColor.withValues(alpha: 0.3),
-          width: 1.5,
-        ),
+        border: Border.all(color: accentColor.withOpacity(0.3), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: accentColor.withValues(alpha: 0.05),
+            color: accentColor.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -119,20 +113,24 @@ class TimelineWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                l10n.getLocalizedEmotion(record.emotionLabel ?? ""),
-                style: TextStyle(
-                  color: colorScheme.onSurface,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              Flexible(
+                // Wrapped emotion label in Flexible as per instruction
+                child: Text(
+                  l10n.getLocalizedEmotion(record.emotionLabel ?? ""),
+                  style: TextStyle(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
               Text(
                 dateFormat.format(record.timestamp),
                 style: TextStyle(
-                  color: colorScheme.onSurface.withValues(alpha: 0.5),
+                  color: colorScheme.onSurface.withOpacity(0.5),
                   fontSize: 12,
                 ),
               ),
@@ -146,7 +144,7 @@ class TimelineWidget extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: colorScheme.onSurface.withValues(alpha: 0.8),
+                color: colorScheme.onSurface.withOpacity(0.8),
                 fontSize: 14,
                 height: 1.5,
               ),

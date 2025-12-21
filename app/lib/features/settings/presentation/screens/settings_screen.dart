@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/theme/theme_provider.dart';
 import '../../../../core/localization/locale_provider.dart';
 import '../../../../core/providers/session_provider.dart';
+import '../../../../core/widgets/zest_glass_card.dart';
+import '../../../../core/constants/app_colors.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -15,55 +17,93 @@ class SettingsScreen extends ConsumerWidget {
     final session = ref.read(sessionProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings'), centerTitle: true),
-      body: ListView(
-        children: [
-          _buildSectionHeader(context, 'Account'),
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.redAccent),
-            title: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.redAccent),
-            ),
-            onTap: () async {
-              await session.logout();
-              if (context.mounted) {
-                context.go('/login');
-              }
-            },
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text('Settings'),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(color: AppColors.voidBlack),
+        child: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            children: [
+              _buildSectionHeader(context, 'Account'),
+              ZestGlassCard(
+                child: ListTile(
+                  leading: const Icon(Icons.logout, color: Colors.redAccent),
+                  title: const Text(
+                    'Logout',
+                    style: TextStyle(color: Colors.redAccent),
+                  ),
+                  onTap: () async {
+                    await session.logout();
+                    if (context.mounted) {
+                      context.go('/login');
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              _buildSectionHeader(context, 'Appearance'),
+              ZestGlassCard(
+                child: Column(
+                  children: [
+                    SwitchListTile(
+                      title: const Text('Dark Mode'),
+                      secondary: Icon(
+                        themeMode == ThemeMode.dark
+                            ? Icons.dark_mode
+                            : Icons.light_mode,
+                      ),
+                      value: themeMode == ThemeMode.dark,
+                      onChanged: (value) {
+                        ref
+                            .read(themeModeProvider.notifier)
+                            .setThemeMode(
+                              value ? ThemeMode.dark : ThemeMode.light,
+                            );
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Theme Selection'),
+                      leading: const Icon(Icons.palette_outlined),
+                      subtitle: Text(
+                        themeMode.toString().split('.').last.toUpperCase(),
+                      ),
+                      onTap: () => _showThemePicker(context, ref),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              _buildSectionHeader(context, 'Language'),
+              ZestGlassCard(
+                child: ListTile(
+                  leading: const Icon(Icons.language),
+                  title: const Text('Language Selection'),
+                  subtitle: Text(
+                    locale.languageCode == 'ko' ? '한국어' : 'English',
+                  ),
+                  onTap: () => _showLocalePicker(context, ref),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              _buildSectionHeader(context, 'App Information'),
+              ZestGlassCard(
+                child: const ListTile(
+                  title: Text('Version'),
+                  trailing: Text('1.0.0'),
+                ),
+              ),
+              const SizedBox(height: 40),
+            ],
           ),
-          const Divider(),
-          _buildSectionHeader(context, 'Appearance'),
-          SwitchListTile(
-            title: const Text('Dark Mode'),
-            secondary: Icon(
-              themeMode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
-            ),
-            value: themeMode == ThemeMode.dark,
-            onChanged: (value) {
-              ref
-                  .read(themeModeProvider.notifier)
-                  .setThemeMode(value ? ThemeMode.dark : ThemeMode.light);
-            },
-          ),
-          ListTile(
-            title: const Text('Theme Selection'),
-            leading: const Icon(Icons.palette_outlined),
-            subtitle: Text(themeMode.toString().split('.').last.toUpperCase()),
-            onTap: () => _showThemePicker(context, ref),
-          ),
-          const Divider(),
-          _buildSectionHeader(context, 'Language'),
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text('Language Selection'),
-            subtitle: Text(locale.languageCode == 'ko' ? '한국어' : 'English'),
-            onTap: () => _showLocalePicker(context, ref),
-          ),
-          const Divider(),
-          _buildSectionHeader(context, 'App Information'),
-          const ListTile(title: Text('Version'), trailing: Text('1.0.0')),
-        ],
+        ),
       ),
     );
   }

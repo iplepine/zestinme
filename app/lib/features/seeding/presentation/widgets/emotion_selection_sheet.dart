@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../providers/seeding_provider.dart';
 import 'rolling_hint_text_field.dart';
 import '../../../../core/widgets/zest_filter_chip.dart';
+import '../../../../core/widgets/zest_glass_card.dart';
 
 class EmotionSelectionSheet extends ConsumerStatefulWidget {
   final VoidCallback? onComplete;
@@ -89,14 +90,14 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
       maxChildSize: 0.95,
       expand: false,
       builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: AppColors.seedingCardBackground,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-          ),
+        return ZestGlassCard(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+          showBorder:
+              false, // Bottom sheet border usually handled by decoration
           child: SingleChildScrollView(
             controller: scrollController,
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+            padding: const EdgeInsets.only(top: 20, bottom: 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,10 +108,9 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                 // 1. Tags
                 Text(
                   l10n.seeding_promptTags,
-                  style: const TextStyle(
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -126,6 +126,7 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                       label: localizedTag,
                       isSelected: isSelected,
                       onSelected: (_) {
+                        HapticFeedback.lightImpact();
                         ref
                             .read(seedingNotifierProvider.notifier)
                             .toggleTag(tag);
@@ -162,7 +163,7 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                                   .read(seedingNotifierProvider.notifier)
                                   .saveRecord();
 
-                              if (mounted) {
+                              if (context.mounted) {
                                 Navigator.pop(context); // Close BottomSheet
                                 if (widget.onComplete != null) {
                                   widget.onComplete!();
@@ -170,9 +171,8 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                               }
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            AppColors.seedingActionButtonBackground,
-                        foregroundColor: AppColors.seedingActionButtonText,
+                        backgroundColor: AppColors.primaryButton,
+                        foregroundColor: AppColors.primaryButtonText,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),

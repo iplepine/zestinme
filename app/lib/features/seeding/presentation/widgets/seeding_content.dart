@@ -138,7 +138,7 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                         Shadow(
                           offset: Offset(0, 2),
                           blurRadius: 4,
-                          color: AppColors.seedingTextShadow,
+                          color: Colors.black54,
                         ),
                       ],
                     ),

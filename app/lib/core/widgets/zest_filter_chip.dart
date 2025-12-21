@@ -31,14 +31,10 @@ class ZestFilterChip extends StatelessWidget {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected
-                ? AppColors.seedingChipSelected
-                : Colors.black.withValues(alpha: 0.3),
+            color: isSelected ? AppColors.chipSelected : AppColors.chipIdle,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isSelected
-                  ? Colors.transparent
-                  : Colors.white.withValues(alpha: 0.2),
+              color: isSelected ? Colors.transparent : AppColors.chipIdleBorder,
               width: 1,
             ),
           ),
@@ -51,8 +47,8 @@ class ZestFilterChip extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: isSelected
-                      ? AppColors.seedingChipTextSelected
-                      : Colors.white,
+                      ? AppColors.chipSelectedText
+                      : AppColors.chipIdleText,
                   fontWeight: FontWeight.w500,
                   fontSize: 14 * MediaQuery.textScalerOf(context).scale(1) > 20
                       ? 20 // Cap font size mostly for chips if needed, but app clamp handles it

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:zestinme/core/widgets/interactive_prop.dart';
+import 'package:zestinme/core/constants/app_colors.dart';
 
 class MysteryPlantWidget extends StatelessWidget {
   final int growthStage;
@@ -116,12 +117,10 @@ class MysteryPlantWidget extends StatelessWidget {
     return Container(
           width: 50,
           height: 50,
-          decoration: const BoxDecoration(
-            color: Colors.blueAccent,
+          decoration: BoxDecoration(
+            color: AppColors.ocean,
             shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(color: Colors.blue, blurRadius: 10, spreadRadius: 2),
-            ],
+            boxShadow: AppColors.ambientGlow(AppColors.ocean),
           ),
           child: const Icon(Icons.water_drop, color: Colors.white),
         )
