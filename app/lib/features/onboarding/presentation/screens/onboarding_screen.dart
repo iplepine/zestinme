@@ -5,7 +5,6 @@ import 'package:zestinme/features/onboarding/presentation/widgets/scene_goal.dar
 import 'package:zestinme/features/onboarding/presentation/providers/onboarding_provider.dart';
 import 'package:zestinme/features/onboarding/presentation/widgets/scene_identity.dart';
 import 'package:zestinme/features/onboarding/presentation/widgets/scene_void.dart';
-import 'package:zestinme/features/onboarding/presentation/widgets/scene_weather.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -41,19 +40,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         return SceneIdentity(
           onNameSubmitted: () {
             setState(() {
-              _currentScene = 2;
+              _currentScene = 2; // Move to SceneEncounter (was 3)
             });
           },
         );
       case 2:
-        return SceneEnvironment(
-          onEnvironmentSet: () {
-            setState(() {
-              _currentScene = 3;
-            });
-          },
-        );
-      case 3:
         return SceneEncounter(
           onEncounterComplete: () async {
             // Mark as completed in ViewModel + DB

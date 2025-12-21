@@ -23,6 +23,7 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
   Offset _center = Offset.zero;
   double _radius = 0.0;
   final ScrollController _scrollController = ScrollController();
+  bool _hasInteracted = false;
 
   @override
   void dispose() {
@@ -222,10 +223,14 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                 ).animate().fadeIn(duration: 800.ms),
               ),
 
-            // 5. Draggable Seed
+            // 6. Draggable Seed
             GestureDetector(
-              onPanStart: (details) =>
-                  ref.read(seedingNotifierProvider.notifier).startDrag(),
+              onPanStart: (details) {
+                setState(() {
+                  _hasInteracted = true;
+                });
+                ref.read(seedingNotifierProvider.notifier).startDrag();
+              },
               onPanUpdate: (details) {
                 _handleDrag(details.globalPosition);
               },
@@ -264,6 +269,12 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                 ),
               ),
             ),
+
+            // 5. Swipe Guide (Only if not interacted yet)
+            if (!seedingState.isPlanted &&
+                !seedingState.isDragging &&
+                !_hasInteracted)
+              _buildSwipeGuide(context),
 
             // 6. Post-Planting Options (Chips)
             if (seedingState.isPlanted) _buildEmotionChips(context, l10n),
@@ -474,8 +485,9 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
                               }
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
+                        backgroundColor:
+                            AppColors.seedingActionButtonBackground,
+                        foregroundColor: AppColors.seedingActionButtonText,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),
@@ -497,6 +509,43 @@ class _SeedingContentState extends ConsumerState<SeedingContent> {
             ),
           ),
         ).animate().slideY(begin: 1.0, end: 0.0, duration: 500.ms, curve: Curves.easeOutCubic),
+      ),
+    );
+  }
+
+  Widget _buildSwipeGuide(BuildContext context) {
+    return Positioned(
+      left:
+          _center.dx - 15, // Adjusted to make the fingertip start at the center
+      top:
+          _center.dy - 15, // Adjusted to make the fingertip start at the center
+      child: IgnorePointer(
+        child: Column(
+          children: [
+            const Icon(
+                  Icons.touch_app,
+                  color: AppColors.primary,
+                  size: 50,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black54,
+                      blurRadius: 10,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                )
+                .animate(onPlay: (c) => c.repeat(), delay: 3000.ms)
+                .move(
+                  begin: const Offset(0, 0),
+                  end: const Offset(50, -50),
+                  duration: 1500.ms,
+                  curve: Curves.easeInOutExpo,
+                )
+                .fadeIn(duration: 500.ms)
+                .then(delay: 500.ms)
+                .fadeOut(duration: 500.ms),
+          ],
+        ),
       ),
     );
   }

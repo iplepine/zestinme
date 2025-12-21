@@ -7,6 +7,8 @@ import 'package:zestinme/features/seeding/presentation/widgets/seeding_content.d
 import 'package:zestinme/features/seeding/presentation/providers/seeding_provider.dart';
 
 import 'package:zestinme/app/theme/app_theme.dart';
+import 'package:zestinme/features/garden/domain/services/plant_service.dart';
+import 'package:zestinme/features/onboarding/presentation/providers/onboarding_provider.dart';
 
 class SceneEncounter extends ConsumerStatefulWidget {
   final VoidCallback onEncounterComplete;
@@ -26,35 +28,45 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
   String _transitionMessage = "";
 
   void _onSeedingComplete() {
-    // 1. Get the seeding state to determine the emotion for the Pot
+    // 1. Get the seeding state to determine the environment and plant
     final seedingState = ref.read(seedingNotifierProvider);
+    final onboardingState = ref.read(onboardingViewModelProvider);
 
-    // Determine key based on quadrant (simplified for Pot creation)
-    // In a real app, map valence/arousal to a specific Pot Type or nickname
+    // Map Seeding valence/arousal (-1 to 1) to Environment variables (0 to 1)
+    // Valence maps to Sunlight (brightness)
+    // Arousal maps to Temperature (energy)
+    final sunlight = (seedingState.valence + 1) / 2;
+    final energy = (seedingState.arousal + 1) / 2;
+    final humidity =
+        0.5; // Neutral default for now, can be randomized or linked to dragging speed
+
+    // 2. Assign a plant based on these values
+    final plant = PlantService().assignPlant(
+      lux: sunlight * 100000,
+      temp: energy * 40,
+      humidity: humidity * 100,
+    );
+
+    // Determine emotion key for naming and logic
     String emotionKey = 'neutral';
     if (seedingState.arousal > 0) {
       emotionKey = seedingState.valence > 0 ? 'joy' : 'anger';
     } else {
       emotionKey = seedingState.valence > 0 ? 'peace' : 'sadness';
     }
-    // Override if tags are present?
-    if (seedingState.selectedTags.isNotEmpty) {
-      // Use the first tag as a hint, but for now we stick to simple keys for Pot initialization
-      // or pass the raw tag.
-      // logic in plantNewPot might expect specific keys.
-      // For now, let's keep the quadrant logic or use 'neutral' fallback.
-    }
 
-    // 2. Create the First Pot (My Basil)
-    // Note: SeedingContent already saved the EmotionRecord.
+    // 3. Create the First Pot using the assigned plant
     ref
         .read(currentPotNotifierProvider.notifier)
         .plantNewPot(
           emotionKey: emotionKey,
-          nickname: 'My Basil', // Default name
+          nickname: onboardingState.nickname.isNotEmpty
+              ? '${onboardingState.nickname}\'s Plant'
+              : 'My First Plant',
+          plantSpeciesId: plant.id,
         );
 
-    // 3. Transition to Animation Step
+    // 4. Transition to Animation Step
     setState(() {
       _step = 1;
     });

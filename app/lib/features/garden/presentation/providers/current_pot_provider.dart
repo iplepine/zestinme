@@ -11,14 +11,19 @@ class CurrentPotNotifier extends _$CurrentPotNotifier {
     return null;
   }
 
-  void plantNewPot({required String emotionKey, required String nickname}) {
+  void plantNewPot({
+    required String emotionKey,
+    required String nickname,
+    int? plantSpeciesId,
+  }) {
     // Logic to determine plant species based on emotion
-    // For now, default to Basil (ID: 1)
+    // Default to the provided species ID, or Basil (ID: 6) as fallback
+    final speciesId = plantSpeciesId ?? 6;
 
     // Create new pot
     final newPot = CurrentPot(
       id: DateTime.now().toIso8601String(),
-      plantSpeciesId: 6, // Default Basil (ID 6 from Plant Database)
+      plantSpeciesId: speciesId,
       nickname: nickname,
       emotionKey: emotionKey,
       plantedAt: DateTime.now(),

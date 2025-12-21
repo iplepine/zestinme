@@ -208,4 +208,13 @@ class AppColors {
   ).withValues(alpha: 0.95);
   static const seedingChipSelected = Color(0xFFffe135); // Seeding Sun Yellow
   static const seedingChipTextSelected = Colors.black;
+
+  static const seedingChipIdleBackground = Color(0xFF050505); // voidBlack
+  static final seedingChipIdleBorder = const Color(
+    0xFFFFFFFF,
+  ).withValues(alpha: 0.2);
+  static const seedingChipIdleText = Color(0xFFFFFFFF);
+
+  static const seedingActionButtonBackground = seedingChipSelected;
+  static const seedingActionButtonText = Color(0xFF000000);
 }
