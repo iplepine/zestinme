@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 
 class ScenicBackground extends StatelessWidget {
   final double sunlight; // 0.0 (Night) ~ 1.0 (Day)
+  final double offsetY; // Vertical shift
+  final String imagePath;
 
-  const ScenicBackground({super.key, required this.sunlight});
+  const ScenicBackground({
+    super.key,
+    required this.sunlight,
+    this.offsetY = 0,
+    this.imagePath = 'assets/images/backgrounds/background_night.png',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,23 +25,18 @@ class ScenicBackground extends StatelessWidget {
       const Color(0xFF07121C), // Night Tint
       const Color(0xFFFFE7C2), // Day Tint
       sunlight,
-    )!.withOpacity(tintOpacity);
+    )!.withValues(alpha: tintOpacity);
 
     return Stack(
       fit: StackFit.expand,
       children: [
-        // 1. Base Layer: Night Image (Always Present)
-        Image.asset(
-          'assets/images/backgrounds/home_night.png',
-          fit: BoxFit.cover,
-        ),
-
-        // 2. Blend Layer: Day Image (Opacity linked to sunlight)
-        Opacity(
-          opacity: sunlight.clamp(0.0, 1.0),
+        // 1. Base Layer
+        Transform.translate(
+          offset: Offset(0, offsetY),
           child: Image.asset(
-            'assets/images/backgrounds/home_day.png',
+            imagePath,
             fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
           ),
         ),
 
@@ -49,7 +51,7 @@ class ScenicBackground extends StatelessWidget {
                 center: const Alignment(0.0, -0.2),
                 radius: 1.2,
                 colors: [
-                  Colors.white.withOpacity(fogStrength),
+                  Colors.white.withValues(alpha: fogStrength),
                   Colors.transparent,
                 ],
                 stops: const [0.0, 0.8],
@@ -70,7 +72,7 @@ class ScenicBackground extends StatelessWidget {
                 radius: 1.3,
                 colors: [
                   Colors.transparent,
-                  Colors.black.withOpacity(vignetteStrength),
+                  Colors.black.withValues(alpha: vignetteStrength),
                 ],
                 stops: const [0.4, 1.0],
               ),
@@ -90,9 +92,9 @@ class ScenicBackground extends StatelessWidget {
                     Colors.indigo,
                     Colors.orangeAccent,
                     sunlight,
-                  )!.withOpacity(0.1),
+                  )!.withValues(alpha: 0.1),
                   Colors.transparent,
-                  Colors.black.withOpacity(0.5),
+                  Colors.black.withValues(alpha: 0.5),
                 ],
                 stops: const [0.0, 0.4, 1.0],
               ),
@@ -121,7 +123,7 @@ class ScenicBackground extends StatelessWidget {
             shape: BoxShape.circle,
             gradient: RadialGradient(
               colors: [
-                orbColor.withOpacity(0.4 * (0.4 + sunlight * 0.4)),
+                orbColor.withValues(alpha: 0.4 * (0.4 + sunlight * 0.4)),
                 Colors.transparent,
               ],
             ),

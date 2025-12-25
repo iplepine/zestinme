@@ -11,6 +11,7 @@ class HomeState {
   final SleepRecord? todaySleep;
   final double sleepEfficiency; // 0.0 - 1.0 (for battery level)
   final double sunlightLevel; // 0.0 (Night) ~ 1.0 (Day)
+  final String backgroundImagePath;
   final bool isLoading;
 
   HomeState({
@@ -18,6 +19,7 @@ class HomeState {
     this.todaySleep,
     this.sleepEfficiency = 0.0,
     this.sunlightLevel = 1.0,
+    this.backgroundImagePath = 'assets/images/backgrounds/background_night.png',
     this.isLoading = true,
   });
 
@@ -28,6 +30,7 @@ class HomeState {
     SleepRecord? todaySleep,
     double? sleepEfficiency,
     double? sunlightLevel,
+    String? backgroundImagePath,
     bool? isLoading,
   }) {
     return HomeState(
@@ -36,6 +39,7 @@ class HomeState {
       // Robust fallbacks for hot-reload state migration
       sleepEfficiency: sleepEfficiency ?? this.sleepEfficiency,
       sunlightLevel: sunlightLevel ?? this.sunlightLevel,
+      backgroundImagePath: backgroundImagePath ?? this.backgroundImagePath,
       isLoading: isLoading ?? this.isLoading,
     );
   }
@@ -63,6 +67,10 @@ class HomeNotifier extends StateNotifier<HomeState> {
 
   void updateSunlight(double value) {
     state = state.copyWith(sunlightLevel: value.clamp(0.0, 1.0));
+  }
+
+  void updateBackgroundImage(String path) {
+    state = state.copyWith(backgroundImagePath: path);
   }
 
   Future<void> refresh() async {

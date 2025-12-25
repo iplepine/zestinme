@@ -1,6 +1,8 @@
 # 🎨 Mind-Gardener Image Asset Prompts (Copy-Paste Ready)
 
 ## Global Constraints (반드시 포함)
+Atmospheric realism.
+
 Background: pure black (#000000), flat color only
 No gradients, no texture, no vignette
 
@@ -23,6 +25,7 @@ Plenty of empty space around the plant
 Designed as a “mystery growth state”
 The species must NOT be identifiable
 
+ A mysterious young tree-like plant in an early growth stage, a single central stem branching lightly upward, very small leaves or leaf hints only, structure suggests future growth, not completion, no flowers, no fruit, species must not be identifiable, centered composition, vertical orientation (9:16), background pure black (#000000), no pot, no soil, no ground, soft, diffused lighting, muted natural green and brown tones, low contrast, semi-realistic, restrained detail, designed as a mystery plant silhouette
 
 ## 5. Mystery Plant Prompts (미스터리 식물 생성)
 
@@ -61,3 +64,15 @@ The species must NOT be identifiable
     ```text
     A mysterious non-standard plant form, still clearly botanical, unusual but organic structure, sparse leaves or abstract growth patterns, feels alive but unfamiliar, no flowers, no dramatic features, must still read as a plant, not alien, species must not be identifiable, centered composition, vertical orientation (9:16), background pure black (#000000), no pot, no soil, no ground, soft ambient lighting, muted, slightly desaturated greens, low contrast, semi-realistic, calm, restrained, designed as a mystery plant
     ```
+
+
+
+A detailed oil painting style illustration of a [호접란], rendered in the exact artistic manner and deep teal-green color palette of image_18.png. The plant is isolated against a solid, pitch-black background, with dramatic, soft lighting that highlights its texture and form, created with rich brushstrokes.
+
+Single plant object only
+No pot, no soil, no ground
+No environment, no background elements
+
+Centered composition
+Vertical orientation (9:16 safe)
+Plenty of empty space around the plant

@@ -32,15 +32,21 @@ class FirebaseService {
       await _remoteConfig.setConfigSettings(
         RemoteConfigSettings(
           fetchTimeout: const Duration(minutes: 1),
-          minimumFetchInterval: const Duration(hours: 1),
+          // 개발 모드에서는 즉시 반영을 위해 0으로 설정, 운영에서는 1시간 등으로 유지 권장
+          minimumFetchInterval: Duration.zero,
         ),
       );
 
       // 기본값 설정
       await _remoteConfig.setDefaults({'question_bank_json': ''});
 
-      // 원격 설정 가져오기
-      await _remoteConfig.fetchAndActivate();
+      // 원격 설정 가져오기 (실패해도 앱 시작은 가능하도록 처리)
+      try {
+        await _remoteConfig.fetchAndActivate();
+      } catch (e) {
+        print('Firebase Remote Config fetch failed: $e');
+        // 실패하더라도 기본값(setDefaults)을 사용하므로 초기화는 계속 진행
+      }
 
       _isInitialized = true;
       print('Firebase initialized successfully');

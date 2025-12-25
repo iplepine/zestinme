@@ -9,6 +9,11 @@ class MysteryPlantWidget extends StatelessWidget {
   final VoidCallback onPlantTap; // Record Mind
   final VoidCallback onWaterTap; // Pruning
   final String? plantName;
+  final double potWidth;
+  final double plantBaseSize;
+  final double plantBottomOffset;
+  final double scaleFactorPerStage;
+  final String category; // 'herb', 'leaf', 'succ', 'weired'
 
   const MysteryPlantWidget({
     super.key,
@@ -17,6 +22,11 @@ class MysteryPlantWidget extends StatelessWidget {
     required this.onPlantTap,
     required this.onWaterTap,
     this.plantName,
+    this.potWidth = 100, // Updated Default
+    this.plantBaseSize = 120, // Updated Default
+    this.plantBottomOffset = 50, // Updated Default
+    this.scaleFactorPerStage = 25.0,
+    this.category = 'herb',
   });
 
   @override
@@ -26,11 +36,7 @@ class MysteryPlantWidget extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         // 1. Plant Body (Clickable implies "Record Mind" or just Interaction)
-        // Spec says: Center Object -> Function: Seeding (Record).
-        // Spec says: Idle -> Tap Interaction -> [Record Sheet]
-        // Spec says: Idle -> Tap Interaction -> [Record Sheet]
         GestureDetector(
-          // Outer hit box if needed, or rely on children
           onTap: onPlantTap,
           child: AnimatedContainer(
             duration: const Duration(seconds: 1),
@@ -70,12 +76,32 @@ class MysteryPlantWidget extends StatelessWidget {
   Widget _buildPlantImage(int stage) {
     // 1. Determine Assets (Demo: Crystal Pot & Rosemary)
     const potAsset = 'assets/images/pots/pot_default.png';
-    String plantAsset;
 
-    // Map stage to asset
-    // Demo: Show Rosemary Full for ALL stages so user can see the asset
-    // (In production, replace with proper stage assets)
-    plantAsset = 'assets/images/plants/mystery_herb_1.png';
+    // Mapping category to specific asset filename pattern
+    // Assets are named like: m_herb_1.png, m_herb_2.png, m_herb_3.png, etc.
+    // stage is 0~4. Let's map 0 to 1 if we don't have a '0' asset.
+    final assetStage = (stage + 1).clamp(1, 4);
+
+    String filename;
+    switch (category) {
+      case 'leaf':
+        filename = 'm_leaf_$assetStage.png';
+        break;
+      case 'succ':
+        filename = 'm_succ_$assetStage.png';
+        break;
+      case 'weired':
+        filename = 'm_weired.png'; // currently only one weired asset
+        break;
+      case 'herb':
+      default:
+        filename = 'm_herb_$assetStage.png';
+    }
+
+    String plantAsset = 'assets/images/plants/$filename';
+
+    // Total size = Base Size + (stage * scaleFactor)
+    final totalSize = plantBaseSize + (stage * scaleFactorPerStage);
 
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -85,13 +111,13 @@ class MysteryPlantWidget extends StatelessWidget {
         Positioned(
               bottom: 40,
               child: Container(
-                width: 200,
-                height: 200,
+                width: 240,
+                height: 240,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.spiritTeal.withOpacity(0.15),
+                      color: AppColors.spiritTeal.withValues(alpha: 0.15),
                       blurRadius: 100,
                       spreadRadius: 20,
                     ),
@@ -110,28 +136,36 @@ class MysteryPlantWidget extends StatelessWidget {
         // Layer A: Pot (Base) - Truly Static
         Image.asset(
           potAsset,
-          width: 180,
+          width: potWidth,
           fit: BoxFit.contain,
           errorBuilder: (_, __, ___) => const SizedBox.shrink(),
         ),
 
         // Layer B: Plant (Growth)
         Positioned(
-          bottom: 60, // Align with pot rim
+          bottom: plantBottomOffset,
           child: InteractiveProp(
             animationType: PropAnimationType.swing,
-            // Image has padding, so root is likely near center-bottom, not absolute bottom.
-            // (0.0, 0.5) roughly pivots around the lower-mid section (stem).
             alignment: const Alignment(0.0, 0.5),
-            intensity: 1.8, // Reduced sway (~5 deg)
-            duration: const Duration(seconds: 6), // Slower, more relaxing
+            intensity: 0.7, // Approx 2 degrees (0.05 * 0.7 = 0.035 rad)
+            duration: const Duration(seconds: 6),
             onTap: onPlantTap,
             child: Image.asset(
               plantAsset,
-              width: 180 + (stage * 15.0),
-              height: 180 + (stage * 15.0),
+              width: totalSize,
+              height: totalSize,
               fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              errorBuilder: (_, __, ___) {
+                // Fallback to first stage if specific stage asset is missing
+                return Image.asset(
+                  'assets/images/plants/m_${category}_1.png',
+                  width: totalSize,
+                  height: totalSize,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const SizedBox.shrink(),
+                );
+              },
             ),
           ),
         ),
@@ -146,7 +180,7 @@ class MysteryPlantWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.spiritTeal,
             shape: BoxShape.circle,
-            boxShadow: AppColors.ambientGlow(AppColors.spiritTeal),
+            boxShadow: [BoxShadow(color: AppColors.spiritTeal, blurRadius: 10)],
           ),
           child: const Icon(Icons.water_drop, color: AppColors.midnightDeep),
         )

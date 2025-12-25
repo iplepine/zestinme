@@ -56,11 +56,14 @@ class MindGardenerHomeScreen extends ConsumerWidget {
               fit: StackFit.expand,
               children: [
                 // --- Layer 0: Background ---
-                ScenicBackground(sunlight: homeState.sunlightLevel),
+                ScenicBackground(
+                  sunlight: homeState.sunlightLevel,
+                  imagePath: homeState.backgroundImagePath,
+                ),
 
                 // --- Layer 1: Mid-Ground ---
                 Positioned(
-                  bottom: 120 + MediaQuery.of(context).padding.bottom,
+                  bottom: 10,
                   left: 0,
                   right: 0,
                   child: MysteryPlantWidget(
