@@ -4,6 +4,8 @@ import 'package:zestinme/features/home/presentation/widgets/scenic_background.da
 import 'package:zestinme/features/home/presentation/providers/home_provider.dart';
 import 'package:zestinme/features/home/presentation/widgets/mystery_plant_widget.dart';
 import 'package:zestinme/features/garden/data/plant_database.dart';
+import 'package:zestinme/features/home/presentation/providers/plant_layout_provider.dart';
+import 'dart:developer' as dev;
 
 class HomePlantSettingScreen extends ConsumerStatefulWidget {
   const HomePlantSettingScreen({super.key});
@@ -15,16 +17,7 @@ class HomePlantSettingScreen extends ConsumerStatefulWidget {
 
 class _HomePlantSettingScreenState
     extends ConsumerState<HomePlantSettingScreen> {
-  // Layout Params (Updated Defaults)
-  double _globalBottom = 10;
-  double _potWidth = 100;
-  double _plantBaseSize = 120;
-  double _plantBottomInternal = 50;
-  double _backgroundOffset = 0;
-  double _scaleFactorPerStage = 25.0;
-  double _offsetX = 0;
-
-  // Available Background Assets
+  // Environment Params (Locally controlled for preview, but sync with provider)
   final List<String> _backgroundAssets = [
     'assets/images/backgrounds/background_night.png',
   ];
@@ -43,6 +36,8 @@ class _HomePlantSettingScreenState
   Widget build(BuildContext context) {
     final homeState = ref.watch(homeProvider);
     final homeNotifier = ref.read(homeProvider.notifier);
+    final layoutState = ref.watch(plantLayoutProvider);
+    final layoutNotifier = ref.read(plantLayoutProvider.notifier);
 
     // Current Plant Selection
     final currentPlant = PlantDatabase.species.firstWhere(
@@ -61,6 +56,33 @@ class _HomePlantSettingScreenState
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text("Plant Setting Dev"),
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              final code =
+                  """
+  static const double globalBottom = ${layoutState.globalBottom};
+  static const double offsetX = ${layoutState.offsetX};
+  static const double backgroundOffsetY = ${layoutState.backgroundOffsetY};
+  static const double potWidth = ${layoutState.potWidth};
+  static const double plantBaseSize = ${layoutState.plantBaseSize};
+  static const double plantBottomInternalOffset = ${layoutState.plantBottomInternalOffset};
+  static const double scaleFactorPerStage = ${layoutState.scaleFactorPerStage};
+""";
+              dev.log("LAYOUT_CONSTANTS_UPDATE\n$code");
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Layout values logged to console!"),
+                ),
+              );
+            },
+            icon: const Icon(Icons.code, color: Colors.tealAccent),
+            label: const Text(
+              "Save to Code",
+              style: TextStyle(color: Colors.tealAccent),
+            ),
+          ),
+        ],
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: Colors.white,
@@ -71,25 +93,25 @@ class _HomePlantSettingScreenState
           // 1. Scenic Background
           ScenicBackground(
             sunlight: homeState.sunlightLevel,
-            offsetY: _backgroundOffset,
+            offsetY: layoutState.backgroundOffsetY,
             imagePath: homeState.backgroundImagePath,
           ),
 
-          // 2. Plant Widget (Positioned with _globalBottom)
+          // 2. Plant Widget (Positioned)
           Positioned(
-            bottom: _globalBottom,
-            left: _offsetX,
-            right: -_offsetX,
+            bottom: layoutState.globalBottom,
+            left: layoutState.offsetX,
+            right: -layoutState.offsetX,
             child: ColorFiltered(
               colorFilter: ColorFilter.mode(lightingColor, BlendMode.modulate),
               child: MysteryPlantWidget(
                 growthStage: _growthStage.round(),
                 isThirsty: _isThirsty,
                 plantName: currentPlant.name,
-                potWidth: _potWidth,
-                plantBaseSize: _plantBaseSize,
-                plantBottomOffset: _plantBottomInternal,
-                scaleFactorPerStage: _scaleFactorPerStage,
+                potWidth: layoutState.potWidth,
+                plantBaseSize: layoutState.plantBaseSize,
+                plantBottomOffset: layoutState.plantBottomInternalOffset,
+                scaleFactorPerStage: layoutState.scaleFactorPerStage,
                 category: _category,
                 onPlantTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -127,50 +149,50 @@ class _HomePlantSettingScreenState
                     _buildHeader("Layout Config"),
                     _buildSlider(
                       "Global Bottom",
-                      _globalBottom,
-                      (v) => setState(() => _globalBottom = v),
+                      layoutState.globalBottom,
+                      (v) => layoutNotifier.updateGlobalBottom(v),
                       min: -50,
                       max: 200,
                     ),
                     _buildSlider(
                       "Pot Width",
-                      _potWidth,
-                      (v) => setState(() => _potWidth = v),
+                      layoutState.potWidth,
+                      (v) => layoutNotifier.updatePotWidth(v),
                       min: 50,
                       max: 300,
                     ),
                     _buildSlider(
                       "Plant Size",
-                      _plantBaseSize,
-                      (v) => setState(() => _plantBaseSize = v),
+                      layoutState.plantBaseSize,
+                      (v) => layoutNotifier.updatePlantBaseSize(v),
                       min: 50,
                       max: 300,
                     ),
                     _buildSlider(
                       "Plant Offset",
-                      _plantBottomInternal,
-                      (v) => setState(() => _plantBottomInternal = v),
+                      layoutState.plantBottomInternalOffset,
+                      (v) => layoutNotifier.updatePlantBottomInternalOffset(v),
                       min: 0,
                       max: 150,
                     ),
                     _buildSlider(
                       "Background Offset",
-                      _backgroundOffset,
-                      (v) => setState(() => _backgroundOffset = v),
+                      layoutState.backgroundOffsetY,
+                      (v) => layoutNotifier.updateBackgroundOffsetY(v),
                       min: -200,
                       max: 200,
                     ),
                     _buildSlider(
                       "Scale Per Stage",
-                      _scaleFactorPerStage,
-                      (v) => setState(() => _scaleFactorPerStage = v),
+                      layoutState.scaleFactorPerStage,
+                      (v) => layoutNotifier.updateScaleFactorPerStage(v),
                       min: 0,
                       max: 100,
                     ),
                     _buildSlider(
                       "Offset X",
-                      _offsetX,
-                      (v) => setState(() => _offsetX = v),
+                      layoutState.offsetX,
+                      (v) => layoutNotifier.updateOffsetX(v),
                       min: -200,
                       max: 200,
                     ),

@@ -12,6 +12,7 @@ import 'package:zestinme/features/garden/domain/entities/plant_species.dart';
 import 'package:zestinme/app/routes/app_router.dart';
 import 'package:zestinme/features/caring/presentation/screens/caring_intro_screen.dart';
 import 'package:zestinme/features/home/presentation/providers/home_provider.dart';
+import 'package:zestinme/features/home/presentation/providers/plant_layout_provider.dart';
 import 'package:zestinme/features/sleep_record/presentation/widgets/sleep_battery_widget.dart';
 import 'package:zestinme/core/localization/app_localizations.dart';
 
@@ -32,9 +33,11 @@ class MindGardenerHomeScreen extends ConsumerWidget {
             return const Center(child: Text("정원을 찾을 수 없습니다."));
           }
 
+          final layoutState = ref.watch(plantLayoutProvider);
           final homeState = ref.watch(homeProvider);
 
           PlantSpecies? assignedPlant;
+          // ... (existing plant selection logic)
           if (state.assignedPlantId != null) {
             try {
               assignedPlant = PlantDatabase.species.firstWhere(
@@ -59,17 +62,22 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                 ScenicBackground(
                   sunlight: homeState.sunlightLevel,
                   imagePath: homeState.backgroundImagePath,
+                  offsetY: layoutState.backgroundOffsetY,
                 ),
 
                 // --- Layer 1: Mid-Ground ---
                 Positioned(
-                  bottom: 10,
-                  left: 0,
-                  right: 0,
+                  bottom: layoutState.globalBottom,
+                  left: layoutState.offsetX,
+                  right: -layoutState.offsetX,
                   child: MysteryPlantWidget(
                     growthStage: state.growthStage,
                     isThirsty: homeState.isCaringNeeded,
                     plantName: assignedPlant?.name,
+                    potWidth: layoutState.potWidth,
+                    plantBaseSize: layoutState.plantBaseSize,
+                    plantBottomOffset: layoutState.plantBottomInternalOffset,
+                    scaleFactorPerStage: layoutState.scaleFactorPerStage,
                     onPlantTap: () => context
                         .push(AppRouter.seeding)
                         .then((_) => ref.read(homeProvider.notifier).refresh()),
