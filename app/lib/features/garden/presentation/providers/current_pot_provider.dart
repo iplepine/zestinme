@@ -17,8 +17,8 @@ class CurrentPotNotifier extends _$CurrentPotNotifier {
     int? plantSpeciesId,
   }) {
     // Logic to determine plant species based on emotion
-    // Default to the provided species ID, or Basil (ID: 6) as fallback
-    final speciesId = plantSpeciesId ?? 6;
+    // Default to the provided species ID, or Olive Tree (ID: 31) as fallback
+    final speciesId = plantSpeciesId ?? 31;
 
     // Create new pot
     final newPot = CurrentPot(

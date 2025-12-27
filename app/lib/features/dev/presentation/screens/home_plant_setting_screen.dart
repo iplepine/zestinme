@@ -22,8 +22,8 @@ class _HomePlantSettingScreenState
   int _currentStep = 0; // 0 ~ 2 (Total 3 steps)
   bool _hasUnsavedChanges = false;
 
-  // Plant Params (MVP Default: Lucky Tree / 행운목)
-  int _speciesId = 11;
+  // Plant Params (MVP Default: Olive Tree / 올리브 나무)
+  int _speciesId = 31;
   double _growthStage = 0;
   String _category = 'tree';
 

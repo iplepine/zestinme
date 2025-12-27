@@ -9,6 +9,7 @@ class PlantStaticData {
   );
 
   static PlantSpecies getById(int id) {
-    return speciesMap[id] ?? speciesMap[6]!; // Default to Basil
+    return speciesMap[id] ??
+        speciesMap[31]!; // Default to Olive Tree (Hero Plant)
   }
 }

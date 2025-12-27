@@ -1,6 +1,6 @@
 import '../domain/entities/plant_species.dart';
 
-class PlantDatabase {{
+class PlantDatabase {
   static const List<PlantSpecies> species = [
     PlantSpecies(
       id: 1,
@@ -133,8 +133,6 @@ class PlantDatabase {{
       optimalTemperature: 22.5,
       optimalHumidity: 60.0,
       assetKey: 'tree',
-      customScale: 0.6999416185461957,
-      customOffsetY: -0.20152640964673907,
     ),
     PlantSpecies(
       id: 12,
@@ -366,15 +364,17 @@ class PlantDatabase {{
     ),
     PlantSpecies(
       id: 31,
-      name: '씨서스',
-      scientificName: 'Cissus rhombifolia',
-      rarity: 1,
-      flowerLanguage: '',
-      description: '덩굴형로 분류되는 쌍떡잎 식물입니다.',
-      optimalLux: 6500.0,
-      optimalTemperature: 22.5,
-      optimalHumidity: 60.0,
-      assetKey: 'leaf',
+      name: '올리브 나무',
+      scientificName: 'Olea europaea',
+      rarity: 2,
+      flowerLanguage: '평화, 지혜',
+      description: '은빛이 도는 잎이 감성적이며, 평화의 상징으로 사랑받는 지중해 식물',
+      optimalLux: 90000.0,
+      optimalTemperature: 20.0,
+      optimalHumidity: 40.0,
+      assetKey: 'tree',
+      customScale: 0.6999416185461957,
+      customOffsetY: -0.20152640964673907,
     ),
     PlantSpecies(
       id: 32,
@@ -604,5 +604,17 @@ class PlantDatabase {{
       optimalHumidity: 60.0,
       assetKey: 'leaf',
     ),
+    PlantSpecies(
+      id: 51,
+      name: '씨서스',
+      scientificName: 'Cissus rhombifolia',
+      rarity: 1,
+      flowerLanguage: '',
+      description: '덩굴형로 분류되는 쌍떡잎 식물입니다.',
+      optimalLux: 6500.0,
+      optimalTemperature: 22.5,
+      optimalHumidity: 60.0,
+      assetKey: 'leaf',
+    ),
   ];
-}}
+}
