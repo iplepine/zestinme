@@ -138,7 +138,7 @@ class _SceneVoidState extends State<SceneVoid> {
                   children: [
                     // 1. The Clean Pot (Underneath)
                     Image.asset(
-                      'assets/images/pots/pot_1.png',
+                      'assets/images/pots/pot_default.png',
                       width: 200,
                       fit: BoxFit.contain,
                     ).animate().fadeIn(duration: 1000.ms), // Fade in the pot

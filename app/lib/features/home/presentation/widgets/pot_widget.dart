@@ -6,7 +6,7 @@ class PotWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      'assets/images/pots/pot_1.png',
+      'assets/images/pots/pot_default.png',
       width: 200,
       fit: BoxFit.contain,
     );
