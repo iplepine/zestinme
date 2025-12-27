@@ -13,6 +13,7 @@ class PlantDatabase {
       optimalLux: 40000,
       optimalTemperature: 28,
       optimalHumidity: 70,
+      assetKey: 'flytrap',
     ),
     PlantSpecies(
       id: 2,
@@ -24,6 +25,7 @@ class PlantDatabase {
       optimalLux: 20000,
       optimalTemperature: 22,
       optimalHumidity: 80,
+      assetKey: 'flytrap',
     ),
     PlantSpecies(
       id: 3,
@@ -35,6 +37,7 @@ class PlantDatabase {
       optimalLux: 40000,
       optimalTemperature: 20,
       optimalHumidity: 50,
+      assetKey: 'herb',
     ),
     PlantSpecies(
       id: 4,
@@ -46,6 +49,7 @@ class PlantDatabase {
       optimalLux: 50000,
       optimalTemperature: 25,
       optimalHumidity: 40,
+      assetKey: 'herb',
     ),
     PlantSpecies(
       id: 5,
@@ -57,6 +61,7 @@ class PlantDatabase {
       optimalLux: 20000,
       optimalTemperature: 18,
       optimalHumidity: 70,
+      assetKey: 'herb',
     ),
     PlantSpecies(
       id: 6,
@@ -68,6 +73,7 @@ class PlantDatabase {
       optimalLux: 30000,
       optimalTemperature: 25,
       optimalHumidity: 60,
+      assetKey: 'herb',
     ),
     PlantSpecies(
       id: 7,
@@ -79,6 +85,7 @@ class PlantDatabase {
       optimalLux: 30000,
       optimalTemperature: 20,
       optimalHumidity: 50,
+      assetKey: 'herb',
     ),
     PlantSpecies(
       id: 8,
@@ -90,6 +97,7 @@ class PlantDatabase {
       optimalLux: 50000,
       optimalTemperature: 22,
       optimalHumidity: 60,
+      assetKey: 'tree',
     ),
     PlantSpecies(
       id: 9,
@@ -101,6 +109,7 @@ class PlantDatabase {
       optimalLux: 40000,
       optimalTemperature: 15,
       optimalHumidity: 50,
+      assetKey: 'herb',
     ),
     PlantSpecies(
       id: 10,
@@ -112,6 +121,7 @@ class PlantDatabase {
       optimalLux: 80000,
       optimalTemperature: 28,
       optimalHumidity: 50,
+      assetKey: 'herb',
     ),
     PlantSpecies(
       id: 11,
@@ -123,6 +133,7 @@ class PlantDatabase {
       optimalLux: 30000,
       optimalTemperature: 20,
       optimalHumidity: 40,
+      assetKey: 'succulent',
     ),
     PlantSpecies(
       id: 12,
@@ -134,6 +145,7 @@ class PlantDatabase {
       optimalLux: 15000,
       optimalTemperature: 24,
       optimalHumidity: 60,
+      assetKey: 'leaf',
     ),
     PlantSpecies(
       id: 13,
@@ -145,6 +157,7 @@ class PlantDatabase {
       optimalLux: 10000,
       optimalTemperature: 25,
       optimalHumidity: 30,
+      assetKey: 'leaf',
     ),
     PlantSpecies(
       id: 14,
@@ -156,6 +169,7 @@ class PlantDatabase {
       optimalLux: 5000,
       optimalTemperature: 24,
       optimalHumidity: 60,
+      assetKey: 'leaf',
     ),
     PlantSpecies(
       id: 15,
@@ -167,6 +181,7 @@ class PlantDatabase {
       optimalLux: 10000,
       optimalTemperature: 25,
       optimalHumidity: 40,
+      assetKey: 'leaf',
     ),
     PlantSpecies(
       id: 16,
@@ -178,6 +193,7 @@ class PlantDatabase {
       optimalLux: 15000,
       optimalTemperature: 18,
       optimalHumidity: 60,
+      assetKey: 'leaf',
     ),
     PlantSpecies(
       id: 17,
@@ -189,6 +205,7 @@ class PlantDatabase {
       optimalLux: 5000,
       optimalTemperature: 22,
       optimalHumidity: 65,
+      assetKey: 'tree',
     ),
     PlantSpecies(
       id: 18,
@@ -200,6 +217,7 @@ class PlantDatabase {
       optimalLux: 20000,
       optimalTemperature: 26,
       optimalHumidity: 30,
+      assetKey: 'succulent',
     ),
     PlantSpecies(
       id: 19,
@@ -211,6 +229,7 @@ class PlantDatabase {
       optimalLux: 40000,
       optimalTemperature: 20,
       optimalHumidity: 40,
+      assetKey: 'succulent',
     ),
     PlantSpecies(
       id: 20,
@@ -222,6 +241,7 @@ class PlantDatabase {
       optimalLux: 10000,
       optimalTemperature: 25,
       optimalHumidity: 70,
+      assetKey: 'tree',
     ),
     // Rarity 2 - 11 species
     PlantSpecies(
@@ -234,6 +254,7 @@ class PlantDatabase {
       optimalLux: 3000,
       optimalTemperature: 20,
       optimalHumidity: 60,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 22,
@@ -245,6 +266,7 @@ class PlantDatabase {
       optimalLux: 0,
       optimalTemperature: 15,
       optimalHumidity: 70,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 23,
@@ -256,6 +278,7 @@ class PlantDatabase {
       optimalLux: 90000,
       optimalTemperature: 30,
       optimalHumidity: 20,
+      assetKey: 'succulent',
     ),
     PlantSpecies(
       id: 24,
@@ -267,6 +290,7 @@ class PlantDatabase {
       optimalLux: 20000,
       optimalTemperature: 25,
       optimalHumidity: 80,
+      assetKey: 'flytrap',
     ),
     PlantSpecies(
       id: 25,
@@ -279,6 +303,7 @@ class PlantDatabase {
       optimalLux: 50000,
       optimalTemperature: 23,
       optimalHumidity: 75,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 26,
@@ -290,6 +315,7 @@ class PlantDatabase {
       optimalLux: 80000,
       optimalTemperature: 30,
       optimalHumidity: 20,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 27,
@@ -301,6 +327,7 @@ class PlantDatabase {
       optimalLux: 20000,
       optimalTemperature: 25,
       optimalHumidity: 70,
+      assetKey: 'leaf',
     ),
     PlantSpecies(
       id: 28,
@@ -312,6 +339,7 @@ class PlantDatabase {
       optimalLux: 15000,
       optimalTemperature: 25,
       optimalHumidity: 80,
+      assetKey: 'leaf',
     ),
     PlantSpecies(
       id: 29,
@@ -323,6 +351,7 @@ class PlantDatabase {
       optimalLux: 10000,
       optimalTemperature: 22,
       optimalHumidity: 70,
+      assetKey: 'leaf',
     ),
     PlantSpecies(
       id: 30,
@@ -334,6 +363,7 @@ class PlantDatabase {
       optimalLux: 50000,
       optimalTemperature: 15,
       optimalHumidity: 50,
+      assetKey: 'tree',
     ),
     PlantSpecies(
       id: 31,
@@ -345,6 +375,9 @@ class PlantDatabase {
       optimalLux: 90000,
       optimalTemperature: 20,
       optimalHumidity: 40,
+      assetKey: 'tree',
+      customScale: 0.6999416185461957,
+      customOffsetY: -0.20152640964673907,
     ),
     // Rarity 3 - 7 species
     PlantSpecies(
@@ -357,6 +390,7 @@ class PlantDatabase {
       optimalLux: 5000,
       optimalTemperature: 28,
       optimalHumidity: 80,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 33,
@@ -369,6 +403,7 @@ class PlantDatabase {
       optimalLux: 50000,
       optimalTemperature: 27,
       optimalHumidity: 80,
+      assetKey: 'tree',
     ),
     PlantSpecies(
       id: 34,
@@ -380,6 +415,7 @@ class PlantDatabase {
       optimalLux: 100000,
       optimalTemperature: 30,
       optimalHumidity: 15,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 35,
@@ -391,6 +427,7 @@ class PlantDatabase {
       optimalLux: 0,
       optimalTemperature: 30,
       optimalHumidity: 40,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 36,
@@ -402,6 +439,7 @@ class PlantDatabase {
       optimalLux: 20000,
       optimalTemperature: 18,
       optimalHumidity: 85,
+      assetKey: 'flytrap',
     ),
     PlantSpecies(
       id: 37,
@@ -413,6 +451,7 @@ class PlantDatabase {
       optimalLux: 10000,
       optimalTemperature: 26,
       optimalHumidity: 85,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 38,
@@ -424,6 +463,7 @@ class PlantDatabase {
       optimalLux: 15000,
       optimalTemperature: 26,
       optimalHumidity: 75,
+      assetKey: 'leaf',
     ),
     // Rarity 4 - 5 species
     PlantSpecies(
@@ -436,6 +476,7 @@ class PlantDatabase {
       optimalLux: 8000,
       optimalTemperature: 25,
       optimalHumidity: 70,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 40,
@@ -447,6 +488,7 @@ class PlantDatabase {
       optimalLux: 8000,
       optimalTemperature: 22,
       optimalHumidity: 50,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 41,
@@ -458,6 +500,7 @@ class PlantDatabase {
       optimalLux: 20000,
       optimalTemperature: 24,
       optimalHumidity: 85,
+      assetKey: 'flytrap',
     ),
     PlantSpecies(
       id: 42,
@@ -469,6 +512,7 @@ class PlantDatabase {
       optimalLux: 20000,
       optimalTemperature: 22,
       optimalHumidity: 70,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 43,
@@ -480,6 +524,7 @@ class PlantDatabase {
       optimalLux: 8000,
       optimalTemperature: 20,
       optimalHumidity: 75,
+      assetKey: 'herb',
     ),
     // Rarity 5 - 7 species
     PlantSpecies(
@@ -492,6 +537,7 @@ class PlantDatabase {
       optimalLux: 0,
       optimalTemperature: 27,
       optimalHumidity: 85,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 45,
@@ -503,6 +549,7 @@ class PlantDatabase {
       optimalLux: 1000,
       optimalTemperature: 30,
       optimalHumidity: 90,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 46,
@@ -514,6 +561,7 @@ class PlantDatabase {
       optimalLux: 10000,
       optimalTemperature: 26,
       optimalHumidity: 85,
+      assetKey: 'tree',
     ),
     PlantSpecies(
       id: 47,
@@ -525,6 +573,7 @@ class PlantDatabase {
       optimalLux: 5000,
       optimalTemperature: 27,
       optimalHumidity: 85,
+      assetKey: 'weird',
     ),
     PlantSpecies(
       id: 48,
@@ -536,6 +585,7 @@ class PlantDatabase {
       optimalLux: 5000,
       optimalTemperature: 18,
       optimalHumidity: 70,
+      assetKey: 'tree',
     ),
     PlantSpecies(
       id: 49,
@@ -547,6 +597,7 @@ class PlantDatabase {
       optimalLux: 40000,
       optimalTemperature: 25,
       optimalHumidity: 50,
+      assetKey: 'tree',
     ),
     PlantSpecies(
       id: 50,
@@ -558,6 +609,7 @@ class PlantDatabase {
       optimalLux: 15000,
       optimalTemperature: 24,
       optimalHumidity: 80,
+      assetKey: 'herb',
     ),
   ];
 }

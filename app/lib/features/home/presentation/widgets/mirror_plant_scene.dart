@@ -53,7 +53,8 @@ class _MirrorPlantSceneState extends ConsumerState<MirrorPlantScene> {
             // The Plant
             if (currentPot != null)
               _buildPlant(
-                'assets/images/plants/${currentPot.speciesName}_${currentPot.growthStage}.png',
+                'assets/images/plants/plant_${currentPot.speciesName}_${currentPot.growthStage}.png',
+                'assets/images/plants/plant_${currentPot.speciesName}_1.png',
               )
             else
               const SizedBox(), // Or Empty State
@@ -66,8 +67,16 @@ class _MirrorPlantSceneState extends ConsumerState<MirrorPlantScene> {
     );
   }
 
-  Widget _buildPlant(String assetPath) {
-    return Image.asset(assetPath, width: 280, fit: BoxFit.contain)
+  Widget _buildPlant(String assetPath, String fallbackPath) {
+    return Image.asset(
+          assetPath,
+          width: 280,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            // Fallback to stage 1 if the specific growth stage asset is missing
+            return Image.asset(fallbackPath, width: 280, fit: BoxFit.contain);
+          },
+        )
         .animate(onPlay: (controller) => controller.repeat(reverse: true))
         .scaleXY(
           begin: 1.0,

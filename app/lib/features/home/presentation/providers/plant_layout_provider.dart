@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zestinme/core/constants/plant_layout_constants.dart';
 
 class PlantLayoutState {
-  final double globalBottom;
+  final double anchorYBias;
   final double offsetX;
   final double backgroundOffsetY;
   final double potWidth;
@@ -11,7 +11,7 @@ class PlantLayoutState {
   final double scaleFactorPerStage;
 
   PlantLayoutState({
-    required this.globalBottom,
+    required this.anchorYBias,
     required this.offsetX,
     required this.backgroundOffsetY,
     required this.potWidth,
@@ -22,7 +22,7 @@ class PlantLayoutState {
 
   factory PlantLayoutState.defaultConfig() {
     return PlantLayoutState(
-      globalBottom: PlantLayoutConstants.globalBottom,
+      anchorYBias: PlantLayoutConstants.anchorYBias,
       offsetX: PlantLayoutConstants.offsetX,
       backgroundOffsetY: PlantLayoutConstants.backgroundOffsetY,
       potWidth: PlantLayoutConstants.potWidth,
@@ -33,7 +33,7 @@ class PlantLayoutState {
   }
 
   PlantLayoutState copyWith({
-    double? globalBottom,
+    double? anchorYBias,
     double? offsetX,
     double? backgroundOffsetY,
     double? potWidth,
@@ -42,7 +42,7 @@ class PlantLayoutState {
     double? scaleFactorPerStage,
   }) {
     return PlantLayoutState(
-      globalBottom: globalBottom ?? this.globalBottom,
+      anchorYBias: anchorYBias ?? this.anchorYBias,
       offsetX: offsetX ?? this.offsetX,
       backgroundOffsetY: backgroundOffsetY ?? this.backgroundOffsetY,
       potWidth: potWidth ?? this.potWidth,
@@ -55,10 +55,14 @@ class PlantLayoutState {
 }
 
 class PlantLayoutNotifier extends StateNotifier<PlantLayoutState> {
-  PlantLayoutNotifier() : super(PlantLayoutState.defaultConfig());
+  PlantLayoutNotifier() : super(PlantLayoutState.defaultConfig()) {
+    print(
+      "DEBUG: PlantLayoutNotifier initialized with anchorYBias: ${state.anchorYBias}",
+    );
+  }
 
-  void updateGlobalBottom(double value) =>
-      state = state.copyWith(globalBottom: value);
+  void updateAnchorYBias(double value) =>
+      state = state.copyWith(anchorYBias: value);
   void updateOffsetX(double value) => state = state.copyWith(offsetX: value);
   void updateBackgroundOffsetY(double value) =>
       state = state.copyWith(backgroundOffsetY: value);

@@ -47,6 +47,6 @@ class CurrentPotNotifier extends _$CurrentPotNotifier {
     String speciesName = 'basil';
     if (pot.plantSpeciesId == 1) speciesName = 'basil';
 
-    return 'assets/images/plants/${speciesName}_${pot.growthStage}.png';
+    return 'assets/images/plants/plant_${speciesName}_${pot.growthStage}.png';
   }
 }
