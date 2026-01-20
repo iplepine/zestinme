@@ -15,6 +15,7 @@ class MysteryPlantWidget extends StatelessWidget {
   final double scaleFactorPerStage;
   final String category; // 'herb', 'leaf', 'succ', 'weired'
   final double customOffsetY; // Species-specific vertical adjustment
+  final bool showPot; // New parameter
 
   const MysteryPlantWidget({
     super.key,
@@ -23,12 +24,13 @@ class MysteryPlantWidget extends StatelessWidget {
     required this.onPlantTap,
     required this.onWaterTap,
     this.plantName,
-    this.potWidth = 100, // Updated Default
-    this.plantBaseSize = 120, // Updated Default
-    this.plantBottomOffset = 50, // Updated Default
+    this.potWidth = 100,
+    this.plantBaseSize = 120,
+    this.plantBottomOffset = 50,
     this.scaleFactorPerStage = 25.0,
     this.category = 'herb',
     this.customOffsetY = 0.0,
+    this.showPot = true, // Default to true for backward compatibility
   });
 
   @override
@@ -37,7 +39,7 @@ class MysteryPlantWidget extends StatelessWidget {
       alignment: Alignment.center,
       clipBehavior: Clip.none,
       children: [
-        // 1. Plant Body (Clickable implies "Record Mind" or just Interaction)
+        // 1. Plant Body (Clickable)
         GestureDetector(
           onTap: onPlantTap,
           child: AnimatedContainer(
@@ -76,14 +78,11 @@ class MysteryPlantWidget extends StatelessWidget {
   }
 
   Widget _buildPlantImage(int stage) {
-    // 1. Determine Assets (Demo: Crystal Pot & Rosemary)
+    // 1. Determine Assets
     const potAsset = 'assets/images/pots/pot_default.png';
 
-    // Mapping category to specific asset filename pattern
-    // Assets are named like: plant_herb_1.png, plant_herb_2.png, plant_herb_3.png, etc.
-
     // Determine max stage for clamp based on category
-    int maxStage = 4;
+    int maxStage = 3; // Default sane max
     if (category == 'tree') maxStage = 5;
     if (category == 'leaf') maxStage = 3;
     if (category == 'herb') maxStage = 3;
@@ -92,80 +91,75 @@ class MysteryPlantWidget extends StatelessWidget {
 
     final assetStage = (stage + 1).clamp(1, maxStage);
 
+    // Asset selection logic
     String filename;
-    switch (category) {
-      case 'leaf':
-        filename = 'plant_leaf_$assetStage.png';
-        break;
-      case 'succulent':
-        filename = 'plant_succulent_$assetStage.png';
-        break;
-      case 'weird':
-        filename = 'plant_weird_1.png';
-        break;
-      case 'tree':
-        filename = 'plant_tree_$assetStage.png';
-        break;
-      case 'flytrap':
-        filename = 'plant_flytrap_$assetStage.png';
-        break;
-      case 'herb':
-      default:
-        filename = 'plant_herb_$assetStage.png';
+    // Map internal categories to asset filenames we saw in `ls`
+    // plant_herb_x.png, plant_tree_x.png, etc.
+    if (category.contains('tree')) {
+      filename = 'plant_tree_$assetStage.png';
+    } else if (category.contains('leaf')) {
+      filename = 'plant_leaf_$assetStage.png';
+    } else if (category.contains('succ')) {
+      filename = 'plant_succulent_$assetStage.png';
+    } else if (category.contains('flytrap')) {
+      filename = 'plant_flytrap_$assetStage.png';
+    } else if (category.contains('rubber')) {
+      filename = 'rubber_plant_small_01.png';
+    } else {
+      // Default to herb for 'basil', 'rosemary' etc.
+      filename = 'plant_herb_$assetStage.png';
     }
 
     String plantAsset = 'assets/images/plants/$filename';
-
-    // Total size = Base Size + (stage * scaleFactor)
     final totalSize = plantBaseSize + (stage * scaleFactorPerStage);
 
     return Stack(
       alignment: Alignment.center,
       clipBehavior: Clip.none,
       children: [
-        // Layer 0: Backglow (Ambient Mist)
+        // Layer 0: Backglow
         Positioned(
-              bottom: 40,
-              child: Container(
-                width: 240,
-                height: 240,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.spiritTeal.withValues(alpha: 0.15),
-                      blurRadius: 100,
-                      spreadRadius: 20,
+          bottom: 40,
+          child:
+              Container(
+                    width: 240,
+                    height: 240,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.spiritTeal.withValues(alpha: 0.15),
+                          blurRadius: 100,
+                          spreadRadius: 20,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            )
-            .animate(onPlay: (c) => c.repeat(reverse: true))
-            .scale(
-              begin: const Offset(1, 1),
-              end: const Offset(1.2, 1.2),
-              duration: 4.seconds,
-              curve: Curves.easeInOut,
-            ),
-
-        // Layer A: Pot (Base) - Truly Static
-        Image.asset(
-          potAsset,
-          width: potWidth,
-          fit: BoxFit.contain,
-          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  )
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .scale(
+                    begin: const Offset(1, 1),
+                    end: const Offset(1.2, 1.2),
+                    duration: 4.seconds,
+                    curve: Curves.easeInOut,
+                  ),
         ),
+
+        // Layer A: Pot (Base) - Conditional
+        if (showPot)
+          Image.asset(
+            potAsset,
+            width: potWidth,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+          ),
 
         // Layer B: Plant (Growth)
         Positioned(
-          bottom:
-              plantBottomOffset -
-              (customOffsetY * 100), // Adjusted relative to pot
+          bottom: plantBottomOffset - (customOffsetY * 100),
           child: InteractiveProp(
             animationType: PropAnimationType.swing,
             alignment: const Alignment(0.0, 0.5),
-            intensity: 0.7, // Approx 2 degrees (0.05 * 0.7 = 0.035 rad)
+            intensity: 0.7,
             duration: const Duration(seconds: 6),
             onTap: onPlantTap,
             child: Image.asset(
@@ -174,14 +168,14 @@ class MysteryPlantWidget extends StatelessWidget {
               height: totalSize,
               fit: BoxFit.contain,
               errorBuilder: (_, __, ___) {
-                // Fallback to first stage if specific stage asset is missing
+                // Fallback
                 return Image.asset(
-                  'assets/images/plants/m_${category}_1.png',
+                  'assets/images/plants/plant_herb_1.png',
                   width: totalSize,
                   height: totalSize,
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) =>
-                      const SizedBox.shrink(),
+                      const Icon(Icons.yard, size: 60, color: Colors.white24),
                 );
               },
             ),
@@ -195,7 +189,7 @@ class MysteryPlantWidget extends StatelessWidget {
     return Container(
           width: 50,
           height: 50,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.spiritTeal,
             shape: BoxShape.circle,
             boxShadow: [BoxShadow(color: AppColors.spiritTeal, blurRadius: 10)],

@@ -2,197 +2,242 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
-import 'package:zestinme/features/home/presentation/providers/garden_provider.dart';
-import 'package:zestinme/features/home/presentation/widgets/scenic_background.dart';
-import 'package:zestinme/features/home/presentation/widgets/mystery_plant_widget.dart';
-import 'package:zestinme/features/home/presentation/widgets/small_pond_widget.dart';
-import 'package:zestinme/features/home/presentation/widgets/wind_chime_widget.dart';
+import 'package:zestinme/app/routes/app_router.dart';
+import 'package:zestinme/core/constants/app_colors.dart';
+import 'package:zestinme/features/caring/presentation/screens/caring_intro_screen.dart';
 import 'package:zestinme/features/garden/data/plant_database.dart';
 import 'package:zestinme/features/garden/domain/entities/plant_species.dart';
-import 'package:zestinme/app/routes/app_router.dart';
-import 'package:zestinme/features/caring/presentation/screens/caring_intro_screen.dart';
+import 'package:zestinme/features/garden/presentation/providers/current_pot_provider.dart';
 import 'package:zestinme/features/home/presentation/providers/home_provider.dart';
-import 'package:zestinme/features/home/presentation/providers/plant_layout_provider.dart';
-import 'package:zestinme/features/sleep_record/presentation/widgets/sleep_battery_widget.dart';
-import 'package:zestinme/core/localization/app_localizations.dart';
+import 'package:zestinme/features/home/presentation/providers/time_vibe_provider.dart';
+import 'package:zestinme/features/home/presentation/widgets/home_bottom_bar.dart';
+import 'package:zestinme/features/home/presentation/widgets/mystery_plant_widget.dart';
+import 'dart:ui';
 
 class MindGardenerHomeScreen extends ConsumerWidget {
   const MindGardenerHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final gardenStateAsync = ref.watch(gardenStateProvider);
+    final currentPot = ref.watch(currentPotNotifierProvider);
+    final homeState = ref.watch(homeProvider);
+    final timeVibe = ref.watch(timeVibeNotifierProvider);
 
     return Scaffold(
       extendBody: true,
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
-      body: gardenStateAsync.when(
-        data: (state) {
-          if (state == null) {
-            return const Center(child: Text("정원을 찾을 수 없습니다."));
+      body: Builder(
+        builder: (context) {
+          if (currentPot == null) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.spiritTeal),
+            );
           }
 
-          final layoutState = ref.watch(plantLayoutProvider);
-          final homeState = ref.watch(homeProvider);
-
+          final state = currentPot;
           PlantSpecies? assignedPlant;
-          // ... (existing plant selection logic)
-          if (state.assignedPlantId != null) {
-            try {
-              assignedPlant = PlantDatabase.species.firstWhere(
-                (p) => p.id == state.assignedPlantId,
-              );
-            } catch (e) {
-              // Fallback
-            }
+          try {
+            assignedPlant = PlantDatabase.species.firstWhere(
+              (p) => p.id == state.plantSpeciesId,
+            );
+          } catch (e) {
+            // Fallback
           }
 
           return Stack(
             fit: StackFit.expand,
             children: [
-              // --- Layer 0: Background ---
-              ScenicBackground(
-                imagePath: homeState.backgroundImagePath,
-                offsetY: layoutState.backgroundOffsetY,
+              // 1. Background Image (Time based)
+              AnimatedSwitcher(
+                duration: const Duration(seconds: 1),
+                child: Image.asset(
+                  timeVibe.backgroundImage,
+                  key: ValueKey(timeVibe.backgroundImage),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
               ),
 
-              // --- Layer 1: Mid-Ground (Responsive Anchoring) ---
-              Align(
-                alignment: Alignment(
-                  0.0, // X is centered
-                  layoutState.anchorYBias +
-                      (assignedPlant?.customOffsetY ?? 0.0),
-                ),
-                child: MysteryPlantWidget(
-                  growthStage: state.growthStage,
-                  isThirsty: homeState.isCaringNeeded,
-                  plantName: assignedPlant?.name,
-                  potWidth: layoutState.potWidth,
-                  plantBaseSize:
-                      layoutState.plantBaseSize *
-                      (assignedPlant?.customScale ?? 1.0),
-                  plantBottomOffset: layoutState.plantBottomInternalOffset,
-                  scaleFactorPerStage: layoutState.scaleFactorPerStage,
-                  onPlantTap: () => context
-                      .push(AppRouter.seeding)
-                      .then((_) => ref.read(homeProvider.notifier).refresh()),
-                  onWaterTap: () {
-                    if (homeState.uncaredRecords.isNotEmpty) {
-                      final record = homeState.uncaredRecords.first;
-                      Navigator.of(context)
-                          .push(
-                            MaterialPageRoute(
-                              builder: (_) => CaringIntroScreen(record: record),
-                            ),
-                          )
+              // 2. Plant (Hero)
+              Positioned(
+                bottom: MediaQuery.of(context).size.height * 0.15,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: SizedBox(
+                    width: 300,
+                    height: 400,
+                    child: MysteryPlantWidget(
+                      growthStage: state.getDisplayStage(
+                        assignedPlant?.assetKey ?? 'herb',
+                      ),
+                      isThirsty: homeState.isCaringNeeded,
+                      plantName: assignedPlant?.name,
+                      showPot: false,
+                      category: assignedPlant?.assetKey ?? 'herb',
+                      onPlantTap: () => context
+                          .push(AppRouter.seeding)
                           .then(
                             (_) => ref.read(homeProvider.notifier).refresh(),
-                          );
-                    }
-                  },
-                ),
-              ),
-
-              // Small Pond
-              Positioned(
-                bottom: 40 + MediaQuery.of(context).padding.bottom,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: SmallPondWidget(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("자아의 거울은 준비 중입니다.")),
-                      );
-                    },
-                  ),
-                ),
-              ),
-
-              // --- Layer 2: UI ---
-              Positioned(
-                top: 60 + MediaQuery.of(context).padding.top,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of(context).homeGardenTitleFormat
-                        .replaceAll('{user}', state.nickname),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.2,
-                      shadows: [Shadow(blurRadius: 4, color: Colors.black45)],
+                          ),
+                      onWaterTap: () {
+                        if (homeState.uncaredRecords.isNotEmpty) {
+                          final record = homeState.uncaredRecords.first;
+                          Navigator.of(context)
+                              .push(
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      CaringIntroScreen(record: record),
+                                ),
+                              )
+                              .then(
+                                (_) =>
+                                    ref.read(homeProvider.notifier).refresh(),
+                              );
+                        }
+                      },
                     ),
                   ),
                 ),
               ),
 
-              // Moon Lantern
-              Positioned(
-                top: 60 + MediaQuery.of(context).padding.top,
-                left: 20,
-                child: Tooltip(
-                  message: AppLocalizations.of(context).homeSleep,
-                  child: SleepBatteryWidget(
-                    chargeLevel: homeState.sleepEfficiency,
-                    onTap: () => context
-                        .push(AppRouter.sleep)
-                        .then((_) => ref.read(homeProvider.notifier).refresh()),
-                  ),
+              // 3. UI Overlay (Glass)
+              SafeArea(
+                child: Column(
+                  children: [
+                    // Header
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "MIND GARDENER",
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.5),
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 2.0,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.more_horiz,
+                              color: Colors.white54,
+                            ),
+                            onPressed: () => context.push(AppRouter.settings),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const Spacer(),
+
+                    // Floating Stats (Left & Right)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildGlassIndicator(
+                            icon: Icons.water_drop,
+                            label: "MOISTURE",
+                            value: "72%",
+                          ),
+                          _buildGlassIndicator(
+                            icon: Icons.eco,
+                            label: "GROWTH",
+                            value:
+                                "Lv.${state.getDisplayStage(assignedPlant?.assetKey ?? 'herb')}",
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 120), // Spacer for Bottom Dock
+                  ],
                 ),
               ),
 
-              // Wind Chime
+              // 4. Bottom Dock (Glass)
               Positioned(
-                top: 150 + MediaQuery.of(context).padding.top,
+                left: 20,
                 right: 20,
-                child: WindChimeWidget(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("마음 환기는 준비 중입니다.")),
-                    );
+                bottom: 30,
+                child: HomeBottomBar(
+                  currentIndex: 0,
+                  onTap: (index) {
+                    if (index == 0) return;
+                    if (index == 1) context.push(AppRouter.history);
+                    if (index == 3) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("인사이트 준비 중")),
+                      );
+                    }
+                    if (index == 4) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(const SnackBar(content: Text("프로필 준비 중")));
+                    }
                   },
-                ),
-              ),
-
-              // History Button
-              Positioned(
-                bottom: 40 + MediaQuery.of(context).padding.bottom,
-                left: 20,
-                child: FloatingActionButton(
-                  heroTag: 'history',
-                  mini: true,
-                  onPressed: () => context.push(AppRouter.history),
-                  backgroundColor: Colors.white12,
-                  elevation: 0,
-                  foregroundColor: Colors.white70,
-                  tooltip: AppLocalizations.of(context).homeHistory,
-                  child: const Icon(Icons.history),
-                ),
-              ),
-
-              // Seeding Button
-              Positioned(
-                bottom: 40 + MediaQuery.of(context).padding.bottom,
-                right: 20,
-                child: FloatingActionButton.extended(
-                  label: Text(AppLocalizations.of(context).homeSeeding),
-                  heroTag: 'seeding',
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black87,
-                  onPressed: () => context
-                      .push(AppRouter.seeding)
-                      .then((_) => ref.read(homeProvider.notifier).refresh()),
                 ),
               ),
             ],
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text("오류가 발생했습니다: $err")),
+      ),
+    );
+  }
+
+  Widget _buildGlassIndicator({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, color: AppColors.spiritTeal, size: 14),
+                  const SizedBox(width: 4),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 8,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

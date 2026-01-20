@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zestinme/features/home/presentation/widgets/scenic_background.dart';
 import 'package:zestinme/features/home/presentation/providers/home_provider.dart';
 import 'package:zestinme/features/home/presentation/widgets/mystery_plant_widget.dart';
 import 'package:zestinme/features/garden/data/plant_database.dart';
@@ -112,11 +111,7 @@ class _HomePlantSettingScreenState
         body: Stack(
           fit: StackFit.expand,
           children: [
-            // 1. Scenic Background
-            ScenicBackground(
-              offsetY: layoutState.backgroundOffsetY,
-              imagePath: homeState.backgroundImagePath,
-            ),
+            // 1. Scenic Background REMOVED
 
             // 2. Plant Widget (Responsive Anchoring)
             Align(
@@ -152,7 +147,7 @@ class _HomePlantSettingScreenState
                   opacity: _isPanelVisible ? 1.0 : 0.0,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
+                      color: Colors.black.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: Colors.white24),
                     ),
@@ -269,9 +264,11 @@ class _HomePlantSettingScreenState
               padding: const EdgeInsets.all(8),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.teal.withOpacity(0.1),
+                color: Colors.teal.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.tealAccent.withOpacity(0.3)),
+                border: Border.all(
+                  color: Colors.tealAccent.withValues(alpha: 0.3),
+                ),
               ),
               child: Text(
                 "Target Asset: ${_category}_${_growthStage.round()}",

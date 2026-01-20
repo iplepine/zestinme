@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zestinme/features/garden/domain/entities/current_pot.dart';
+import 'package:zestinme/features/onboarding/presentation/providers/onboarding_provider.dart';
 
 part 'current_pot_provider.g.dart';
 
@@ -7,8 +8,31 @@ part 'current_pot_provider.g.dart';
 class CurrentPotNotifier extends _$CurrentPotNotifier {
   @override
   CurrentPot? build() {
-    // TODO: Load from Repository
+    // Temporary MVP Logic: Load from Onboarding State
+    // Ideally this should load from a dedicated PotRepository
+    _loadFromOnboarding();
     return null;
+  }
+
+  Future<void> _loadFromOnboarding() async {
+    try {
+      final onboardingRepo = ref.read(onboardingRepositoryProvider);
+      final obState = await onboardingRepo.getOnboardingState();
+
+      if (obState != null && obState.assignedPlantId != null) {
+        // Hydrate CurrentPot from Onboarding data
+        state = CurrentPot(
+          id: 'default_pot',
+          plantSpeciesId: obState.assignedPlantId!,
+          nickname: obState.nickname,
+          emotionKey: 'joy', // Default fallback
+          plantedAt: DateTime.now().subtract(const Duration(days: 0)), // Day 1
+          growthStage: obState.growthStage,
+        );
+      }
+    } catch (e) {
+      // Handle error
+    }
   }
 
   void plantNewPot({

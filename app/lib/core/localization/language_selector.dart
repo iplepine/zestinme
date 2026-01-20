@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zestinme/core/localization/app_localizations.dart';
 import 'package:zestinme/core/localization/locale_provider.dart';
 
 class LanguageSelector extends ConsumerWidget {
@@ -10,7 +9,7 @@ class LanguageSelector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final localeNotifier = ref.read(localeProvider.notifier);
     final currentLocale = ref.watch(localeProvider);
-    final l10n = AppLocalizations.of(context);
+    // Unused l10n removed
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -18,7 +17,7 @@ class LanguageSelector extends ConsumerWidget {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -79,13 +78,15 @@ class _LanguageOption extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-              : Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+              : Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected
                 ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
         child: Column(
