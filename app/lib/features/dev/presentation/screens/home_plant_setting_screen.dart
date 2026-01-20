@@ -232,7 +232,7 @@ class _HomePlantSettingScreenState
                 border: OutlineInputBorder(),
               ),
               value: _speciesId,
-              items: PlantDatabase.species.take(50).map((p) {
+              items: PlantDatabase.species.map((p) {
                 return DropdownMenuItem(
                   value: p.id,
                   child: Text("${p.id}: ${p.name}"),
@@ -281,21 +281,12 @@ class _HomePlantSettingScreenState
                 border: OutlineInputBorder(),
               ),
               value: _category,
-              items:
-                  [
-                    'rubber',
-                    'flytrap',
-                    'herb',
-                    'leaf',
-                    'succulent',
-                    'tree',
-                    'weird',
-                  ].map((key) {
-                    return DropdownMenuItem(
-                      value: key,
-                      child: Text(key.toUpperCase()),
-                    );
-                  }).toList(),
+              items: ['rubber', 'herb', 'leaf', 'succulent', 'tree'].map((key) {
+                return DropdownMenuItem(
+                  value: key,
+                  child: Text(key.toUpperCase()),
+                );
+              }).toList(),
               onChanged: (v) {
                 if (v != null) {
                   setState(() {
