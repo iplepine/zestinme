@@ -59,18 +59,5 @@ class CurrentPotNotifier extends _$CurrentPotNotifier {
     // TODO: Save to Repository
   }
 
-  // Helper to get image asset based on current state
-  String get currentAssetPath {
-    final pot = state;
-    if (pot == null) return '';
-
-    // Naming convention: {species_name}_{stage}.png
-    // e.g. basil_1.png
-    // We need a way to map speciesId to species name.
-    // For MVP, simple switch or map.
-    String speciesName = 'basil';
-    if (pot.plantSpeciesId == 1) speciesName = 'basil';
-
-    return 'assets/images/plants/plant_${speciesName}_${pot.growthStage}.png';
-  }
+  // Helper logic moved to MysteryPlantWidget
 }

@@ -81,33 +81,15 @@ class MysteryPlantWidget extends StatelessWidget {
     // 1. Determine Assets
     const potAsset = 'assets/images/pots/pot_default.png';
 
-    // Determine max stage for clamp based on category
-    int maxStage = 3; // Default sane max
-    if (category == 'tree') maxStage = 5;
-    if (category == 'leaf') maxStage = 3;
-    if (category == 'herb') maxStage = 3;
-    if (category == 'flytrap') maxStage = 2;
-    if (category == 'succ' || category == 'succulent') maxStage = 4;
-
-    final assetStage = (stage + 1).clamp(1, maxStage);
-
     // Asset selection logic
     String filename;
     // Map internal categories to asset filenames we saw in `ls`
     // plant_herb_x.png, plant_tree_x.png, etc.
-    if (category.contains('tree')) {
-      filename = 'plant_tree_$assetStage.png';
-    } else if (category.contains('leaf')) {
-      filename = 'plant_leaf_$assetStage.png';
-    } else if (category.contains('succ')) {
-      filename = 'plant_succulent_$assetStage.png';
-    } else if (category.contains('flytrap')) {
-      filename = 'plant_flytrap_$assetStage.png';
-    } else if (category.contains('rubber')) {
+    if (category.contains('rubber')) {
       filename = 'rubber_plant_small_01.png';
     } else {
-      // Default to herb for 'basil', 'rosemary' etc.
-      filename = 'plant_herb_$assetStage.png';
+      // Temporary Fallback: Use rubber plant for all while other assets are being redesigned
+      filename = 'rubber_plant_small_01.png';
     }
 
     String plantAsset = 'assets/images/plants/$filename';

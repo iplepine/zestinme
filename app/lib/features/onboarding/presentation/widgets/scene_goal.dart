@@ -8,6 +8,8 @@ import 'package:zestinme/features/seeding/presentation/providers/seeding_provide
 
 import 'package:zestinme/app/theme/app_theme.dart';
 import 'package:zestinme/features/garden/domain/services/plant_service.dart';
+import 'package:zestinme/features/garden/data/plant_database.dart';
+import 'package:zestinme/features/home/presentation/widgets/mystery_plant_widget.dart';
 import 'package:zestinme/features/onboarding/presentation/providers/onboarding_provider.dart';
 
 class SceneEncounter extends ConsumerStatefulWidget {
@@ -244,11 +246,14 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
     final emotionName = _getLocalizedTag(l10n, rawTag);
     final particle = _getSubjectParticle(emotionName);
 
-    // Get dynamic asset from provider
+    // Use MysteryPlantWidget instead of manual asset paths
     final currentPot = ref.watch(currentPotNotifierProvider);
-    final assetPath = currentPot != null
-        ? 'assets/images/plants/basil_${currentPot.growthStage}.png'
-        : 'assets/images/plants/basil_1.png';
+    final selectedSpecies = currentPot != null
+        ? PlantDatabase.species.firstWhere(
+            (p) => p.id == currentPot.plantSpeciesId,
+            orElse: () => PlantDatabase.species.first,
+          )
+        : PlantDatabase.species.first;
 
     return Padding(
       padding: const EdgeInsets.all(24.0),
@@ -262,7 +267,15 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                Image.asset(assetPath, width: 150, fit: BoxFit.contain)
+                MysteryPlantWidget(
+                      growthStage: currentPot?.growthStage ?? 1,
+                      isThirsty: false,
+                      plantName: selectedSpecies.name,
+                      category: selectedSpecies.assetKey,
+                      showPot: false,
+                      onPlantTap: () {},
+                      onWaterTap: () {},
+                    )
                     .animate()
                     .scale(
                       begin: const Offset(0.8, 0.8),
