@@ -52,5 +52,17 @@ class PlantDatabase {
       optimalHumidity: 40.0,
       assetKey: 'succulent',
     ),
+    PlantSpecies(
+      id: 9,
+      name: '고무나무',
+      scientificName: 'Ficus elastica',
+      rarity: 1,
+      flowerLanguage: '영원한 행복',
+      description: '나무형으로 분류되는 쌍떡잎 식물입니다.',
+      optimalLux: 7500.0,
+      optimalTemperature: 21.0,
+      optimalHumidity: 50.0,
+      assetKey: 'rubber',
+    ),
   ];
 }
