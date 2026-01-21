@@ -36,6 +36,9 @@ CompleteOnboarding completeOnboarding(CompleteOnboardingRef ref) {
 class OnboardingViewModel extends _$OnboardingViewModel {
   @override
   OnboardingState build() {
+    // Load saved state asynchronously
+    Future(() => _loadSavedState());
+
     return const OnboardingState(
       nickname: '',
       temperatureLevel: 0.5,
@@ -45,6 +48,19 @@ class OnboardingViewModel extends _$OnboardingViewModel {
       valenceScore: 5,
       activeModuleId: '',
     );
+  }
+
+  Future<void> _loadSavedState() async {
+    try {
+      final repo = ref.read(onboardingRepositoryProvider);
+      final savedState = await repo.getOnboardingState();
+
+      if (savedState != null && savedState.isCompleted) {
+        state = savedState;
+      }
+    } catch (e) {
+      // Ignore error or log
+    }
   }
 
   void setNickname(String nickname) {
