@@ -170,32 +170,25 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Night Garden Theme Colors
-    const backgroundColor = Color(0xFF101418); // Deep Night
-
     return Theme(
       data: AppTheme.darkTheme,
       child: Scaffold(
-        backgroundColor: backgroundColor,
         resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            // Dynamic Icon: Arrow Back if Card shown, else Close
             icon: Icon(
               _showCard ? Icons.arrow_back : Icons.close,
               color: Colors.white,
             ),
             onPressed: () {
               if (_showCard) {
-                // Back to Intro
                 setState(() {
                   _showCard = false;
                 });
               } else {
-                // Close Screen
                 context.pop();
               }
             },
@@ -203,8 +196,8 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
         ),
         body: Stack(
           children: [
-            // 1. Background Gradient (Emotional Resonance)
-            _buildBackground(),
+            // 1. Background Gradient (Atmospheric Resonance)
+            Positioned.fill(child: _buildBackground()),
 
             // 2. Content
             SafeArea(
@@ -220,121 +213,192 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
   }
 
   Widget _buildBackground() {
-    // Use the emotion color for the "Resonance" gradient
-    const resonanceColor = Color(0xFF5D3FD3); // Iris
-
-    return Center(
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.width * 0.8,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [resonanceColor.withOpacity(0.15), Colors.transparent],
-            stops: const [0.0, 0.7],
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment(0, -0.2), // Slightly above center
+                radius: 1.2,
+                colors: [
+                  Color(0xFF2D264B), // Muted Purple-Deep
+                  Color(0xFF101418), // Deep Night
+                ],
+                stops: [0.0, 0.8],
+              ),
+            ),
           ),
         ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-          child: Container(color: Colors.transparent),
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+            child: Container(color: Colors.transparent),
+          ),
         ),
-      ),
+      ],
     );
   }
 
   Widget _buildIntroContent() {
-    return SingleChildScrollView(
-      key: const ValueKey('Intro'),
-      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 40.0),
-      child: Column(
-        children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-          // 1. Hero Plant (Breathing)
-          ScaleTransition(
-            scale: _scaleAnimation,
-            child: const Icon(
-              Icons.spa, // Placeholder for Plant Asset
-              size: 120,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 40),
-          // 2. Intro Text
-          FadeTransition(
-            opacity: _fadeAnimation,
-            child: Builder(
-              builder: (context) {
-                final l10n = AppLocalizations.of(context)!;
-                final localizedEmotion = widget.record.emotionLabel != null
-                    ? l10n.getLocalizedEmotion(widget.record.emotionLabel!)
-                    : '기록된 감정';
-
-                return Text(
-                  "아까 '$localizedEmotion' 감정이 찾아왔었죠.\n지금 마음은 어떤가요?",
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Colors.white,
-                    height: 1.5,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          key: const ValueKey('Intro'),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 40.0,
+                vertical: 40.0,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // 1. Hero Plant (Breathing Visualization)
+                  ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.03),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withValues(alpha: 0.05),
+                            blurRadius: 40,
+                            spreadRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.spa_outlined,
+                        size: 80,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                );
-              },
+                  const SizedBox(height: 56),
+                  // 2. Intro Text (Typography Refined)
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: Builder(
+                      builder: (context) {
+                        final l10n = AppLocalizations.of(context)!;
+                        final localizedEmotion =
+                            widget.record.emotionLabel != null
+                            ? l10n.getLocalizedEmotion(
+                                widget.record.emotionLabel!,
+                              )
+                            : '기록된 감정';
+
+                        return Column(
+                          children: [
+                            Text(
+                              "아까 '$localizedEmotion' 감정이 찾아왔었죠.",
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.6),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w200,
+                                letterSpacing: 0.2,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              "지금 마음은 어떤가요?",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 26,
+                                fontWeight: FontWeight.w400,
+                                height: 1.4,
+                                letterSpacing: -0.8,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 80),
+                  // 3. Bottom Button (Premium Styling)
+                  FilledButton(
+                    onPressed: _onStartCaring,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.white.withValues(alpha: 0.08),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 48,
+                        vertical: 20,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                        side: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.1),
+                        ),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.auto_awesome_outlined, size: 18),
+                        SizedBox(width: 12),
+                        Text(
+                          "마음 들여다보기",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Bottom Padding Adjuster
+                  SizedBox(height: MediaQuery.of(context).padding.bottom),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 60),
-          // 3. Bottom Button
-          FilledButton.icon(
-            onPressed: _onStartCaring,
-            icon: const Icon(Icons.auto_awesome),
-            label: const Text("마음 들여다보기"),
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.white.withOpacity(0.1),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            ),
-          ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + 40),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildCardView() {
-    // Button Label Logic
     final isLastStage = _currentStage >= _maxDepth;
     final buttonLabel = isLastStage ? "가치 발견" : "더 깊이 보기";
     final buttonIcon = isLastStage ? Icons.auto_awesome : Icons.arrow_downward;
 
     return Padding(
-      key: ValueKey(
-        'Card_$_currentStage',
-      ), // Unique Key to force rebuild/transition if we animate
+      key: ValueKey('Card_$_currentStage'),
       padding: const EdgeInsets.all(24.0),
       child: Column(
         children: [
           const Spacer(flex: 2),
-
-          // Progress Dots (Optional, for now just simple dots indicator)
           if (_maxDepth > 0)
             Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
+              padding: const EdgeInsets.only(bottom: 24.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(_maxDepth + 1, (index) {
-                  return Container(
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
                     margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: 8,
-                    height: 8,
+                    width: index == _currentStage ? 20 : 8,
+                    height: 4,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(2),
                       color: index <= _currentStage
                           ? AppTheme.primaryColor
-                          : Colors.white.withOpacity(0.2),
+                          : Colors.white.withValues(alpha: 0.1),
                     ),
                   );
                 }),
               ),
             ),
-
           CoachingCard(
             question: _currentQuestion,
             submitLabel: buttonLabel,
@@ -344,7 +408,6 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
             },
             onAnswerSubmitted: _onAnswerSubmitted,
           ),
-
           const Spacer(flex: 3),
         ],
       ),
