@@ -45,7 +45,6 @@ GoRouter goRouter(GoRouterRef ref) {
         '/history',
         '/login',
         '/sleep', // Allow Sleep Screen
-        '/',
         '/settings',
       ];
       if (allowedRoutes.contains(state.matchedLocation)) return null;

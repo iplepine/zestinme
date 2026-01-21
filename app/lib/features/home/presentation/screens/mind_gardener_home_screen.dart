@@ -135,26 +135,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
                     const Spacer(),
 
-                    // Floating Stats (Left & Right)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildGlassIndicator(
-                            icon: Icons.water_drop,
-                            label: "MOISTURE",
-                            value: "72%",
-                          ),
-                          _buildGlassIndicator(
-                            icon: Icons.eco,
-                            label: "GROWTH",
-                            value:
-                                "Lv.${state.getDisplayStage(assignedPlant?.assetKey ?? 'herb')}",
-                          ),
-                        ],
-                      ),
-                    ),
+                    const Spacer(),
 
                     const SizedBox(height: 120), // Spacer for Bottom Dock
                   ],
@@ -187,57 +168,6 @@ class MindGardenerHomeScreen extends ConsumerWidget {
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildGlassIndicator({
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, color: AppColors.spiritTeal, size: 14),
-                  const SizedBox(width: 4),
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 8,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
