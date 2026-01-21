@@ -173,30 +173,34 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                       ),
                     ),
 
-                    // 2-2. Plant Area (Centered & Lowered)
+                    // 2-2. Plant Area (Centered & Lowered, De-emphasized)
                     Expanded(
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
                           Positioned(
-                            bottom: 20,
-                            child: SizedBox(
-                              width: 280,
-                              height: 380,
-                              child: MysteryPlantWidget(
-                                growthStage: state.getDisplayStage(
-                                  assignedPlant?.assetKey ?? 'herb',
+                            bottom: -20, // Move further down
+                            child: Opacity(
+                              opacity: 0.8, // Lower contrast
+                              child: SizedBox(
+                                width:
+                                    220, // Reduced size (approx 20% down from 280)
+                                height: 300,
+                                child: MysteryPlantWidget(
+                                  growthStage: state.getDisplayStage(
+                                    assignedPlant?.assetKey ?? 'herb',
+                                  ),
+                                  plantName: assignedPlant?.name,
+                                  showPot: false,
+                                  category: assignedPlant?.assetKey ?? 'herb',
+                                  onPlantTap: () => context
+                                      .push(AppRouter.seeding)
+                                      .then(
+                                        (_) => ref
+                                            .read(homeProvider.notifier)
+                                            .refresh(),
+                                      ),
                                 ),
-                                plantName: assignedPlant?.name,
-                                showPot: false,
-                                category: assignedPlant?.assetKey ?? 'herb',
-                                onPlantTap: () => context
-                                    .push(AppRouter.seeding)
-                                    .then(
-                                      (_) => ref
-                                          .read(homeProvider.notifier)
-                                          .refresh(),
-                                    ),
                               ),
                             ),
                           ),
