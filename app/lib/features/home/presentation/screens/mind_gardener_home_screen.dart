@@ -61,14 +61,14 @@ class MindGardenerHomeScreen extends ConsumerWidget {
               ),
 
               // 1-1. Tone Down Mask
-              Container(color: Colors.black.withValues(alpha: 0.4)),
+              Container(color: Colors.black.withValues(alpha: 0.45)),
 
               // 2. Main Content (New Layout)
               SafeArea(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // 2-1. Header Area (Date & Title)
+                    // 2-1. Header Area (Glass Card)
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
@@ -77,88 +77,112 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Small Date + Status (e.g., Thu, Jan 22 · Evening)
+                          // Date & Status
                           Text(
                             "${DateFormat('EEE, MMM d').format(DateTime.now())} · ${_getTimeStatus(context)}",
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.5),
+                              color: Colors.white.withValues(alpha: 0.6),
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                               letterSpacing: 0.5,
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 16),
 
-                          // Focus Title ("이번에 살펴보는 것")
-                          Text(
-                            AppLocalizations.of(context).homeFocusTitle,
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-
-                          // Main Title ("나의 수면 패턴")
-                          Text(
-                            AppLocalizations.of(context).homeFocusSleepPattern,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 32, // Increased size
-                              fontWeight: FontWeight.w800, // Increased weight
-                              height: 1.1,
-                              letterSpacing: -0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Sub Title ("4일째 관찰 중")
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
+                          // Glass Card
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(24),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(24),
                                 decoration: BoxDecoration(
                                   color: Colors.white.withValues(alpha: 0.08),
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(24),
                                   border: Border.all(
-                                    color: Colors.white.withValues(
-                                      alpha: 0.1,
-                                    ), // Subtle border
+                                    color: Colors.white.withValues(alpha: 0.12),
                                   ),
                                 ),
-                                child: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  ).homeFocusDayCount,
-                                  style: const TextStyle(
-                                    color: AppColors.spiritTeal,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Focus Title
+                                    Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      ).homeFocusTitle,
+                                      style: TextStyle(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.8,
+                                        ),
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+
+                                    // Main Title
+                                    Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      ).homeFocusSleepPattern,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.2,
+                                        letterSpacing: -0.5,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+
+                                    // Status Chip
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 5,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.spiritTeal.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: AppColors.spiritTeal
+                                              .withValues(alpha: 0.3),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        ).homeFocusDayCount,
+                                        style: const TextStyle(
+                                          color: AppColors.spiritTeal,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                          const SizedBox(height: 20),
                         ],
                       ),
                     ),
 
-                    // 2-2. Plant Area (Resized & Positioned)
+                    // 2-2. Plant Area (Centered & Lowered)
                     Expanded(
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
                           Positioned(
-                            // Slightly adjust vertical position if needed
-                            top: 20,
+                            bottom: 20,
                             child: SizedBox(
-                              width: 260, // Reduced from 300
-                              height: 350, // Reduced from 400
+                              width: 280,
+                              height: 380,
                               child: MysteryPlantWidget(
                                 growthStage: state.getDisplayStage(
                                   assignedPlant?.assetKey ?? 'herb',

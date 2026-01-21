@@ -50,8 +50,8 @@ class HomeBottomBar extends StatelessWidget {
               _buildNavItem(
                 context,
                 3,
-                Icons.settings_outlined,
-                AppLocalizations.of(context).homeTabSettings,
+                Icons.spa_outlined, // Changed to Spa/Rest icon
+                AppLocalizations.of(context).homeTabRest,
               ),
             ],
           ),

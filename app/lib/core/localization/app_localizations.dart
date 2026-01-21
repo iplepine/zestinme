@@ -68,7 +68,7 @@ class AppLocalizations {
   String get homeTabHome => _get('home_tab_home');
   String get homeTabLogs => _get('home_tab_logs');
   String get homeTabDiscovery => _get('home_tab_discovery');
-  String get homeTabSettings => _get('home_tab_settings');
+  String get homeTabRest => _get('home_tab_rest'); // Changed from Settings
 
   String get homeFocusTitle => _get('home_focus_title');
   String get homeFocusSleepPattern => _get('home_focus_sleep_pattern');
@@ -136,7 +136,7 @@ class AppLocalizations {
       'home_tab_home': '홈',
       'home_tab_logs': '기록',
       'home_tab_discovery': '발견',
-      'home_tab_settings': '설정',
+      'home_tab_rest': '휴식', // Changed from 설정
       'home_focus_title': '이번에 살펴보는 것',
       'home_focus_sleep_pattern': '💤 나의 수면 패턴',
       'home_focus_day_count': '4일째 관찰 중',
@@ -222,7 +222,7 @@ class AppLocalizations {
       'home_tab_home': 'Home',
       'home_tab_logs': 'Logs',
       'home_tab_discovery': 'Discovery',
-      'home_tab_settings': 'Settings',
+      'home_tab_rest': 'Rest', // Changed from Settings
       'home_focus_title': 'Currently Focusing On',
       'home_focus_sleep_pattern': '💤 My Sleep Pattern',
       'home_focus_day_count': 'Day 4 of Observation',
