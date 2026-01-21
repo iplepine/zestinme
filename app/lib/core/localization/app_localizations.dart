@@ -75,6 +75,12 @@ class AppLocalizations {
   String get homeFocusDayCount => _get('home_focus_day_count');
   String get homeCtaRecordEmotion => _get('home_cta_record_emotion');
 
+  // Time/Status Vibe
+  String get homeStatusMorning => _get('home_status_morning');
+  String get homeStatusAfternoon => _get('home_status_afternoon');
+  String get homeStatusEvening => _get('home_status_evening');
+  String get homeStatusNight => _get('home_status_night');
+
   // Sleep Diving
   String get sleepDiveTitle => _get('sleep_dive_title');
   String get sleepDiveSubtitle => _get('sleep_dive_subtitle');
@@ -134,7 +140,12 @@ class AppLocalizations {
       'home_focus_title': '이번에 살펴보는 것',
       'home_focus_sleep_pattern': '💤 나의 수면 패턴',
       'home_focus_day_count': '4일째 관찰 중',
-      'home_cta_record_emotion': '감정 기록하기',
+      'home_cta_record_emotion': '오늘의 기록', // Changed from 감정 기록하기
+
+      'home_status_morning': 'Morning',
+      'home_status_afternoon': 'Afternoon',
+      'home_status_evening': 'Evening',
+      'home_status_night': 'Night',
 
       'sleep_dive_title': '수면 다이빙',
       'sleep_dive_subtitle': '내 수면 리듬은 어떨까요?',
@@ -215,7 +226,12 @@ class AppLocalizations {
       'home_focus_title': 'Currently Focusing On',
       'home_focus_sleep_pattern': '💤 My Sleep Pattern',
       'home_focus_day_count': 'Day 4 of Observation',
-      'home_cta_record_emotion': 'Record Emotion',
+      'home_cta_record_emotion': 'Today\'s Log', // Changed from Record Emotion
+
+      'home_status_morning': 'Morning',
+      'home_status_afternoon': 'Afternoon',
+      'home_status_evening': 'Evening',
+      'home_status_night': 'Night',
 
       'sleep_dive_title': 'Sleep Diving',
       'sleep_dive_subtitle': 'How is my sleep rhythm?',
