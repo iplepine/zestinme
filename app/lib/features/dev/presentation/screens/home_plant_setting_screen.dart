@@ -136,7 +136,6 @@ class _HomePlantSettingScreenState
                   height: 400,
                   child: MysteryPlantWidget(
                     growthStage: _growthStage.round(),
-                    isThirsty: false,
                     plantName: selectedSpecies.name,
                     potWidth: layoutState.potWidth,
                     plantBaseSize: layoutState.plantBaseSize * _customScale,
@@ -146,7 +145,6 @@ class _HomePlantSettingScreenState
                     category: _category,
                     showPot: false,
                     onPlantTap: () {},
-                    onWaterTap: () {},
                   ),
                 ),
               ),

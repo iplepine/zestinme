@@ -194,7 +194,7 @@ class _SceneVoidState extends State<SceneVoid> {
               child: Column(
                 children: [
                   Text(
-                    l10n.onboarding_found_pot_title,
+                    l10n.onboarding_found_space_title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.4),
@@ -222,7 +222,7 @@ class _SceneVoidState extends State<SceneVoid> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    l10n.onboarding_cleaning_complete,
+                    l10n.onboarding_space_cleared,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,

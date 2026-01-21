@@ -127,7 +127,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_seeding => 'Record Mind';
 
   @override
-  String get home_sleep => 'Recharge';
+  String get home_sleep => 'Sleep Diving';
 
   @override
   String home_garden_title_format(Object user) {
@@ -164,7 +164,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String onboarding_instructionTitle(String emotion, String particle) {
-    return 'Your \'$emotion\' will now\nbloom into new life here.';
+    return 'Your \'$emotion\' will now\nbloom into new life in this space.';
   }
 
   @override
@@ -198,7 +198,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboarding_emotions_peace => 'Peace';
 
   @override
-  String get seeding_instruction => 'Where is your heart?';
+  String get onboarding_identity_label => 'The owner of this space is...';
+
+  @override
+  String get onboarding_identity_question => 'Whose heart is it?';
+
+  @override
+  String get onboarding_identity_hint => 'Enter name';
+
+  @override
+  String get onboarding_identity_submit => 'Confirm';
+
+  @override
+  String get seeding_instruction => 'How is your mind weather today?';
 
   @override
   String get seeding_promptTags => 'This feeling is...';
@@ -337,9 +349,43 @@ class AppLocalizationsEn extends AppLocalizations {
       'In a corner of your heart,\nthere is a small garden\nforgotten for a long time.';
 
   @override
-  String get onboarding_found_pot_title =>
-      'Found a pot left alone for a long time...\nIt gathered a lot of dust.';
+  String get onboarding_found_space_title =>
+      'Found a mind space forgotten for a long time...\nIt is so foggy that I can\'t see clearly.';
 
   @override
-  String get onboarding_cleaning_complete => 'The pot is now clean!';
+  String get onboarding_space_cleared => 'The space is now clear!';
+
+  @override
+  String get sleep_dive_title => 'Sleep Diving';
+
+  @override
+  String get sleep_dive_subtitle => 'How is my sleep rhythm?';
+
+  @override
+  String get sleep_dive_description =>
+      'Discover your golden sleep hour\nthrough a week of intentional observation.';
+
+  @override
+  String get sleep_dive_bedtime_label => 'In Bed Time';
+
+  @override
+  String get sleep_dive_waketime_label => 'Wake Up Time';
+
+  @override
+  String get sleep_dive_latency_title => 'Time to Fall Asleep';
+
+  @override
+  String get sleep_dive_refreshment_title => 'How refreshed are you today?';
+
+  @override
+  String get sleep_dive_natural_wake => 'Woke up without alarm?';
+
+  @override
+  String get sleep_dive_immediate_wake => 'Got up right after alarm?';
+
+  @override
+  String get sleep_dive_factors_title => 'Sleep Impact Factors';
+
+  @override
+  String get sleep_dive_button_finish => 'Dive Complete';
 }

@@ -13,6 +13,7 @@ import '../widgets/moon_time_dial.dart';
 import '../../../../core/widgets/zest_filter_chip.dart';
 
 import '../../../../core/models/sleep_record.dart';
+import '../../../../core/localization/app_localizations.dart';
 
 class SleepRecordScreen extends ConsumerStatefulWidget {
   final SleepRecord? initialRecord;
@@ -67,7 +68,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
       backgroundColor: AppColors.voidBlack,
       appBar: AppBar(
         title: Text(
-          'Recharge',
+          AppLocalizations.of(context).sleepDiveTitle,
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(color: Colors.white),
@@ -86,18 +87,33 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              // 1. Title
-              const Center(
-                child: Text(
-                  '잘 주무셨나요?',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const SizedBox(height: 20),
+              // 1. Title & Description
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context).sleepDiveSubtitle,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      AppLocalizations.of(context).sleepDiveDescription,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 14,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 40),
 
               // 2. Moon Phase Dial & Battery Visualization
               Center(
@@ -123,22 +139,29 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildTimeColumn(context, '침대에 누운 시간', bedTimeStr, () async {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(sleepState.inBedTime),
-                    );
-                    if (time != null) {
-                      final newBedTime = DateTime(
-                        sleepState.inBedTime.year,
-                        sleepState.inBedTime.month,
-                        sleepState.inBedTime.day,
-                        time.hour,
-                        time.minute,
+                  _buildTimeColumn(
+                    context,
+                    AppLocalizations.of(context).sleepDiveBedtimeLabel,
+                    bedTimeStr,
+                    () async {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(
+                          sleepState.inBedTime,
+                        ),
                       );
-                      notifier.updateTimes(newBedTime, sleepState.wakeTime);
-                    }
-                  }),
+                      if (time != null) {
+                        final newBedTime = DateTime(
+                          sleepState.inBedTime.year,
+                          sleepState.inBedTime.month,
+                          sleepState.inBedTime.day,
+                          time.hour,
+                          time.minute,
+                        );
+                        notifier.updateTimes(newBedTime, sleepState.wakeTime);
+                      }
+                    },
+                  ),
                   Column(
                     children: [
                       Text(
@@ -152,22 +175,29 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                       const Icon(Icons.arrow_right_alt, color: Colors.white54),
                     ],
                   ),
-                  _buildTimeColumn(context, '기상', wakeTimeStr, () async {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(sleepState.wakeTime),
-                    );
-                    if (time != null) {
-                      final newWakeTime = DateTime(
-                        sleepState.wakeTime.year,
-                        sleepState.wakeTime.month,
-                        sleepState.wakeTime.day,
-                        time.hour,
-                        time.minute,
+                  _buildTimeColumn(
+                    context,
+                    AppLocalizations.of(context).sleepDiveWaketimeLabel,
+                    wakeTimeStr,
+                    () async {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(
+                          sleepState.wakeTime,
+                        ),
                       );
-                      notifier.updateTimes(sleepState.inBedTime, newWakeTime);
-                    }
-                  }),
+                      if (time != null) {
+                        final newWakeTime = DateTime(
+                          sleepState.wakeTime.year,
+                          sleepState.wakeTime.month,
+                          sleepState.wakeTime.day,
+                          time.hour,
+                          time.minute,
+                        );
+                        notifier.updateTimes(sleepState.inBedTime, newWakeTime);
+                      }
+                    },
+                  ),
                 ],
               ),
 
@@ -178,7 +208,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
 
               // 3.8 Sleep Latency (입면 잠복기)
               Text(
-                '잠들기까지 걸린 시간',
+                AppLocalizations.of(context).sleepDiveLatencyTitle,
                 style: TextStyle(
                   color: AppTheme.secondaryColor,
                   fontSize: 16,
@@ -214,7 +244,9 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                       inactiveTrackColor: Colors.white24,
                       thumbColor: Colors.white,
                       trackHeight: 6.0,
-                      overlayColor: AppTheme.secondaryColor.withOpacity(0.2),
+                      overlayColor: AppTheme.secondaryColor.withValues(
+                        alpha: 0.2,
+                      ),
                     ),
                     child: Slider(
                       value: sleepState.sleepLatencyMinutes.toDouble().clamp(
@@ -231,7 +263,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                       },
                     ),
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -255,7 +287,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
 
               // 4.1 Refreshment Slider
               Text(
-                '개운함 (Refreshment)',
+                AppLocalizations.of(context).sleepDiveRefreshmentTitle,
                 style: TextStyle(
                   color: AppTheme.secondaryColor,
                   fontSize: 16,
@@ -286,7 +318,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                   inactiveTrackColor: Colors.white24,
                   thumbColor: Colors.white,
                   trackHeight: 6.0,
-                  overlayColor: AppTheme.secondaryColor.withOpacity(0.2),
+                  overlayColor: AppTheme.secondaryColor.withValues(alpha: 0.2),
                 ),
                 child: Slider(
                   value: sleepState.selfRefreshmentScore.toDouble(),
@@ -307,7 +339,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
 
               // 4.2 Wake Type
               Text(
-                '기상 유형',
+                '기상 상태',
                 style: TextStyle(
                   color: AppTheme.secondaryColor,
                   fontSize: 16,
@@ -317,16 +349,16 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
               const SizedBox(height: 10),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
                   children: [
                     SwitchListTile(
                       activeColor: AppTheme.secondaryColor,
-                      title: const Text(
-                        '알람 없이 일어났나요?',
-                        style: TextStyle(color: Colors.white),
+                      title: Text(
+                        AppLocalizations.of(context).sleepDiveNaturalWake,
+                        style: const TextStyle(color: Colors.white),
                       ),
                       value: sleepState.isNaturalWake,
                       onChanged: (val) {
@@ -337,9 +369,9 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                     const Divider(color: Colors.white10),
                     SwitchListTile(
                       activeColor: AppTheme.secondaryColor,
-                      title: const Text(
-                        '알람 끄고 바로 일어났나요?',
-                        style: TextStyle(color: Colors.white),
+                      title: Text(
+                        AppLocalizations.of(context).sleepDiveImmediateWake,
+                        style: const TextStyle(color: Colors.white),
                       ),
                       subtitle: const Text(
                         '다시 잠들지 않았어요 (No Snooze)',
@@ -359,7 +391,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
 
               // 4.3 Categorized Factors
               Text(
-                '수면 영향 요인',
+                AppLocalizations.of(context).sleepDiveFactorsTitle,
                 style: TextStyle(
                   color: AppTheme.secondaryColor,
                   fontSize: 16,
@@ -441,8 +473,8 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                           },
                     child: sleepState.isSaving
                         ? const CircularProgressIndicator()
-                        : const Text(
-                            '충전 완료',
+                        : Text(
+                            AppLocalizations.of(context).sleepDiveButtonFinish,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -453,7 +485,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                 ),
                 // End Constraints/SizedBox
               ),
-              SizedBox(height: 120 + MediaQuery.of(context).padding.bottom),
+              const SizedBox(height: 120),
             ],
           ),
         ),
@@ -476,7 +508,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.white24),
             ),
@@ -499,12 +531,12 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: sleepState.isGoldenHour
-            ? AppColors.seedingSun.withOpacity(0.1)
-            : Colors.white.withOpacity(0.05),
+            ? AppColors.seedingSun.withValues(alpha: 0.1)
+            : Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: sleepState.isGoldenHour
-              ? AppColors.seedingSun.withOpacity(0.4)
+              ? AppColors.seedingSun.withValues(alpha: 0.4)
               : Colors.transparent,
         ),
       ),
@@ -538,7 +570,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                 '${sleepState.sleepCycles.toStringAsFixed(1)} 사이클 (약 ${(sleepState.sleepCycles * 90).round()}분)',
                 style: TextStyle(
                   color: sleepState.isGoldenHour
-                      ? AppColors.seedingSun.withOpacity(0.8)
+                      ? AppColors.seedingSun.withValues(alpha: 0.8)
                       : Colors.white54,
                   fontSize: 12,
                 ),

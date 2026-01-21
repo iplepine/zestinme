@@ -64,6 +64,19 @@ class AppLocalizations {
   String get homeCaring => _get('home_caring');
   String get homeGardenTitleFormat => _get('home_garden_title_format');
 
+  // Sleep Diving
+  String get sleepDiveTitle => _get('sleep_dive_title');
+  String get sleepDiveSubtitle => _get('sleep_dive_subtitle');
+  String get sleepDiveDescription => _get('sleep_dive_description');
+  String get sleepDiveBedtimeLabel => _get('sleep_dive_bedtime_label');
+  String get sleepDiveWaketimeLabel => _get('sleep_dive_waketime_label');
+  String get sleepDiveLatencyTitle => _get('sleep_dive_latency_title');
+  String get sleepDiveRefreshmentTitle => _get('sleep_dive_refreshment_title');
+  String get sleepDiveNaturalWake => _get('sleep_dive_natural_wake');
+  String get sleepDiveImmediateWake => _get('sleep_dive_immediate_wake');
+  String get sleepDiveFactorsTitle => _get('sleep_dive_factors_title');
+  String get sleepDiveButtonFinish => _get('sleep_dive_button_finish');
+
   String get homeQuestionDefault => _get('home_question_default');
   String get homeQuestionTired => _get('home_question_tired');
   String get homeQuestionHappy => _get('home_question_happy');
@@ -99,9 +112,21 @@ class AppLocalizations {
       'home_letGo': '비워내기',
       'home_history': '아카이브',
       'home_seeding': '마음 기록',
-      'home_sleep': '수면 충전',
+      'home_sleep': '수면 다이빙',
       'home_caring': '다듬기',
       'home_garden_title_format': '{user}의 내면 정원',
+
+      'sleep_dive_title': '수면 다이빙',
+      'sleep_dive_subtitle': '내 수면 리듬은 어떨까요?',
+      'sleep_dive_description': '일주일간의 집중 관찰을 통해\n당신만의 황금 수면 시간을 찾아보세요.',
+      'sleep_dive_bedtime_label': '침대에 누운 시간',
+      'sleep_dive_waketime_label': '기상 시간',
+      'sleep_dive_latency_title': '잠들기까지 걸린 시간',
+      'sleep_dive_refreshment_title': '오늘 얼마나 개운한가요?',
+      'sleep_dive_natural_wake': '알람 없이 일어났나요?',
+      'sleep_dive_immediate_wake': '알람 끄고 바로 일어났나요?',
+      'sleep_dive_factors_title': '수면 영향 요인',
+      'sleep_dive_button_finish': '다이빙 완료',
 
       // Home Screen - Self-Talk Questions
       'home_question_default': '오늘 당신의 마음은 어떤가요?',
@@ -115,7 +140,7 @@ class AppLocalizations {
       'onboarding_hint': '이유나 상황을 적어주세요...',
       'onboarding_submit': '마음 담기',
       'onboarding_instructionTitle':
-          "당신의 '{emotion}'{particle} 이 화분 속에서\n새로운 생명으로 피어납니다.",
+          "당신의 '{emotion}'{particle} 이\n새로운 생명으로 피어납니다.",
       'onboarding_instructionSubtitle':
           '솔직하게 적어주신 그 마음이\n이 아이를 꽃피우게 할 유일한 영양분입니다.',
       'onboarding_finish': '함께 키워가기',
@@ -159,9 +184,22 @@ class AppLocalizations {
       'home_letGo': 'Let Go',
       'home_history': 'Archive',
       'home_seeding': 'Record Mind',
-      'home_sleep': 'Recharge',
+      'home_sleep': 'Sleep Diving',
       'home_caring': 'Pruning',
       'home_garden_title_format': '{user}\'s Inner Garden',
+
+      'sleep_dive_title': 'Sleep Diving',
+      'sleep_dive_subtitle': 'How is my sleep rhythm?',
+      'sleep_dive_description':
+          'Discover your golden sleep hour\nthrough a week of intentional observation.',
+      'sleep_dive_bedtime_label': 'In Bed Time',
+      'sleep_dive_waketime_label': 'Wake Up Time',
+      'sleep_dive_latency_title': 'Time to Fall Asleep',
+      'sleep_dive_refreshment_title': 'How refreshed are you today?',
+      'sleep_dive_natural_wake': 'Woke up without alarm?',
+      'sleep_dive_immediate_wake': 'Got up right after alarm?',
+      'sleep_dive_factors_title': 'Sleep Impact Factors',
+      'sleep_dive_button_finish': 'Dive Complete',
 
       // Home Screen - Self-Talk Questions
       'home_question_default': 'How is your heart today?',

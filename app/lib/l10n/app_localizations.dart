@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// No description provided for @home_sleep.
   ///
   /// In en, this message translates to:
-  /// **'Recharge'**
+  /// **'Sleep Diving'**
   String get home_sleep;
 
   /// No description provided for @home_garden_title_format.
@@ -395,7 +395,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_instructionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Your \'{emotion}\' will now\nbloom into new life here.'**
+  /// **'Your \'{emotion}\' will now\nbloom into new life in this space.'**
   String onboarding_instructionTitle(String emotion, String particle);
 
   /// No description provided for @onboarding_instructionSubtitle.
@@ -452,10 +452,34 @@ abstract class AppLocalizations {
   /// **'Peace'**
   String get onboarding_emotions_peace;
 
+  /// No description provided for @onboarding_identity_label.
+  ///
+  /// In en, this message translates to:
+  /// **'The owner of this space is...'**
+  String get onboarding_identity_label;
+
+  /// No description provided for @onboarding_identity_question.
+  ///
+  /// In en, this message translates to:
+  /// **'Whose heart is it?'**
+  String get onboarding_identity_question;
+
+  /// No description provided for @onboarding_identity_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter name'**
+  String get onboarding_identity_hint;
+
+  /// No description provided for @onboarding_identity_submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get onboarding_identity_submit;
+
   /// No description provided for @seeding_instruction.
   ///
   /// In en, this message translates to:
-  /// **'Where is your heart?'**
+  /// **'How is your mind weather today?'**
   String get seeding_instruction;
 
   /// No description provided for @seeding_promptTags.
@@ -728,17 +752,83 @@ abstract class AppLocalizations {
   /// **'In a corner of your heart,\nthere is a small garden\nforgotten for a long time.'**
   String get onboarding_intro_message;
 
-  /// No description provided for @onboarding_found_pot_title.
+  /// No description provided for @onboarding_found_space_title.
   ///
   /// In en, this message translates to:
-  /// **'Found a pot left alone for a long time...\nIt gathered a lot of dust.'**
-  String get onboarding_found_pot_title;
+  /// **'Found a mind space forgotten for a long time...\nIt is so foggy that I can\'t see clearly.'**
+  String get onboarding_found_space_title;
 
-  /// No description provided for @onboarding_cleaning_complete.
+  /// No description provided for @onboarding_space_cleared.
   ///
   /// In en, this message translates to:
-  /// **'The pot is now clean!'**
-  String get onboarding_cleaning_complete;
+  /// **'The space is now clear!'**
+  String get onboarding_space_cleared;
+
+  /// No description provided for @sleep_dive_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep Diving'**
+  String get sleep_dive_title;
+
+  /// No description provided for @sleep_dive_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How is my sleep rhythm?'**
+  String get sleep_dive_subtitle;
+
+  /// No description provided for @sleep_dive_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover your golden sleep hour\nthrough a week of intentional observation.'**
+  String get sleep_dive_description;
+
+  /// No description provided for @sleep_dive_bedtime_label.
+  ///
+  /// In en, this message translates to:
+  /// **'In Bed Time'**
+  String get sleep_dive_bedtime_label;
+
+  /// No description provided for @sleep_dive_waketime_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Wake Up Time'**
+  String get sleep_dive_waketime_label;
+
+  /// No description provided for @sleep_dive_latency_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to Fall Asleep'**
+  String get sleep_dive_latency_title;
+
+  /// No description provided for @sleep_dive_refreshment_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How refreshed are you today?'**
+  String get sleep_dive_refreshment_title;
+
+  /// No description provided for @sleep_dive_natural_wake.
+  ///
+  /// In en, this message translates to:
+  /// **'Woke up without alarm?'**
+  String get sleep_dive_natural_wake;
+
+  /// No description provided for @sleep_dive_immediate_wake.
+  ///
+  /// In en, this message translates to:
+  /// **'Got up right after alarm?'**
+  String get sleep_dive_immediate_wake;
+
+  /// No description provided for @sleep_dive_factors_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep Impact Factors'**
+  String get sleep_dive_factors_title;
+
+  /// No description provided for @sleep_dive_button_finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Dive Complete'**
+  String get sleep_dive_button_finish;
 }
 
 class _AppLocalizationsDelegate

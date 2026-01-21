@@ -1,7 +1,6 @@
 {
   "@@locale": "en",
   "appTitle": "ZestInMe",
-  
   "coaching_answerNow": "Answer now",
   "coaching_tonight": "Tonight",
   "coaching_skip": "Skip",
@@ -14,14 +13,12 @@
   "coaching_helpText": "Express yourself freely. There are no right answers.",
   "coaching_errorSaving": "An error occurred while saving.",
   "coaching_progress": "Progress",
-  
   "categories_calm": "Calm",
   "categories_reappraise": "Reappraise",
   "categories_needs": "Needs",
   "categories_boundaries": "Boundaries",
   "categories_pattern": "Pattern",
   "categories_plan": "Plan",
-  
   "common_loading": "Loading...",
   "common_error": "Error",
   "common_success": "Success",
@@ -31,42 +28,46 @@
   "common_delete": "Delete",
   "common_edit": "Edit",
   "common_close": "Close",
-
   "sunlight": "Sunlight",
   "water": "Water",
   "temperature": "Temperature",
   "giveWaterButton": "Give Water",
   "pruneButton": "가지치기",
-
   "home_checkIn": "Check-in",
   "home_reflection": "Reflection",
   "home_letGo": "Let Go",
   "home_history": "Archive",
   "home_caring": "Pruning",
   "home_seeding": "Record Mind",
-  "home_sleep": "Recharge",
+  "home_sleep": "Sleep Diving",
   "home_garden_title_format": "{user}'s Inner Garden",
-
   "home_question_default": "How is your heart today?",
   "home_question_tired": "Are you pushing yourself too hard?",
   "home_question_happy": "Who do you want to share this joy with?",
-
   "onboarding_step1Title": "At this moment,\nwhat is the name of your heart?",
   "onboarding_step2Title": "Where did that '{emotion}' come from?",
   "@onboarding_step2Title": {
     "placeholders": {
-      "emotion": { "type": "String" },
-      "particle": { "type": "String" }
+      "emotion": {
+        "type": "String"
+      },
+      "particle": {
+        "type": "String"
+      }
     }
   },
   "onboarding_step2Subtitle": "Write briefly, it will become a mind seed.",
   "onboarding_hint": "Situation or reason...",
   "onboarding_submit": "Plant Mind",
-  "onboarding_instructionTitle": "Your '{emotion}' will now\nbloom into new life here.",
+  "onboarding_instructionTitle": "Your '{emotion}' will now\nbloom into new life in this space.",
   "@onboarding_instructionTitle": {
     "placeholders": {
-      "emotion": { "type": "String" },
-      "particle": { "type": "String" }
+      "emotion": {
+        "type": "String"
+      },
+      "particle": {
+        "type": "String"
+      }
     }
   },
   "onboarding_instructionSubtitle": "The honest heart you wrote\nis the only nutrient to bloom this child.",
@@ -78,13 +79,15 @@
   "onboarding_emotions_anger": "Anger",
   "onboarding_emotions_anxiety": "Anxiety",
   "onboarding_emotions_peace": "Peace",
-  
-  "seeding_instruction": "Where is your heart?",
+  "onboarding_identity_label": "The owner of this space is...",
+  "onboarding_identity_question": "Whose heart is it?",
+  "onboarding_identity_hint": "Enter name",
+  "onboarding_identity_submit": "Confirm",
+  "seeding_instruction": "How is your mind weather today?",
   "seeding_promptTags": "This feeling is...",
   "seeding_promptNote": "Add a note (context)...",
   "seeding_buttonPlant": "Plant Seed",
   "seeding_messagePlanted": "Seed planted! 🌱",
-
   "seeding_mood_neutral": "Neutral",
   "seeding_mood_energized": "Energized!",
   "seeding_mood_stressed": "Stressed!",
@@ -97,29 +100,21 @@
   "seeding_mood_passionate": "Passionate",
   "seeding_mood_surprised": "Surprised",
   "seeding_mood_relieved": "Relieved",
-  "seeding_mood_neutral": "Neutral",
-  
-  "seeding_mood_angry": "Angry",
-  "seeding_mood_anxious": "Anxious",
   "seeding_mood_resentful": "Resentful",
   "seeding_mood_overwhelmed": "Overwhelmed",
   "seeding_mood_jealous": "Jealous",
   "seeding_mood_annoyed": "Annoyed",
-
   "seeding_mood_sad": "Sad",
   "seeding_mood_disappointed": "Disappointed",
   "seeding_mood_bored": "Bored",
   "seeding_mood_lonely": "Lonely",
   "seeding_mood_guilty": "Guilty",
   "seeding_mood_envious": "Envious",
-
-  "seeding_mood_excited": "Excited",
   "seeding_mood_proud": "Proud",
   "seeding_mood_inspired": "Inspired",
   "seeding_mood_enthusiastic": "Enthusiastic",
   "seeding_mood_curious": "Curious",
   "seeding_mood_amused": "Amused",
-
   "seeding_mood_relaxed": "Relaxed",
   "seeding_mood_grateful": "Grateful",
   "seeding_mood_content": "Content",
@@ -129,13 +124,22 @@
   "seeding_hint_trigger": "What triggered this feeling?",
   "seeding_hint_thought": "What was your thought?",
   "seeding_hint_tendency": "What do you want to do now?",
-
   "seeding_quadrant_energized": "Energized",
   "seeding_quadrant_calm": "Calm",
   "seeding_quadrant_tired": "Tired",
   "seeding_quadrant_stress": "Stressed",
-
   "onboarding_intro_message": "In a corner of your heart,\nthere is a small garden\nforgotten for a long time.",
-  "onboarding_found_pot_title": "Found a pot left alone for a long time...\nIt gathered a lot of dust.",
-  "onboarding_cleaning_complete": "The pot is now clean!"
+  "onboarding_found_space_title": "Found a mind space forgotten for a long time...\nIt is so foggy that I can't see clearly.",
+  "onboarding_space_cleared": "The space is now clear!",
+  "sleep_dive_title": "Sleep Diving",
+  "sleep_dive_subtitle": "How is my sleep rhythm?",
+  "sleep_dive_description": "Discover your golden sleep hour\nthrough a week of intentional observation.",
+  "sleep_dive_bedtime_label": "In Bed Time",
+  "sleep_dive_waketime_label": "Wake Up Time",
+  "sleep_dive_latency_title": "Time to Fall Asleep",
+  "sleep_dive_refreshment_title": "How refreshed are you today?",
+  "sleep_dive_natural_wake": "Woke up without alarm?",
+  "sleep_dive_immediate_wake": "Got up right after alarm?",
+  "sleep_dive_factors_title": "Sleep Impact Factors",
+  "sleep_dive_button_finish": "Dive Complete"
 }

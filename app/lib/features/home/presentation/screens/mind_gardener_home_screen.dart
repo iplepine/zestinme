@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zestinme/app/routes/app_router.dart';
 import 'package:zestinme/core/constants/app_colors.dart';
-import 'package:zestinme/features/caring/presentation/screens/caring_intro_screen.dart';
+
 import 'package:zestinme/features/garden/data/plant_database.dart';
 import 'package:zestinme/features/garden/domain/entities/plant_species.dart';
 import 'package:zestinme/features/garden/presentation/providers/mind_plant_provider.dart';
@@ -12,7 +12,6 @@ import 'package:zestinme/features/home/presentation/providers/home_provider.dart
 import 'package:zestinme/features/home/presentation/providers/time_vibe_provider.dart';
 import 'package:zestinme/features/home/presentation/widgets/home_bottom_bar.dart';
 import 'package:zestinme/features/home/presentation/widgets/mystery_plant_widget.dart';
-import 'dart:ui';
 
 class MindGardenerHomeScreen extends ConsumerWidget {
   const MindGardenerHomeScreen({super.key});
@@ -20,7 +19,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mindPlant = ref.watch(mindPlantNotifierProvider);
-    final homeState = ref.watch(homeProvider);
+
     final timeVibe = ref.watch(timeVibeNotifierProvider);
 
     return Scaffold(
@@ -71,7 +70,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                       growthStage: state.getDisplayStage(
                         assignedPlant?.assetKey ?? 'herb',
                       ),
-                      isThirsty: homeState.isCaringNeeded,
+
                       plantName: assignedPlant?.name,
                       showPot: false,
                       category: assignedPlant?.assetKey ?? 'herb',
@@ -80,22 +79,6 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                           .then(
                             (_) => ref.read(homeProvider.notifier).refresh(),
                           ),
-                      onWaterTap: () {
-                        if (homeState.uncaredRecords.isNotEmpty) {
-                          final record = homeState.uncaredRecords.first;
-                          Navigator.of(context)
-                              .push(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      CaringIntroScreen(record: record),
-                                ),
-                              )
-                              .then(
-                                (_) =>
-                                    ref.read(homeProvider.notifier).refresh(),
-                              );
-                        }
-                      },
                     ),
                   ),
                 ),
@@ -111,15 +94,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "MIND GARDENER",
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.5),
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 2.0,
-                            ),
-                          ),
+                          const SizedBox.shrink(), // Left side empty
                           IconButton(
                             icon: const Icon(
                               Icons.more_horiz,

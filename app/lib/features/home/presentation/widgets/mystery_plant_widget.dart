@@ -5,9 +5,7 @@ import 'package:zestinme/core/constants/app_colors.dart';
 
 class MysteryPlantWidget extends StatelessWidget {
   final int growthStage;
-  final bool isThirsty; // Caring Needed
   final VoidCallback onPlantTap; // Record Mind
-  final VoidCallback onWaterTap; // Pruning
   final String? plantName;
   final double potWidth;
   final double plantBaseSize;
@@ -21,14 +19,12 @@ class MysteryPlantWidget extends StatelessWidget {
   const MysteryPlantWidget({
     super.key,
     required this.growthStage,
-    required this.isThirsty,
     required this.onPlantTap,
-    required this.onWaterTap,
     this.plantName,
     this.potWidth = 100,
-    this.plantBaseSize = 120,
+    this.plantBaseSize = 160,
     this.plantBottomOffset = 50,
-    this.scaleFactorPerStage = 25.0,
+    this.scaleFactorPerStage = 35.0,
     this.category = 'herb',
     this.customOffsetX = 0.0,
     this.customOffsetY = 0.0,
@@ -52,14 +48,6 @@ class MysteryPlantWidget extends StatelessWidget {
             child: _buildPlantImage(growthStage),
           ),
         ),
-
-        // 2. Thirsty Indicator (Water Drop) -> Pruning
-        if (isThirsty)
-          Positioned(
-            top: 20,
-            right: 20,
-            child: GestureDetector(onTap: onWaterTap, child: _buildWaterDrop()),
-          ),
 
         // 3. Name Label (Only for Stage 3)
         if (growthStage >= 3 && plantName != null)
@@ -169,20 +157,5 @@ class MysteryPlantWidget extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Widget _buildWaterDrop() {
-    return Container(
-          width: 50,
-          height: 50,
-          decoration: const BoxDecoration(
-            color: AppColors.spiritTeal,
-            shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: AppColors.spiritTeal, blurRadius: 10)],
-          ),
-          child: const Icon(Icons.water_drop, color: AppColors.midnightDeep),
-        )
-        .animate(onPlay: (c) => c.repeat(reverse: true))
-        .moveY(begin: 0, end: -10, duration: 1500.ms, curve: Curves.easeInOut);
   }
 }

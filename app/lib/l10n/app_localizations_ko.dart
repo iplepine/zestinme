@@ -126,7 +126,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get home_seeding => '마음 기록';
 
   @override
-  String get home_sleep => '수면 충전';
+  String get home_sleep => '수면 다이빙';
 
   @override
   String home_garden_title_format(Object user) {
@@ -161,7 +161,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String onboarding_instructionTitle(String emotion, String particle) {
-    return '당신의 \'$emotion\'$particle 이 화분 속에서\n새로운 생명으로 피어납니다.';
+    return '당신의 \'$emotion\'$particle 이 공간 속에서\n새로운 생명으로 피어납니다.';
   }
 
   @override
@@ -193,7 +193,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboarding_emotions_peace => '평온';
 
   @override
-  String get seeding_instruction => '지금 당신의 마음은\n어디에 있나요?';
+  String get onboarding_identity_label => '이 공간의 주인은...';
+
+  @override
+  String get onboarding_identity_question => '누구의 마음인가요?';
+
+  @override
+  String get onboarding_identity_hint => '이름 입력';
+
+  @override
+  String get onboarding_identity_submit => '확인';
+
+  @override
+  String get seeding_instruction => '지금 당신의 마음 날씨는 어떤가요?';
 
   @override
   String get seeding_promptTags => '이 감정은 마치...';
@@ -280,7 +292,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get seeding_mood_inspired => '영감';
 
   @override
-  String get seeding_mood_enthusiastic => '열정';
+  String get seeding_mood_enthusiastic => '열의';
 
   @override
   String get seeding_mood_curious => '호기심';
@@ -332,9 +344,42 @@ class AppLocalizationsKo extends AppLocalizations {
       '당신의 마음 한구석,\n오랫동안 잊고 지낸\n작은 정원이 있습니다.';
 
   @override
-  String get onboarding_found_pot_title =>
-      '오랫동안 방치된 화분을 찾았습니다...\n먼지가 많이 쌓여있네요.';
+  String get onboarding_found_space_title =>
+      '오랫동안 잊고 지낸 마음 공간을 찾았습니다...\n안개가 자욱하여 앞이 잘 보이지 않네요.';
 
   @override
-  String get onboarding_cleaning_complete => '화분이 깨끗해졌습니다!';
+  String get onboarding_space_cleared => '공간이 한결 맑아졌습니다!';
+
+  @override
+  String get sleep_dive_title => '수면 다이빙';
+
+  @override
+  String get sleep_dive_subtitle => '내 수면 리듬은 어떨까요?';
+
+  @override
+  String get sleep_dive_description => '일주일간의 집중 관찰을 통해\n당신만의 황금 수면 시간을 찾아보세요.';
+
+  @override
+  String get sleep_dive_bedtime_label => '침대에 누운 시간';
+
+  @override
+  String get sleep_dive_waketime_label => '기상 시간';
+
+  @override
+  String get sleep_dive_latency_title => '잠들기까지 걸린 시간';
+
+  @override
+  String get sleep_dive_refreshment_title => '오늘 얼마나 개운한가요?';
+
+  @override
+  String get sleep_dive_natural_wake => '알람 없이 일어났나요?';
+
+  @override
+  String get sleep_dive_immediate_wake => '알람 끄고 바로 일어났나요?';
+
+  @override
+  String get sleep_dive_factors_title => '수면 영향 요인';
+
+  @override
+  String get sleep_dive_button_finish => '다이빙 완료';
 }

@@ -269,12 +269,10 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
               children: [
                 MysteryPlantWidget(
                       growthStage: mindPlant?.growthStage ?? 1,
-                      isThirsty: false,
                       plantName: selectedSpecies.name,
                       category: selectedSpecies.assetKey,
                       showPot: false,
                       onPlantTap: () {},
-                      onWaterTap: () {},
                     )
                     .animate()
                     .scale(

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zestinme/app/theme/app_theme.dart';
 import 'package:zestinme/core/constants/app_colors.dart';
 import 'package:zestinme/core/widgets/zest_glass_card.dart';
+import 'package:zestinme/l10n/app_localizations.dart';
 import 'package:zestinme/features/onboarding/presentation/providers/onboarding_provider.dart';
 
 class SceneIdentity extends ConsumerStatefulWidget {
@@ -21,6 +22,7 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     // Force Dark Theme to ensure Input Decoration defaults match our dark design
     return Theme(
       data: AppTheme.darkTheme,
@@ -52,9 +54,9 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
                               .fadeIn(delay: 200.ms)
                               .moveY(begin: 10, end: 0),
                           const SizedBox(height: 24),
-                          const Text(
-                            "이 공간의 주인은...",
-                            style: TextStyle(
+                          Text(
+                            l10n.onboarding_identity_label,
+                            style: const TextStyle(
                               color: Colors.white70,
                               fontWeight: FontWeight.w200,
                               fontSize: 14,
@@ -62,10 +64,10 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
                             ),
                           ).animate().fadeIn(delay: 400.ms),
                           const SizedBox(height: 8),
-                          const Text(
-                            "누구의 마음인가요?",
+                          Text(
+                            l10n.onboarding_identity_question,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -85,7 +87,7 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
                             decoration: InputDecoration(
                               filled: false,
                               fillColor: Colors.transparent,
-                              hintText: "이름 입력",
+                              hintText: l10n.onboarding_identity_hint,
                               hintStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.3),
                                 fontSize: 24,
@@ -126,9 +128,9 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
                                       vertical: 16,
                                     ),
                                   ),
-                                  child: const Text(
-                                    "확인",
-                                    style: TextStyle(
+                                  child: Text(
+                                    l10n.onboarding_identity_submit,
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),

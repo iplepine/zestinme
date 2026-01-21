@@ -16,9 +16,10 @@
 **바이브코딩(Vibe Coding)** 철학을 기반으로, AI 에이전트가 명확히 실행할 수 있는 수학적 알고리즘과 로직을 정의합니다.
 
 ### 1.2 핵심 가치 제안 (Value Proposition)
-1.  **Optimal Sleep Window (Golden Hour):** 90분 수면 사이클과 기분(Mood) 데이터를 결합하여 최적의 취침/기상 시간을 역산.
-2.  **Social Jetlag Diagnosis:** 주중/주말 수면 불일치 분석 및 만성 피로 원인 시각화.
-3.  **Sensor Fusion:** 가속도 센서와 시간 로그를 결합한 비침습적 수면 분석.
+1.  **Sleep Diving (수면 다이빙):** 매일의 숙제가 아닌, 자신의 리듬을 찾고 싶을 때 '일주일간' 집중적으로 관찰하는 시즌제 기록 방식 지향.
+2.  **Optimal Sleep Window (Golden Hour):** 90분 수면 사이클과 기분(Mood) 데이터를 결합하여 최적의 취침/기상 시간을 역산.
+3.  **Social Jetlag Diagnosis:** 주중/주말 수면 불일치 분석 및 만성 피로 원인 시각화.
+4.  **Sensor Fusion:** 가속도 센서와 시간 로그를 결합한 비침습적 수면 분석.
 
 ## 2. 과학적 알고리즘 및 로직 명세 (The Algorithmic Core)
 
