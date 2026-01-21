@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zestinme/l10n/app_localizations.dart';
-import 'package:zestinme/features/garden/presentation/providers/current_pot_provider.dart';
+import 'package:zestinme/features/garden/presentation/providers/mind_plant_provider.dart';
 import 'package:zestinme/features/seeding/presentation/widgets/seeding_content.dart';
 import 'package:zestinme/features/seeding/presentation/providers/seeding_provider.dart';
 
@@ -57,10 +57,10 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
       emotionKey = seedingState.valence > 0 ? 'peace' : 'sadness';
     }
 
-    // 3. Create the First Pot using the assigned plant
+    // 3. Create the First MindPlant (No more Pot)
     ref
-        .read(currentPotNotifierProvider.notifier)
-        .plantNewPot(
+        .read(mindPlantNotifierProvider.notifier)
+        .startGardening(
           emotionKey: emotionKey,
           nickname: onboardingState.nickname.isNotEmpty
               ? '${onboardingState.nickname}\'s Plant'
@@ -247,10 +247,10 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
     final particle = _getSubjectParticle(emotionName);
 
     // Use MysteryPlantWidget instead of manual asset paths
-    final currentPot = ref.watch(currentPotNotifierProvider);
-    final selectedSpecies = currentPot != null
+    final mindPlant = ref.watch(mindPlantNotifierProvider);
+    final selectedSpecies = mindPlant != null
         ? PlantDatabase.species.firstWhere(
-            (p) => p.id == currentPot.plantSpeciesId,
+            (p) => p.id == mindPlant.plantSpeciesId,
             orElse: () => PlantDatabase.species.first,
           )
         : PlantDatabase.species.first;
@@ -261,14 +261,14 @@ class _SceneEncounterState extends ConsumerState<SceneEncounter> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Final Visual: The Planted Pot
+          // Final Visual: The Planted Plant (No Pot)
           SizedBox(
             height: 250,
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
                 MysteryPlantWidget(
-                      growthStage: currentPot?.growthStage ?? 1,
+                      growthStage: mindPlant?.growthStage ?? 1,
                       isThirsty: false,
                       plantName: selectedSpecies.name,
                       category: selectedSpecies.assetKey,

@@ -7,7 +7,7 @@ import 'package:zestinme/core/constants/app_colors.dart';
 import 'package:zestinme/features/caring/presentation/screens/caring_intro_screen.dart';
 import 'package:zestinme/features/garden/data/plant_database.dart';
 import 'package:zestinme/features/garden/domain/entities/plant_species.dart';
-import 'package:zestinme/features/garden/presentation/providers/current_pot_provider.dart';
+import 'package:zestinme/features/garden/presentation/providers/mind_plant_provider.dart';
 import 'package:zestinme/features/home/presentation/providers/home_provider.dart';
 import 'package:zestinme/features/home/presentation/providers/time_vibe_provider.dart';
 import 'package:zestinme/features/home/presentation/widgets/home_bottom_bar.dart';
@@ -19,7 +19,7 @@ class MindGardenerHomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentPot = ref.watch(currentPotNotifierProvider);
+    final mindPlant = ref.watch(mindPlantNotifierProvider);
     final homeState = ref.watch(homeProvider);
     final timeVibe = ref.watch(timeVibeNotifierProvider);
 
@@ -27,13 +27,13 @@ class MindGardenerHomeScreen extends ConsumerWidget {
       extendBody: true,
       body: Builder(
         builder: (context) {
-          if (currentPot == null) {
+          if (mindPlant == null) {
             return const Center(
               child: CircularProgressIndicator(color: AppColors.spiritTeal),
             );
           }
 
-          final state = currentPot;
+          final state = mindPlant;
           PlantSpecies? assignedPlant;
           try {
             assignedPlant = PlantDatabase.species.firstWhere(

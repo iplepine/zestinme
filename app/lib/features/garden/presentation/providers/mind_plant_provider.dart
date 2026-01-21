@@ -1,15 +1,15 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:zestinme/features/garden/domain/entities/current_pot.dart';
+import 'package:zestinme/features/garden/domain/entities/mind_plant.dart';
 import 'package:zestinme/features/onboarding/presentation/providers/onboarding_provider.dart';
 
-part 'current_pot_provider.g.dart';
+part 'mind_plant_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-class CurrentPotNotifier extends _$CurrentPotNotifier {
+class MindPlantNotifier extends _$MindPlantNotifier {
   @override
-  CurrentPot? build() {
+  MindPlant? build() {
     // Temporary MVP Logic: Load from Onboarding State
-    // Ideally this should load from a dedicated PotRepository
+    // Ideally this should load from a dedicated GardenRepository
     _loadFromOnboarding();
     return null;
   }
@@ -20,9 +20,9 @@ class CurrentPotNotifier extends _$CurrentPotNotifier {
       final obState = await onboardingRepo.getOnboardingState();
 
       if (obState != null && obState.assignedPlantId != null) {
-        // Hydrate CurrentPot from Onboarding data
-        state = CurrentPot(
-          id: 'default_pot',
+        // Hydrate MindPlant from Onboarding data
+        state = MindPlant(
+          id: 'default_plant',
           plantSpeciesId: obState.assignedPlantId!,
           nickname: obState.nickname,
           emotionKey: 'joy', // Default fallback
@@ -35,7 +35,7 @@ class CurrentPotNotifier extends _$CurrentPotNotifier {
     }
   }
 
-  void plantNewPot({
+  void startGardening({
     required String emotionKey,
     required String nickname,
     int? plantSpeciesId,
@@ -44,8 +44,8 @@ class CurrentPotNotifier extends _$CurrentPotNotifier {
     // Default to the provided species ID, or Olive Tree (ID: 31) as fallback
     final speciesId = plantSpeciesId ?? 31;
 
-    // Create new pot
-    final newPot = CurrentPot(
+    // Create new plant instance (No longer tied to a physical pot)
+    final newPlant = MindPlant(
       id: DateTime.now().toIso8601String(),
       plantSpeciesId: speciesId,
       nickname: nickname,
@@ -54,10 +54,8 @@ class CurrentPotNotifier extends _$CurrentPotNotifier {
       growthStage: 1, // Start as Sprout (Stage 0 is seed, Stage 1 is sprout)
     );
 
-    state = newPot;
+    state = newPlant;
 
     // TODO: Save to Repository
   }
-
-  // Helper logic moved to MysteryPlantWidget
 }

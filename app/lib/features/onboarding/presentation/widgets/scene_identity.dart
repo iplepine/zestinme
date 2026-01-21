@@ -53,10 +53,10 @@ class _SceneIdentityState extends ConsumerState<SceneIdentity> {
                               .moveY(begin: 10, end: 0),
                           const SizedBox(height: 24),
                           const Text(
-                            "이 화분의 주인은...",
+                            "이 공간의 주인은...",
                             style: TextStyle(
                               color: Colors.white70,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w200,
                               fontSize: 14,
                               letterSpacing: 1.2,
                             ),

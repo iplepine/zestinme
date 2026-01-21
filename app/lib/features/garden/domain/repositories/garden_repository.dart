@@ -1,8 +1,8 @@
-import 'package:zestinme/features/garden/domain/entities/current_pot.dart';
+import 'package:zestinme/features/garden/domain/entities/mind_plant.dart';
 
 abstract class GardenRepository {
-  Future<CurrentPot?> getCurrentPot();
-  Future<void> saveCurrentPot(CurrentPot pot);
-  Future<void> waterPot(String potId);
+  Future<MindPlant?> getActivePlant();
+  Future<void> saveMindPlant(MindPlant plant);
+  Future<void> waterPlant(String plantId);
   // Add other methods as needed
 }

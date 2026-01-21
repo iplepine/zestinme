@@ -17,32 +17,28 @@ class _SceneVoidState extends State<SceneVoid> {
   // User input points for visual drawing
   final List<Offset> _cleanedPoints = [];
 
-  // Logic: Grid points inside the pot to measure coverage
-  final List<Offset> _potTargetPoints = [];
-  final Set<int> _hitIndices =
-      {}; // Indices of target points that have been cleaned
+  // Logic: Grid points inside the central area to measure coverage
+  final List<Offset> _targetPoints = [];
+  final Set<int> _hitIndices = {};
 
   bool _isCleaned = false;
   double _cleanedRatio = 0.0;
 
-  // Pot Dimensions (Must match PotPainter)
-  final double _wTop = 160;
-  final double _wBottom = 120;
-  final double _h = 160;
+  // Space Dimensions (Circular area)
+  final double _radius = 120;
 
-  bool _showIntro = true; // Start with intro
-  bool _showPot = false;
+  bool _showIntro = true;
+  bool _showSpace = false;
 
   @override
   void initState() {
     super.initState();
     // Center of SizedBox(300, 400) is (150, 200).
-    _generatePotGrid(const Offset(150, 200));
+    _generateTargetGrid(const Offset(150, 200));
     _startIntro();
   }
 
   void _startIntro() async {
-    // 1. Intro Text Duration
     await Future.delayed(const Duration(seconds: 4));
     if (!mounted) return;
 
@@ -50,37 +46,26 @@ class _SceneVoidState extends State<SceneVoid> {
       _showIntro = false;
     });
 
-    // 2. Fade in Pot
     await Future.delayed(const Duration(milliseconds: 1000));
     if (!mounted) return;
     setState(() {
-      _showPot = true;
+      _showSpace = true;
     });
   }
 
-  void _generatePotGrid(Offset center) {
-    _potTargetPoints.clear();
-    final path = Path();
-    path.moveTo(center.dx - _wTop / 2, center.dy - _h / 2);
-    path.lineTo(center.dx + _wTop / 2, center.dy - _h / 2);
-    path.lineTo(center.dx + _wBottom / 2, center.dy + _h / 2);
-    path.lineTo(center.dx - _wBottom / 2, center.dy + _h / 2);
-    path.close();
-
-    // Generate grid points bounding box
-    // Top-Left: (center.dx - wTop/2, center.dy - h/2)
-    // Grid spacing: 10px (dense enough for 95% accuracy)
+  void _generateTargetGrid(Offset center) {
+    _targetPoints.clear();
     const double step = 10.0;
 
-    for (double y = center.dy - _h / 2; y <= center.dy + _h / 2; y += step) {
+    for (double y = center.dy - _radius; y <= center.dy + _radius; y += step) {
       for (
-        double x = center.dx - _wTop / 2;
-        x <= center.dx + _wTop / 2;
+        double x = center.dx - _radius;
+        x <= center.dx + _radius;
         x += step
       ) {
         final point = Offset(x, y);
-        if (path.contains(point)) {
-          _potTargetPoints.add(point);
+        if ((point - center).distance <= _radius) {
+          _targetPoints.add(point);
         }
       }
     }
@@ -90,23 +75,23 @@ class _SceneVoidState extends State<SceneVoid> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E2C), // Darker soil/night color
+      backgroundColor: const Color(0xFF101418), // Match Dark Night
       body: Stack(
         children: [
-          // Background - Subtle texture?
+          // 1. Background Gradient
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
                 gradient: RadialGradient(
-                  colors: [Color(0xFF2C2C3E), Color(0xFF111116)],
-                  radius: 1.5,
+                  colors: [Color(0xFF1A1F26), Color(0xFF101418)],
+                  radius: 1.2,
                   center: Alignment.center,
                 ),
               ),
             ),
           ),
 
-          // Central Interaction Area
+          // 2. Central Interaction Area
           if (_showIntro)
             Center(
               child:
@@ -116,19 +101,18 @@ class _SceneVoidState extends State<SceneVoid> {
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
-                          height: 1.6,
-                          fontWeight: FontWeight.w300,
+                          height: 1.8,
+                          fontWeight: FontWeight.w200,
+                          letterSpacing: -0.5,
                         ),
                       )
                       .animate()
-                      .fadeIn(duration: 1000.ms)
-                      .then(
-                        delay: 3000.ms,
-                      ) // Increased from 2000ms to allow reading
+                      .fadeIn(duration: 1500.ms)
+                      .then(delay: 3000.ms)
                       .fadeOut(duration: 1000.ms),
             ),
 
-          if (_showPot)
+          if (_showSpace)
             Center(
               child: SizedBox(
                 width: 300,
@@ -136,32 +120,40 @@ class _SceneVoidState extends State<SceneVoid> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // 1. The Clean Pot (Underneath)
-                    Image.asset(
-                      'assets/images/pots/pot_default.png',
-                      width: 200,
-                      fit: BoxFit.contain,
-                    ).animate().fadeIn(duration: 1000.ms), // Fade in the pot
-                    // ... Dust Layer follows (only if showPot is true, inherently handled by parent visibility but we need to animate it too if needed)
-                    // Actually, the dust layer should appear WITH the pot.
+                    // 1. The Ground Space (Underneath)
+                    Container(
+                      width: _radius * 2,
+                      height: _radius * 2,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [
+                            const Color(0xFF2D264B).withOpacity(0.3),
+                            Colors.transparent,
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.05),
+                            blurRadius: 40,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ).animate().fadeIn(duration: 2000.ms),
 
-                    // 2. The Dust Layer (On Top)
+                    // 2. The Fog Layer (On Top)
                     GestureDetector(
                       onPanUpdate: (details) {
                         if (_isCleaned) return;
-                        // ... (Rest of logic)
 
                         setState(() {
-                          // Add visual point
                           _cleanedPoints.add(details.localPosition);
 
-                          // Check collision with Pot Grid
-                          // Cleaning radius = 25.0 (matches DustPainter eraser)
                           const double cleaningRadius = 25.0;
-
-                          for (int i = 0; i < _potTargetPoints.length; i++) {
+                          for (int i = 0; i < _targetPoints.length; i++) {
                             if (!_hitIndices.contains(i)) {
-                              if ((_potTargetPoints[i] - details.localPosition)
+                              if ((_targetPoints[i] - details.localPosition)
                                       .distance <
                                   cleaningRadius) {
                                 _hitIndices.add(i);
@@ -169,26 +161,23 @@ class _SceneVoidState extends State<SceneVoid> {
                             }
                           }
 
-                          // Update Ratio
-                          if (_potTargetPoints.isNotEmpty) {
+                          if (_targetPoints.isNotEmpty) {
                             _cleanedRatio =
-                                _hitIndices.length / _potTargetPoints.length;
+                                _hitIndices.length / _targetPoints.length;
                           }
                         });
 
-                        // Haptic density check (Visual only)
                         if (_cleanedPoints.length % 5 == 0) {
                           HapticFeedback.selectionClick();
                         }
 
-                        // Check for completion (98%)
-                        if (_cleanedRatio >= 0.98 && !_isCleaned) {
+                        if (_cleanedRatio >= 0.95 && !_isCleaned) {
                           _finishCleaning();
                         }
                       },
                       child: CustomPaint(
                         size: const Size(300, 400),
-                        painter: DustPainter(cleanedPoints: _cleanedPoints),
+                        painter: FogPainter(cleanedPoints: _cleanedPoints),
                       ),
                     ),
                   ],
@@ -197,58 +186,61 @@ class _SceneVoidState extends State<SceneVoid> {
             ),
 
           // Instructions
-          if (!_isCleaned && _showPot)
+          if (!_isCleaned && _showSpace)
             Positioned(
-              bottom: 100,
+              bottom: 120,
               left: 0,
               right: 0,
               child: Column(
                 children: [
                   Text(
-                        l10n.onboarding_found_pot_title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.6),
-                          fontSize: 16,
-                          height: 1.5,
-                        ),
+                    l10n.onboarding_found_pot_title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.4),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w200,
+                      height: 1.6,
+                    ),
+                  ).animate().fadeIn(duration: 1000.ms, delay: 1000.ms),
+                  const SizedBox(height: 32),
+                  const Icon(
+                        Icons.touch_app_outlined,
+                        color: Colors.white24,
+                        size: 28,
                       )
-                      .animate()
-                      .fadeIn(duration: 1000.ms)
-                      .moveY(begin: 10, end: 0, duration: 1000.ms),
-                  const SizedBox(height: 20),
-                  Icon(Icons.touch_app, color: Colors.white24, size: 32)
                       .animate(onPlay: (c) => c.repeat(reverse: true))
-                      .moveX(begin: -10, end: 10, duration: 1000.ms),
+                      .moveY(begin: 0, end: 10, duration: 1500.ms),
                 ],
               ),
             ),
 
-          // Transition Overlay or Success Message
+          // Transition Overlay
           if (_isCleaned)
             Center(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.7),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      l10n.onboarding_cleaning_complete,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.onboarding_cleaning_complete,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w300,
+                      letterSpacing: 0.5,
                     ),
-                    const SizedBox(height: 20),
-                    const CircularProgressIndicator(color: Colors.greenAccent),
-                  ],
-                ),
-              ).animate().fade().scale(),
+                  ).animate().fadeIn().scale(),
+                  const SizedBox(height: 24),
+                  const SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white24),
+                    ),
+                  ).animate().fadeIn(delay: 500.ms),
+                ],
+              ),
             ),
         ],
       ),
@@ -259,58 +251,43 @@ class _SceneVoidState extends State<SceneVoid> {
     setState(() {
       _isCleaned = true;
     });
-    HapticFeedback.heavyImpact();
+    HapticFeedback.mediumImpact();
     Future.delayed(const Duration(seconds: 2), () {
       widget.onCleaningComplete();
     });
   }
 }
 
-// -----------------------------------------------------------------------------
-// PAINTERS
-// -----------------------------------------------------------------------------
-
-class DustPainter extends CustomPainter {
+class FogPainter extends CustomPainter {
   final List<Offset> cleanedPoints;
 
-  DustPainter({required this.cleanedPoints});
+  FogPainter({required this.cleanedPoints});
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Save layer to apply composite operation (destination-out for erasing)
     canvas.saveLayer(Rect.fromLTWH(0, 0, size.width, size.height), Paint());
 
-    // 1. Draw full dust layer
-    final dustPaint = Paint()
-      ..color = const Color(0xFFC4BCAF)
-          .withValues(alpha: 0.8) // Warm dusty beige
-      ..maskFilter = const MaskFilter.blur(
-        BlurStyle.normal,
-        10,
-      ); // Softer edges
+    // 1. Draw full fog layer
+    final fogPaint = Paint()
+      ..color = const Color(0xFFE0E0E0)
+          .withOpacity(0.15) // Subtle gray fog
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
 
-    // Organic "Dust" cloud shape covering the pot area
-    final rect = Rect.fromLTWH(20, 40, size.width - 40, size.height - 80);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, const Radius.circular(60)),
-      dustPaint,
-    );
+    canvas.drawCircle(Offset(size.width / 2, size.height / 2), 140, fogPaint);
 
-    // 2. Erase the cleaned points
+    // 2. Erase (Clarify) the cleaned points
     final eraser = Paint()
-      ..blendMode = BlendMode
-          .clear // Clear pixels
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 30.0;
+      ..blendMode = BlendMode.clear
+      ..style = PaintingStyle.fill;
 
     for (var point in cleanedPoints) {
-      canvas.drawCircle(point, 25.0, eraser);
+      canvas.drawCircle(point, 30.0, eraser);
     }
 
     canvas.restore();
   }
 
   @override
-  bool shouldRepaint(DustPainter old) =>
+  bool shouldRepaint(FogPainter old) =>
       old.cleanedPoints.length != cleanedPoints.length;
 }
