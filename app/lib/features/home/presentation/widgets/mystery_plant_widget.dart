@@ -144,8 +144,9 @@ class MysteryPlantWidget extends StatelessWidget {
           child: InteractiveProp(
             animationType: PropAnimationType.swing,
             alignment: const Alignment(0.0, 0.5),
-            intensity: 0.7,
-            duration: const Duration(seconds: 6),
+            intensity:
+                0.4, // Approx 1.1 degrees from 0.05 rad base, total swing subtler
+            duration: const Duration(seconds: 10),
             onTap: onPlantTap,
             child: Image.asset(
               plantAsset,
