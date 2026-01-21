@@ -64,6 +64,17 @@ class AppLocalizations {
   String get homeCaring => _get('home_caring');
   String get homeGardenTitleFormat => _get('home_garden_title_format');
 
+  // New Home UI (Minimalism)
+  String get homeTabHome => _get('home_tab_home');
+  String get homeTabLogs => _get('home_tab_logs');
+  String get homeTabDiscovery => _get('home_tab_discovery');
+  String get homeTabSettings => _get('home_tab_settings');
+
+  String get homeFocusTitle => _get('home_focus_title');
+  String get homeFocusSleepPattern => _get('home_focus_sleep_pattern');
+  String get homeFocusDayCount => _get('home_focus_day_count');
+  String get homeCtaRecordEmotion => _get('home_cta_record_emotion');
+
   // Sleep Diving
   String get sleepDiveTitle => _get('sleep_dive_title');
   String get sleepDiveSubtitle => _get('sleep_dive_subtitle');
@@ -115,6 +126,15 @@ class AppLocalizations {
       'home_sleep': '수면 다이빙',
       'home_caring': '다듬기',
       'home_garden_title_format': '{user}의 내면 정원',
+
+      'home_tab_home': '홈',
+      'home_tab_logs': '기록',
+      'home_tab_discovery': '발견',
+      'home_tab_settings': '설정',
+      'home_focus_title': '이번에 살펴보는 것',
+      'home_focus_sleep_pattern': '💤 나의 수면 패턴',
+      'home_focus_day_count': '4일째 관찰 중',
+      'home_cta_record_emotion': '감정 기록하기',
 
       'sleep_dive_title': '수면 다이빙',
       'sleep_dive_subtitle': '내 수면 리듬은 어떨까요?',
@@ -187,6 +207,15 @@ class AppLocalizations {
       'home_sleep': 'Sleep Diving',
       'home_caring': 'Pruning',
       'home_garden_title_format': '{user}\'s Inner Garden',
+
+      'home_tab_home': 'Home',
+      'home_tab_logs': 'Logs',
+      'home_tab_discovery': 'Discovery',
+      'home_tab_settings': 'Settings',
+      'home_focus_title': 'Currently Focusing On',
+      'home_focus_sleep_pattern': '💤 My Sleep Pattern',
+      'home_focus_day_count': 'Day 4 of Observation',
+      'home_cta_record_emotion': 'Record Emotion',
 
       'sleep_dive_title': 'Sleep Diving',
       'sleep_dive_subtitle': 'How is my sleep rhythm?',

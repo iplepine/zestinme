@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:zestinme/app/routes/app_router.dart';
 import 'package:zestinme/core/constants/app_colors.dart';
+import 'package:zestinme/core/localization/app_localizations.dart';
 
 import 'package:zestinme/features/garden/data/plant_database.dart';
 import 'package:zestinme/features/garden/domain/entities/plant_species.dart';
@@ -57,67 +59,149 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                 ),
               ),
 
-              // 2. Plant (Hero)
-              Positioned(
-                bottom: MediaQuery.of(context).size.height * 0.15,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: SizedBox(
-                    width: 300,
-                    height: 400,
-                    child: MysteryPlantWidget(
-                      growthStage: state.getDisplayStage(
-                        assignedPlant?.assetKey ?? 'herb',
-                      ),
-
-                      plantName: assignedPlant?.name,
-                      showPot: false,
-                      category: assignedPlant?.assetKey ?? 'herb',
-                      onPlantTap: () => context
-                          .push(AppRouter.seeding)
-                          .then(
-                            (_) => ref.read(homeProvider.notifier).refresh(),
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // 3. UI Overlay (Glass)
+              // 2. Main Content (New Layout)
               SafeArea(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Header
+                    // 2-1. Header Area (Date & Title)
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox.shrink(), // Left side empty
-                          IconButton(
-                            icon: const Icon(
-                              Icons.more_horiz,
-                              color: Colors.white54,
+                          // Small Date
+                          Text(
+                            DateFormat('EEE, MMM d').format(DateTime.now()),
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.6),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
-                            onPressed: () => context.push(AppRouter.settings),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Focus Title ("이번에 살펴보는 것")
+                          Text(
+                            AppLocalizations.of(context).homeFocusTitle,
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.8),
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+
+                          // Main Title ("나의 수면 패턴")
+                          Text(
+                            AppLocalizations.of(context).homeFocusSleepPattern,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              height: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+
+                          // Sub Title ("4일째 관찰 중")
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context).homeFocusDayCount,
+                              style: const TextStyle(
+                                color: AppColors.spiritTeal,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Divider(
+                            color: Colors.white.withValues(alpha: 0.1),
+                            height: 1,
                           ),
                         ],
                       ),
                     ),
 
-                    const Spacer(),
+                    // 2-2. Plant Area (Expanded)
+                    Expanded(
+                      child: Center(
+                        child: SizedBox(
+                          width: 300,
+                          height: 400,
+                          child: MysteryPlantWidget(
+                            growthStage: state.getDisplayStage(
+                              assignedPlant?.assetKey ?? 'herb',
+                            ),
+                            plantName: assignedPlant?.name,
+                            showPot: false,
+                            category: assignedPlant?.assetKey ?? 'herb',
+                            onPlantTap: () => context
+                                .push(AppRouter.seeding)
+                                .then(
+                                  (_) =>
+                                      ref.read(homeProvider.notifier).refresh(),
+                                ),
+                          ),
+                        ),
+                      ),
+                    ),
 
-                    const Spacer(),
+                    // 2-3. CTA Button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: GestureDetector(
+                        onTap: () => context.push(AppRouter.seeding).then((_) {
+                          ref.read(homeProvider.notifier).refresh();
+                        }),
+                        child: Container(
+                          width: double.infinity,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(28),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.2),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            AppLocalizations.of(context).homeCtaRecordEmotion,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
 
-                    const SizedBox(height: 120), // Spacer for Bottom Dock
+                    const SizedBox(height: 110), // Bottom Tab Bar Space
                   ],
                 ),
               ),
 
-              // 4. Bottom Dock (Glass)
+              // 3. Bottom Dock (Glass)
               Positioned(
                 left: 20,
                 right: 20,
@@ -127,15 +211,13 @@ class MindGardenerHomeScreen extends ConsumerWidget {
                   onTap: (index) {
                     if (index == 0) return;
                     if (index == 1) context.push(AppRouter.history);
-                    if (index == 3) {
+                    if (index == 2) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("인사이트 준비 중")),
+                        const SnackBar(content: Text("발견(인사이트) 준비 중")),
                       );
                     }
-                    if (index == 4) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(const SnackBar(content: Text("프로필 준비 중")));
+                    if (index == 3) {
+                      context.push(AppRouter.settings);
                     }
                   },
                 ),

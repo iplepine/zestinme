@@ -1,8 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:zestinme/app/routes/app_router.dart';
 import 'package:zestinme/core/constants/app_colors.dart';
+import 'package:zestinme/core/localization/app_localizations.dart';
 
 class HomeBottomBar extends StatelessWidget {
   final int currentIndex;
@@ -30,11 +29,30 @@ class HomeBottomBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(context, 0, Icons.local_florist_outlined, "Garden"),
-              _buildNavItem(context, 1, Icons.history, "Logs"),
-              _buildAddButton(context),
-              _buildNavItem(context, 2, Icons.insights, "Insight"),
-              _buildNavItem(context, 3, Icons.person_outline, "Self"),
+              _buildNavItem(
+                context,
+                0,
+                Icons.home_filled,
+                AppLocalizations.of(context).homeTabHome,
+              ),
+              _buildNavItem(
+                context,
+                1,
+                Icons.calendar_today_rounded,
+                AppLocalizations.of(context).homeTabLogs,
+              ),
+              _buildNavItem(
+                context,
+                2,
+                Icons.explore_outlined,
+                AppLocalizations.of(context).homeTabDiscovery,
+              ),
+              _buildNavItem(
+                context,
+                3,
+                Icons.settings_outlined,
+                AppLocalizations.of(context).homeTabSettings,
+              ),
             ],
           ),
         ),
@@ -49,55 +67,31 @@ class HomeBottomBar extends StatelessWidget {
     String label,
   ) {
     final isSelected = currentIndex == index;
-    // Map index 0-3 to actual logic indices if needed,
-    // but here we just assume visual indices.
 
     return GestureDetector(
       onTap: () => onTap(index),
       behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: isSelected ? AppColors.spiritTeal : Colors.white38,
-            size: 26,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? AppColors.spiritTeal : Colors.white38,
-              fontSize: 10,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAddButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.push(AppRouter.seeding),
       child: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          color: AppColors.mistySurface,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: AppColors.spiritTeal.withValues(alpha: 0.3),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.spiritTeal.withValues(alpha: 0.2),
-              blurRadius: 16,
-              spreadRadius: 2,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? AppColors.spiritTeal : Colors.white38,
+              size: 26,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? AppColors.spiritTeal : Colors.white38,
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              ),
             ),
           ],
         ),
-        child: const Icon(Icons.add, color: AppColors.spiritTeal, size: 28),
       ),
     );
   }
