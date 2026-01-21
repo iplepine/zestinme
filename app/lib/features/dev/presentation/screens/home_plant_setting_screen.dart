@@ -30,6 +30,7 @@ class _HomePlantSettingScreenState
 
   // Species-specific Overrides (Preview)
   double _customScale = 1.0;
+  double _customOffsetX = 0.0;
   double _customOffsetY = 0.0;
 
   @override
@@ -90,6 +91,7 @@ class _HomePlantSettingScreenState
 
   // Species-specific Metadata for ${selectedSpecies.name}
   // customScale: ${_customScale.toStringAsFixed(4)},
+  // customOffsetX: ${_customOffsetX.toStringAsFixed(4)},
   // customOffsetY: ${_customOffsetY.toStringAsFixed(4)},
 """;
                 dev.log("LAYOUT_CONSTANTS_UPDATE\n$code");
@@ -139,8 +141,8 @@ class _HomePlantSettingScreenState
                     potWidth: layoutState.potWidth,
                     plantBaseSize: layoutState.plantBaseSize * _customScale,
                     plantBottomOffset: layoutState.plantBottomInternalOffset,
+                    customOffsetX: _customOffsetX,
                     customOffsetY: _customOffsetY,
-                    scaleFactorPerStage: layoutState.scaleFactorPerStage,
                     category: _category,
                     showPot: false,
                     onPlantTap: () {},
@@ -247,6 +249,7 @@ class _HomePlantSettingScreenState
                       (p) => p.id == v,
                     );
                     _customScale = sp.customScale ?? 1.0;
+                    _customOffsetX = sp.customOffsetX ?? 0.0;
                     _customOffsetY = sp.customOffsetY ?? 0.0;
                     _category = sp.assetKey;
                   });
@@ -323,14 +326,24 @@ class _HomePlantSettingScreenState
               max: 1.0,
             ),
             _buildSlider(
-              "Pot Width",
-              layoutState.potWidth,
-              (v) {
-                layoutNotifier.updatePotWidth(v);
-                setState(() => _hasUnsavedChanges = true);
-              },
-              min: 50,
-              max: 300,
+              "Plant Offset X",
+              _customOffsetX,
+              (v) => setState(() {
+                _customOffsetX = v;
+                _hasUnsavedChanges = true;
+              }),
+              min: -2.0,
+              max: 2.0,
+            ),
+            _buildSlider(
+              "Plant Offset Y",
+              _customOffsetY,
+              (v) => setState(() {
+                _customOffsetY = v;
+                _hasUnsavedChanges = true;
+              }),
+              min: -2.0,
+              max: 2.0,
             ),
             _buildSlider(
               "Plant Base Size",

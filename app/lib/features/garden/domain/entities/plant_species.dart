@@ -20,6 +20,7 @@ class PlantSpecies with _$PlantSpecies {
     @Default('herb') String assetKey, // e.g. 'herb', 'flytrap', 'leaf'
     // Individual Layout Overrides (Responsive Ratios)
     double? customScale, // Multiplier (e.g. 1.1)
-    double? customOffsetY, // Alignment delta (e.g. -0.05)
+    double? customOffsetX, // Horizontal alignment delta (e.g. -0.05)
+    double? customOffsetY, // Vertical alignment delta (e.g. -0.05)
   }) = _PlantSpecies;
 }

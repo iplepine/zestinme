@@ -14,6 +14,7 @@ class MysteryPlantWidget extends StatelessWidget {
   final double plantBottomOffset;
   final double scaleFactorPerStage;
   final String category; // 'herb', 'leaf', 'succ', 'weired'
+  final double customOffsetX; // Species-specific horizontal adjustment
   final double customOffsetY; // Species-specific vertical adjustment
   final bool showPot; // New parameter
 
@@ -29,6 +30,7 @@ class MysteryPlantWidget extends StatelessWidget {
     this.plantBottomOffset = 50,
     this.scaleFactorPerStage = 25.0,
     this.category = 'herb',
+    this.customOffsetX = 0.0,
     this.customOffsetY = 0.0,
     this.showPot = true, // Default to true for backward compatibility
   });
@@ -137,6 +139,7 @@ class MysteryPlantWidget extends StatelessWidget {
 
         // Layer B: Plant (Growth)
         Positioned(
+          left: (300 - totalSize) / 2 + (customOffsetX * 100),
           bottom: plantBottomOffset - (customOffsetY * 100),
           child: InteractiveProp(
             animationType: PropAnimationType.swing,
