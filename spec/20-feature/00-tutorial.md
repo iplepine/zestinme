@@ -2,7 +2,7 @@
 
 | Attribute | Value |
 | :--- | :--- |
-| **Version** | 2.5 |
+| **Version** | 2.6 |
 | **Status** | Concept Refined (No Pot) |
 | **Date** | 2026-01-21 |
 | **Author** | Mind-Gardener Committee |
@@ -51,11 +51,16 @@
 *   **Ending:** *"당신의 '슬픔'은 이제 이 공간 속에서 새로운 의미로 자라날 것입니다."*
 *   **Trasition:** 홈 화면 진입.
 
-## 3. 데이터 흐름 (Data Flow)
+## 3. 데이터 흐름 & 지속성 (Data Flow & Persistence)
 
-1.  **Scene 2 완료 시점:** 사용자 입력(환경값)에 따라 `PlantService`가 이미 식물 종을 배정합니다. (화분 정보는 더 이상 저장하지 않음)
-2.  **Scene 3/4:** 배정된 식물의 ID를 DB에 저장하지만, 사용자에게는 `Mystery Seed` 아이콘으로 표시합니다.
-3.  **Home:** 식물은 더 이상 화분에 갇혀 있지 않고, 정원의 풍경 그 자체가 되어 자라납니다.
+1.  **Scene 2 완료 시점:** 사용자 입력(환경값)에 따라 `PlantService`가 이미 식물 종을 배정합니다.
+2.  **Scene 3/4 (Persistence):**
+    *   배정된 식물의 ID를 DB에 저장합니다.
+    *   **온보딩 완료 플래그(`tutorialCompleted = true`)를 로컬 DB(Isar)에 영구 저장합니다.**
+3.  **App Launch (Auto-Skip):**
+    *   앱 실행 시 `AppRouter`와 `OnboardingViewModel`이 DB를 조회합니다.
+    *   `tutorialCompleted`가 `true`인 경우, **온보딩 화면을 건너뛰고 즉시 홈 화면으로 진입합니다.**
+4.  **Home:** 식물은 더 이상 화분에 갇혀 있지 않고, 정원의 풍경 그 자체가 되어 자라납니다.
 
 ## 4. UI/UX Detail
 *   **Tone:** 신비롭고, 고요하며, 서정적인 어조.
