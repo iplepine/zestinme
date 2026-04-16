@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/models/emotion_record.dart';
-import '../../../../core/models/emotion_record.dart';
 import '../../../../core/services/local_db_service.dart';
 import '../../../../core/constants/coaching_questions.dart';
 
@@ -16,8 +15,12 @@ class SeedingState {
 
   // New Fields for Logic
   final List<String> selectedTags;
+  final List<String> selectedContextTags;
+  final List<String> selectedBodyTags;
+  final int intensity;
   final String note;
   final bool isSaving;
+  final String? errorMessage;
 
   const SeedingState({
     this.valence = 0.0,
@@ -25,8 +28,12 @@ class SeedingState {
     this.isDragging = false,
     this.isPlanted = false,
     this.selectedTags = const [],
+    this.selectedContextTags = const [],
+    this.selectedBodyTags = const [],
+    this.intensity = 5,
     this.note = '',
     this.isSaving = false,
+    this.errorMessage,
     this.coachingQuestion,
   });
 
@@ -38,8 +45,13 @@ class SeedingState {
     bool? isDragging,
     bool? isPlanted,
     List<String>? selectedTags,
+    List<String>? selectedContextTags,
+    List<String>? selectedBodyTags,
+    int? intensity,
     String? note,
     bool? isSaving,
+    String? errorMessage,
+    bool clearErrorMessage = false,
     String? coachingQuestion,
   }) {
     return SeedingState(
@@ -48,8 +60,14 @@ class SeedingState {
       isDragging: isDragging ?? this.isDragging,
       isPlanted: isPlanted ?? this.isPlanted,
       selectedTags: selectedTags ?? this.selectedTags,
+      selectedContextTags: selectedContextTags ?? this.selectedContextTags,
+      selectedBodyTags: selectedBodyTags ?? this.selectedBodyTags,
+      intensity: intensity ?? this.intensity,
       note: note ?? this.note,
       isSaving: isSaving ?? this.isSaving,
+      errorMessage: clearErrorMessage
+          ? null
+          : errorMessage ?? this.errorMessage,
       coachingQuestion: coachingQuestion ?? this.coachingQuestion,
     );
   }
@@ -77,7 +95,11 @@ class SeedingNotifier extends _$SeedingNotifier {
       isDragging: true,
       isPlanted: false,
       selectedTags: [], // Clear tags
+      selectedContextTags: [],
+      selectedBodyTags: [],
+      intensity: 5,
       note: '', // Clear note
+      clearErrorMessage: true,
     );
   }
 
@@ -123,30 +145,64 @@ class SeedingNotifier extends _$SeedingNotifier {
     );
   }
 
+  void toggleContextTag(String tag) {
+    final currentTags = [...state.selectedContextTags];
+    if (currentTags.contains(tag)) {
+      currentTags.remove(tag);
+    } else {
+      if (currentTags.length < 3) {
+        currentTags.add(tag);
+      }
+    }
+
+    state = state.copyWith(selectedContextTags: currentTags);
+  }
+
+  void toggleBodyTag(String tag) {
+    final currentTags = [...state.selectedBodyTags];
+    if (currentTags.contains(tag)) {
+      currentTags.remove(tag);
+    } else {
+      if (currentTags.length < 3) {
+        currentTags.add(tag);
+      }
+    }
+
+    state = state.copyWith(selectedBodyTags: currentTags);
+  }
+
+  void updateIntensity(int intensity) {
+    state = state.copyWith(intensity: intensity.clamp(1, 10));
+  }
+
   void updateNote(String note) {
     state = state.copyWith(note: note);
   }
 
-  Future<void> saveRecord() async {
-    state = state.copyWith(isSaving: true);
+  Future<bool> saveRecord() async {
+    state = state.copyWith(isSaving: true, clearErrorMessage: true);
 
     try {
       final record = EmotionRecord()
         ..timestamp = DateTime.now()
         ..valence = state.valence
         ..arousal = state.arousal
+        ..intensity = state.intensity
         ..emotionLabel = state.selectedTags.isNotEmpty
             ? state.selectedTags.first
             : 'Untitled'
+        ..activities = state.selectedContextTags
+        ..bodySensations = state.selectedBodyTags
         ..detailedNote = state.note
         ..status = EmotionRecordStatus.caught;
 
       // Save using LocalDbService via GetIt
       final db = GetIt.I<LocalDbService>();
       await db.saveEmotionRecord(record);
-    } catch (e) {
-      // Handle error (simple print for now)
-      print("Error saving record: $e");
+      return true;
+    } catch (_) {
+      state = state.copyWith(errorMessage: '기록을 저장하지 못했어요. 잠시 후 다시 시도해주세요.');
+      return false;
     } finally {
       state = state.copyWith(isSaving: false);
     }

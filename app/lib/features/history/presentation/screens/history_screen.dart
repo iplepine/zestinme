@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/history_provider.dart';
+import '../providers/self_understanding_provider.dart';
 import '../widgets/calendar_widget.dart';
+import '../widgets/self_understanding_card.dart';
 import '../widgets/timeline_widget.dart';
 
 class HistoryScreen extends ConsumerWidget {
@@ -11,6 +13,7 @@ class HistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final historyState = ref.watch(historyRecordsProvider);
+    final weeklySummary = ref.watch(weeklySelfUnderstandingProvider);
     final selectedDate = ref.watch(historyDateProvider);
 
     return Scaffold(
@@ -35,7 +38,7 @@ class HistoryScreen extends ConsumerWidget {
             end: Alignment.bottomCenter,
             colors: [
               Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.surfaceVariant,
+              Theme.of(context).colorScheme.surfaceContainerHighest,
             ],
           ),
         ),
@@ -94,6 +97,17 @@ class HistoryScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
+                        weeklySummary.when(
+                          data: (summary) =>
+                              SelfUnderstandingCard(summary: summary),
+                          loading: () => const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 24),
+                            child: Center(
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                          error: (_, __) => const SizedBox.shrink(),
+                        ),
                         // List
                         Expanded(
                           child: historyState.when(

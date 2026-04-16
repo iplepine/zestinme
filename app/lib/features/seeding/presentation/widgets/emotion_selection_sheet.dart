@@ -19,6 +19,92 @@ class EmotionSelectionSheet extends ConsumerStatefulWidget {
 }
 
 class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
+  static const List<String> _contextTags = [
+    'Work',
+    'Relationship',
+    'Family',
+    'Money',
+    'Health',
+    'SleepDebt',
+    'Alone',
+    'Future',
+    'Mistake',
+    'Comparison',
+    'Overload',
+    'NoRest',
+  ];
+
+  static const List<String> _bodyTags = [
+    'ChestTight',
+    'ShoulderTension',
+    'Headache',
+    'Stomach',
+    'Heartbeat',
+    'Fatigue',
+    'LowEnergy',
+    'Sleepy',
+    'EyeStrain',
+    'ShallowBreath',
+  ];
+
+  String _getLocalizedContextTag(String tag) {
+    switch (tag) {
+      case 'Work':
+        return '일/공부';
+      case 'Relationship':
+        return '관계';
+      case 'Family':
+        return '가족';
+      case 'Money':
+        return '돈';
+      case 'Health':
+        return '건강';
+      case 'SleepDebt':
+        return '수면 부족';
+      case 'Alone':
+        return '혼자 있음';
+      case 'Future':
+        return '미래 걱정';
+      case 'Mistake':
+        return '실수/후회';
+      case 'Comparison':
+        return '비교';
+      case 'Overload':
+        return '과부하';
+      case 'NoRest':
+        return '휴식 부족';
+      default:
+        return tag;
+    }
+  }
+
+  String _getLocalizedBodyTag(String tag) {
+    switch (tag) {
+      case 'ChestTight':
+        return '가슴 답답함';
+      case 'ShoulderTension':
+        return '목/어깨 긴장';
+      case 'Headache':
+        return '두통';
+      case 'Stomach':
+        return '속 불편함';
+      case 'Heartbeat':
+        return '심장 두근거림';
+      case 'Fatigue':
+        return '피로감';
+      case 'LowEnergy':
+        return '무기력';
+      case 'Sleepy':
+        return '졸림';
+      case 'EyeStrain':
+        return '눈 피로';
+      case 'ShallowBreath':
+        return '숨이 얕음';
+      default:
+        return tag;
+    }
+  }
+
   String _getLocalizedTag(AppLocalizations l10n, String tag) {
     switch (tag) {
       case 'Angry':
@@ -137,6 +223,130 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
 
                 const SizedBox(height: 32),
 
+                Text(
+                  '강도',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text(
+                      '${seedingState.intensity}',
+                      style: const TextStyle(
+                        color: AppColors.spiritTeal,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Slider(
+                        value: seedingState.intensity.toDouble(),
+                        min: 1,
+                        max: 10,
+                        divisions: 9,
+                        label: '${seedingState.intensity}',
+                        activeColor: AppColors.spiritTeal,
+                        inactiveColor: Colors.white24,
+                        onChanged: (value) {
+                          ref
+                              .read(seedingNotifierProvider.notifier)
+                              .updateIntensity(value.round());
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  '지금 감정이 얼마나 강한지 1부터 10까지로 남겨요.',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.55),
+                    fontSize: 13,
+                  ),
+                ),
+
+                const SizedBox(height: 28),
+
+                Text(
+                  '상황',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '이 감정이 올라온 맥락을 최대 3개까지 골라요.',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.55),
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  alignment: WrapAlignment.start,
+                  children: _contextTags.map((tag) {
+                    final isSelected = seedingState.selectedContextTags
+                        .contains(tag);
+                    return ZestFilterChip(
+                      label: _getLocalizedContextTag(tag),
+                      isSelected: isSelected,
+                      onSelected: (_) {
+                        HapticFeedback.lightImpact();
+                        ref
+                            .read(seedingNotifierProvider.notifier)
+                            .toggleContextTag(tag);
+                      },
+                    );
+                  }).toList(),
+                ),
+
+                const SizedBox(height: 32),
+
+                Text(
+                  '몸 반응',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '몸에서 느껴지는 신호를 최대 3개까지 골라요.',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.55),
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  alignment: WrapAlignment.start,
+                  children: _bodyTags.map((tag) {
+                    final isSelected = seedingState.selectedBodyTags.contains(
+                      tag,
+                    );
+                    return ZestFilterChip(
+                      label: _getLocalizedBodyTag(tag),
+                      isSelected: isSelected,
+                      onSelected: (_) {
+                        HapticFeedback.lightImpact();
+                        ref
+                            .read(seedingNotifierProvider.notifier)
+                            .toggleBodyTag(tag);
+                      },
+                    );
+                  }).toList(),
+                ),
+
+                const SizedBox(height: 32),
+
                 // 2. Note
                 RollingHintTextField(
                   l10n: l10n,
@@ -150,6 +360,17 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                 const SizedBox(height: 32),
 
                 // 3. Plant Button
+                if (seedingState.errorMessage != null) ...[
+                  Text(
+                    seedingState.errorMessage!,
+                    style: const TextStyle(
+                      color: AppColors.fire,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 56),
                   child: SizedBox(
@@ -159,11 +380,11 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                           ? null
                           : () async {
                               HapticFeedback.mediumImpact();
-                              await ref
+                              final saved = await ref
                                   .read(seedingNotifierProvider.notifier)
                                   .saveRecord();
 
-                              if (context.mounted) {
+                              if (context.mounted && saved) {
                                 Navigator.pop(context); // Close BottomSheet
                                 if (widget.onComplete != null) {
                                   widget.onComplete!();

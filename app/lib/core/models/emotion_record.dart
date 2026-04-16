@@ -12,6 +12,7 @@ class EmotionRecord {
   // Russell's Model
   double? valence; // -5 to +5
   double? arousal; // 0 to 10
+  int? intensity; // 1 to 10, user-facing strength score
   String? emotionLabel; // e.g. "Happy", "Angry"
 
   // Context
@@ -40,6 +41,7 @@ class EmotionRecord {
   DateTime? caredAt; // When nurturing was completed
   String? coachingQuestionId; // ID of the question asked
   String? coachingAnswer; // User's answer/reflection
+  int? postCaringIntensity; // 1 to 10, strength after reflection
   List<String>? valueTags; // Discovered core values
 
   @ignore

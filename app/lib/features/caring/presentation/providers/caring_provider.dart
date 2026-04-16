@@ -21,6 +21,7 @@ class CaringNotifier extends StateNotifier<AsyncValue<void>> {
     required EmotionRecord record,
     required String question,
     required String answer,
+    required int postCaringIntensity,
     required List<String> valueTags,
   }) async {
     state = const AsyncValue.loading();
@@ -34,6 +35,7 @@ class CaringNotifier extends StateNotifier<AsyncValue<void>> {
       record.caredAt = DateTime.now();
       record.coachingQuestionId = question; // Storing the text as ID for now
       record.coachingAnswer = answer;
+      record.postCaringIntensity = postCaringIntensity;
       record.valueTags = valueTags;
       // record.status = EmotionRecordStatus.analyzed; // If we used status enum
 

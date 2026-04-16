@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/models/emotion_record.dart';
 import '../../../../app/theme/app_theme.dart';
-import 'dart:ui'; // For ImageFilter
 import '../../domain/services/caring_service.dart';
 import '../widgets/coaching_card.dart';
 import '../widgets/value_discovery_sheet.dart';
@@ -29,6 +28,7 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
   // Flow State
   bool _showCard = false;
   String _answer = '';
+  late int _postCaringIntensity;
 
   // Multi-stage State
   int _currentStage = 0;
@@ -57,6 +57,7 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
 
     // Initialize Logic (Calculations only)
     _maxDepth = CaringService.calculateCoachingDepth(widget.record);
+    _postCaringIntensity = widget.record.intensity ?? 5;
   }
 
   @override
@@ -105,7 +106,6 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
       // Go to Next Stage
       setState(() {
         _currentStage++;
-        _currentStage++;
         _updateQuestion();
         _answer = ''; // Reset answer for new question
         // Note: Ideally we should flip the card back to front or animate transition.
@@ -140,8 +140,9 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
     // Note: We are only saving the *last* question/answer pair in this MVP implementation
     // or we should aggregate them. For now, let's just save the final one or the one that triggered completion.
 
-    if (_answer.isEmpty && _currentStage == 0)
+    if (_answer.isEmpty && _currentStage == 0) {
       return; // Prevent empty save if nothing happened
+    }
 
     await ref
         .read(caringProvider.notifier)
@@ -149,6 +150,7 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
           record: widget.record,
           question: _currentQuestion,
           answer: _answer,
+          postCaringIntensity: _postCaringIntensity,
           valueTags: [], // TODO: Pass values from Sheet
         );
 
@@ -233,11 +235,11 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
               child: Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.03),
+                  color: Colors.white.withValues(alpha: 0.03),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF5D3FD3).withOpacity(0.1),
+                      color: const Color(0xFF5D3FD3).withValues(alpha: 0.1),
                       blurRadius: 60,
                       spreadRadius: 10,
                     ),
@@ -268,7 +270,7 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
                         Text(
                           "아까 '$localizedEmotion' 감정이 찾아왔었죠.",
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             fontSize: 16,
                             fontWeight: FontWeight.w200,
                             letterSpacing: 0.2,
@@ -298,7 +300,7 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
             FilledButton(
               onPressed: _onStartCaring,
               style: FilledButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.08),
+                backgroundColor: Colors.white.withValues(alpha: 0.08),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 48,
@@ -306,7 +308,7 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40),
-                  side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
                 ),
                 elevation: 0,
               ),
@@ -372,7 +374,78 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
             },
             onAnswerSubmitted: _onAnswerSubmitted,
           ),
+          const SizedBox(height: 20),
+          _buildIntensityCheck(),
           const Spacer(flex: 3),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIntensityCheck() {
+    final initialIntensity = widget.record.intensity;
+
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.thermostat_auto_outlined,
+                color: Colors.white70,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '지금 다시 느끼는 강도',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.86),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                '$_postCaringIntensity',
+                style: TextStyle(
+                  color: AppTheme.primaryColor,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          if (initialIntensity != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              '처음 기록한 강도 $initialIntensity',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.48),
+                fontSize: 12,
+              ),
+            ),
+          ],
+          Slider(
+            value: _postCaringIntensity.toDouble(),
+            min: 1,
+            max: 10,
+            divisions: 9,
+            label: '$_postCaringIntensity',
+            activeColor: AppTheme.primaryColor,
+            inactiveColor: Colors.white24,
+            onChanged: (value) {
+              setState(() {
+                _postCaringIntensity = value.round();
+              });
+            },
+          ),
         ],
       ),
     );

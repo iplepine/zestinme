@@ -21,7 +21,10 @@ class TimelineWidget extends StatelessWidget {
         child: Text(
           "아직 수확한 마음이 없네요.\n오늘의 씨앗을 심어보세요.",
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white.withOpacity(0.5), height: 1.5),
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.5),
+            height: 1.5,
+          ),
         ),
       );
     }
@@ -61,7 +64,7 @@ class TimelineWidget extends StatelessWidget {
                           width: 2,
                           color: Theme.of(
                             context,
-                          ).colorScheme.primary.withOpacity(0.3),
+                          ).colorScheme.primary.withValues(alpha: 0.3),
                         ),
                       ),
                   ],
@@ -99,10 +102,13 @@ class TimelineWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20), // More organic
-        border: Border.all(color: accentColor.withOpacity(0.3), width: 1.5),
+        border: Border.all(
+          color: accentColor.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: accentColor.withOpacity(0.05),
+            color: accentColor.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -130,9 +136,25 @@ class TimelineWidget extends StatelessWidget {
               Text(
                 dateFormat.format(record.timestamp),
                 style: TextStyle(
-                  color: colorScheme.onSurface.withOpacity(0.5),
+                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                   fontSize: 12,
                 ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _InfoChip(label: '강도 ${record.intensity ?? '-'}'),
+              if (record.postCaringIntensity != null)
+                _InfoChip(label: '회고 후 ${record.postCaringIntensity}'),
+              ...(record.activities ?? const <String>[]).map(
+                (tag) => _InfoChip(label: _contextLabel(tag)),
+              ),
+              ...(record.bodySensations ?? const <String>[]).map(
+                (tag) => _InfoChip(label: _bodyLabel(tag)),
               ),
             ],
           ),
@@ -144,13 +166,92 @@ class TimelineWidget extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.8),
+                color: colorScheme.onSurface.withValues(alpha: 0.8),
                 fontSize: 14,
                 height: 1.5,
               ),
             ),
           ],
         ],
+      ),
+    );
+  }
+
+  String _contextLabel(String tag) {
+    switch (tag) {
+      case 'Work':
+        return '일/공부';
+      case 'Relationship':
+        return '관계';
+      case 'Family':
+        return '가족';
+      case 'Money':
+        return '돈';
+      case 'Health':
+        return '건강';
+      case 'SleepDebt':
+        return '수면 부족';
+      case 'Alone':
+        return '혼자 있음';
+      case 'Future':
+        return '미래 걱정';
+      case 'Mistake':
+        return '실수/후회';
+      case 'Comparison':
+        return '비교';
+      case 'Overload':
+        return '과부하';
+      case 'NoRest':
+        return '휴식 부족';
+      default:
+        return tag;
+    }
+  }
+
+  String _bodyLabel(String tag) {
+    switch (tag) {
+      case 'ChestTight':
+        return '가슴 답답함';
+      case 'ShoulderTension':
+        return '목/어깨 긴장';
+      case 'Headache':
+        return '두통';
+      case 'Stomach':
+        return '속 불편함';
+      case 'Heartbeat':
+        return '심장 두근거림';
+      case 'Fatigue':
+        return '피로감';
+      case 'LowEnergy':
+        return '무기력';
+      case 'Sleepy':
+        return '졸림';
+      case 'EyeStrain':
+        return '눈 피로';
+      case 'ShallowBreath':
+        return '숨이 얕음';
+      default:
+        return tag;
+    }
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  final String label;
+
+  const _InfoChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(color: Colors.white60, fontSize: 11),
       ),
     );
   }
