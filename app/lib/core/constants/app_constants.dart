@@ -1,7 +1,8 @@
 /// 앱 전체에서 사용하는 상수들
 class AppConstants {
   // 앱 정보
-  static const String appName = 'ZestInMe';
+  static const String appName = 'FullCon';
+  static const String appDisplayName = '풀컨';
   static const String appVersion = '1.0.0';
   
   // API 관련

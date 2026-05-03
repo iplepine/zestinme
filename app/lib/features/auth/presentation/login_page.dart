@@ -98,11 +98,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               context,
                             ).scale(1).clamp(0.8, 1.2),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          Icons.emoji_nature,
+                          Icons.trending_up_rounded,
                           color: AppColors.primary,
                           size:
                               40 *
@@ -113,7 +113,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'ZestInMe',
+                        '풀컨',
                         style: Theme.of(context).textTheme.headlineLarge
                             ?.copyWith(
                               fontWeight: AppColors.fontWeightMedium,
@@ -125,7 +125,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
                         child: Text(
-                          '상큼한 하루를 기록해보세요',
+                          '오늘 컨디션부터 가볍게 체크해보세요',
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(color: AppColors.mutedForeground),
                           textAlign: TextAlign.center,

@@ -24,7 +24,7 @@ class _SleepHistoryChartState extends State<SleepHistoryChart> {
   @override
   Widget build(BuildContext context) {
     if (widget.records.isEmpty) {
-      return const Center(child: Text('기록이 없습니다.'));
+      return const Center(child: Text('아직 수면 기록이 없어요.'));
     }
 
     final sortedRecords = List<SleepRecord>.from(widget.records)
@@ -124,7 +124,7 @@ class _SleepHistoryChartState extends State<SleepHistoryChart> {
                 final score = record.averageScore.toStringAsFixed(1);
 
                 return LineTooltipItem(
-                  '$date\n평균 점수: $score',
+                  '$date\n평균 수면 점수: $score',
                   const TextStyle(color: Colors.white, fontSize: 12),
                   textAlign: TextAlign.left,
                 );

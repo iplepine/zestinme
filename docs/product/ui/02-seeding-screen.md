@@ -6,7 +6,7 @@
 | **Status** | Final Draft |
 | **Date** | 2025-12-18 |
 | **Author** | Mind-Gardener Committee |
-| **Related** | `spec/20-feature/01-home.md`, `spec/50-ui/01-home-screen.md` |
+| **Related** | `features/01-home.md`, `ui/01-home-screen.md` |
 
 ## 1. 개요 (Overview)
 > **"당신의 솔직한 마음이 식물을 적시는 생명수(Watering)가 됩니다."**

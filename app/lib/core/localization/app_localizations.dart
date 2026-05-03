@@ -100,7 +100,7 @@ class AppLocalizations {
 
   static Map<String, Map<String, String>> get _localizedValues => {
     'ko': {
-      'appName': 'ZestInMe',
+      'appName': '풀컨',
       'goodMorning': 'Good Morning, 영도자님 🌞',
       'recordEmotionToday': '오늘의 감정을 기록해볼까요?',
       'recordEmotionButton': '😊 감정 기록하기',
@@ -129,7 +129,7 @@ class AppLocalizations {
       'home_letGo': '비워내기',
       'home_history': '아카이브',
       'home_seeding': '마음 기록',
-      'home_sleep': '수면 다이빙',
+      'home_sleep': '회복 로그',
       'home_caring': '다듬기',
       'home_garden_title_format': '{user}의 내면 정원',
 
@@ -147,17 +147,17 @@ class AppLocalizations {
       'home_status_evening': 'Evening',
       'home_status_night': 'Night',
 
-      'sleep_dive_title': '수면 다이빙',
-      'sleep_dive_subtitle': '내 수면 리듬은 어떨까요?',
-      'sleep_dive_description': '일주일간의 집중 관찰을 통해\n당신만의 황금 수면 시간을 찾아보세요.',
+      'sleep_dive_title': '회복 로그',
+      'sleep_dive_subtitle': '어젯밤 회복 상태를 확인해볼까요?',
+      'sleep_dive_description': '수면과 기상 상태를 기록하면\n내일 컨디션을 더 정확하게 읽을 수 있어요.',
       'sleep_dive_bedtime_label': '침대에 누운 시간',
       'sleep_dive_waketime_label': '기상 시간',
       'sleep_dive_latency_title': '잠들기까지 걸린 시간',
-      'sleep_dive_refreshment_title': '오늘 얼마나 개운한가요?',
-      'sleep_dive_natural_wake': '알람 없이 일어났나요?',
-      'sleep_dive_immediate_wake': '알람 끄고 바로 일어났나요?',
-      'sleep_dive_factors_title': '수면 영향 요인',
-      'sleep_dive_button_finish': '다이빙 완료',
+      'sleep_dive_refreshment_title': '아침 컨디션은 어땠나요?',
+      'sleep_dive_natural_wake': '알람 없이 깼나요?',
+      'sleep_dive_immediate_wake': '알람을 끄고 바로 일어났나요?',
+      'sleep_dive_factors_title': '수면에 영향을 준 요인',
+      'sleep_dive_button_finish': '회복 로그 저장하기',
 
       // Home Screen - Self-Talk Questions
       'home_question_default': '오늘 당신의 마음은 어떤가요?',
@@ -186,7 +186,7 @@ class AppLocalizations {
       'onboarding_emotion_peace': '평온',
     },
     'en': {
-      'appName': 'ZestInMe',
+      'appName': 'FullCon',
       'goodMorning': 'Good Morning, User 🌞',
       'recordEmotionToday': 'How about recording your emotions today?',
       'recordEmotionButton': '😊 Record Emotion',

@@ -6,7 +6,7 @@
 | **Status** | Implementation Phase |
 | **Date** | 2025-12-16 |
 | **Author** | Mind-Gardener Committee |
-| **Related** | `spec/10-domain/20-core-mechanics.md`, `spec/50-ui/03-caring-flow.md` |
+| **Related** | `domain/20-core-mechanics.md`, `ui/03-caring-flow.md` |
 
 ## 1. 개요 (Overview)
 

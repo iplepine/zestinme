@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:zestinme/core/constants/app_colors.dart';
-import 'package:zestinme/core/localization/app_localizations.dart';
 
 class HomeBottomBar extends StatelessWidget {
   final int currentIndex;
@@ -15,43 +14,39 @@ class HomeBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isKo = Localizations.localeOf(context).languageCode == 'ko';
     return ClipRRect(
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(28),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
-          height: 70,
+          height: 74,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            color: const Color(0xFF10192A).withValues(alpha: 0.84),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(
-                context,
-                0,
-                Icons.home_filled,
-                AppLocalizations.of(context).homeTabHome,
-              ),
+              _buildNavItem(context, 0, Icons.home_filled, isKo ? '오늘' : 'Today'),
               _buildNavItem(
                 context,
                 1,
-                Icons.calendar_today_rounded,
-                AppLocalizations.of(context).homeTabLogs,
+                Icons.timeline_rounded,
+                isKo ? '타임라인' : 'Timeline',
               ),
               _buildNavItem(
                 context,
                 2,
-                Icons.explore_outlined,
-                AppLocalizations.of(context).homeTabDiscovery,
+                Icons.bedtime_rounded,
+                isKo ? '회복' : 'Recovery',
               ),
               _buildNavItem(
                 context,
                 3,
-                Icons.spa_outlined, // Changed to Spa/Rest icon
-                AppLocalizations.of(context).homeTabRest,
+                Icons.tune_rounded,
+                isKo ? '설정' : 'Setup',
               ),
             ],
           ),
@@ -78,14 +73,14 @@ class HomeBottomBar extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppColors.spiritTeal : Colors.white38,
-              size: 26,
+              color: isSelected ? AppColors.lanternGlow : Colors.white38,
+              size: 24,
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? AppColors.spiritTeal : Colors.white38,
+                color: isSelected ? AppColors.lanternGlow : Colors.white38,
                 fontSize: 10,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               ),

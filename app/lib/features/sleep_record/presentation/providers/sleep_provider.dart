@@ -93,10 +93,10 @@ class SleepState {
 @riverpod
 class SleepNotifier extends _$SleepNotifier {
   static const Map<String, List<String>> categorizedTags = {
-    '섭취 (Ingestion)': ['☕️ 카페인', '🍺 알코올', '🍗 야식', '🍽 공복'],
-    '활동 (Activity)': ['📱 스크린타임', '🏃 격한운동', '🧘 명상/독서', '💤 낮잠'],
-    '환경 (Environment)': ['🔊 소음', '💡 빛', '🌡 온도', '🏨 잠자리변경'],
-    '상태 (Condition)': ['🤯 스트레스', '🩸 생리/호르몬', '🤒 통증/질병', '💭 악몽'],
+    '섭취': ['카페인', '알코올', '야식', '공복'],
+    '활동': ['스크린 타임', '격한 운동', '명상/독서', '낮잠'],
+    '환경': ['소음', '빛', '온도', '잠자리 변경'],
+    '몸 상태': ['스트레스', '생리/호르몬', '통증/질병', '악몽'],
   };
 
   @override

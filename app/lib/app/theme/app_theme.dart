@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
-/// ZestInMe 앱 테마 - Atmospheric Realism
+/// Full Condition 앱 테마
 class AppTheme {
   // Legacy Aliases for Component Support
   static Color get primaryColor => AppColors.lemonPrimary;
@@ -12,13 +12,11 @@ class AppTheme {
 
   static final ColorScheme lightScheme = ColorScheme.light(
     primary: AppColors.lanternGlow,
-    onPrimary: AppColors.midnightDeep,
+    onPrimary: Colors.white,
     secondary: AppColors.spiritTeal,
     onSecondary: AppColors.midnightDeep,
     surface: AppColors.cardLight,
     onSurface: AppColors.foregroundLight,
-    background: AppColors.backgroundLight,
-    onBackground: AppColors.foregroundLight,
     error: AppColors.fire,
     onError: Colors.white,
     outline: AppColors.borderLight,
@@ -26,17 +24,15 @@ class AppTheme {
 
   static final ColorScheme darkScheme = ColorScheme.dark(
     primary: AppColors.lanternGlow,
-    onPrimary: AppColors.midnightDeep,
+    onPrimary: Colors.white,
     secondary: AppColors.spiritTeal,
     onSecondary: AppColors.midnightDeep,
     surface: AppColors.mistySurface,
     onSurface: AppColors.foregroundDark,
-    background: AppColors.midnightDeep,
-    onBackground: AppColors.foregroundDark,
     error: AppColors.fire,
     onError: Colors.white,
     outline: AppColors.borderDark,
-    surfaceVariant: AppColors.midnightDeep,
+    surfaceContainerHighest: AppColors.midnightDeep,
   );
 
   // --- 2. Themes ---
@@ -50,13 +46,15 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: scheme.background,
+      scaffoldBackgroundColor: isDark
+          ? AppColors.backgroundDark
+          : AppColors.backgroundLight,
 
       // AppBar
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         foregroundColor: scheme.onSurface,
-        centerTitle: true,
+        centerTitle: false,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -70,8 +68,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppColors.radiusLg),
           ),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          elevation: isDark ? 0 : 2,
-          shadowColor: isDark ? scheme.primary.withOpacity(0.3) : null,
+          elevation: 0,
         ),
       ),
 
@@ -89,7 +86,7 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: scheme.surface,
         surfaceTintColor: Colors.transparent,
-        elevation: isDark ? 0 : 2,
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusMd),
         ),
@@ -99,14 +96,14 @@ class AppTheme {
       // Input Decoration
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? scheme.surface.withOpacity(0.5) : scheme.surface,
+        fillColor: isDark ? scheme.surface.withValues(alpha: 0.9) : scheme.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusMd),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusMd),
-          borderSide: BorderSide(color: scheme.outline.withOpacity(0.5)),
+          borderSide: BorderSide(color: scheme.outline.withValues(alpha: 0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusMd),
@@ -117,80 +114,82 @@ class AppTheme {
       // Chip
       chipTheme: ChipThemeData(
         backgroundColor: isDark
-            ? AppColors.voidBlack
-            : scheme.outline.withOpacity(0.1),
+            ? AppColors.mistySurface
+            : scheme.outline.withValues(alpha: 0.1),
         selectedColor: scheme.primary,
         labelStyle: TextStyle(
           color: isDark ? Colors.white : scheme.onSurface,
           fontSize: 14,
+          fontWeight: FontWeight.w600,
         ),
         secondaryLabelStyle: TextStyle(color: scheme.onPrimary),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusLg),
         ),
-        side: BorderSide(color: scheme.outline.withOpacity(0.2)),
+        side: BorderSide(color: scheme.outline.withValues(alpha: 0.2)),
       ),
 
       // List Tile (Robust to text scaling)
       listTileTheme: ListTileThemeData(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        iconColor: scheme.onSurface.withOpacity(0.7),
+        iconColor: scheme.onSurface.withValues(alpha: 0.7),
         titleTextStyle: TextStyle(
           color: scheme.onSurface,
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
         subtitleTextStyle: TextStyle(
-          color: scheme.onSurface.withOpacity(0.6),
+          color: scheme.onSurface.withValues(alpha: 0.6),
           fontSize: 14,
         ),
       ),
 
       // Text Theme
       textTheme: _buildTextTheme(scheme),
+      dividerColor: scheme.outline.withValues(alpha: 0.2),
     );
   }
 
   static TextTheme _buildTextTheme(ColorScheme scheme) {
     return TextTheme(
       displayLarge: TextStyle(
-        color: scheme.onBackground,
-        fontSize: 32,
-        fontWeight: FontWeight.bold,
-        letterSpacing: -0.5,
+        color: scheme.onSurface,
+        fontSize: 36,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -1.2,
       ),
       displayMedium: TextStyle(
-        color: scheme.onBackground,
-        fontSize: 28,
-        fontWeight: FontWeight.bold,
-        letterSpacing: -0.5,
+        color: scheme.onSurface,
+        fontSize: 30,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.8,
       ),
       headlineMedium: TextStyle(
-        color: scheme.onBackground,
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        letterSpacing: -0.2,
+        color: scheme.onSurface,
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.4,
       ),
       titleLarge: TextStyle(
-        color: scheme.onBackground,
+        color: scheme.onSurface,
         fontSize: 18,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
       ),
       bodyLarge: TextStyle(
-        color: scheme.onBackground,
+        color: scheme.onSurface,
         fontSize: 16,
-        height: 1.5,
+        height: 1.45,
       ),
       bodyMedium: TextStyle(
-        color: scheme.onBackground,
+        color: scheme.onSurface,
         fontSize: 14,
-        height: 1.5,
+        height: 1.45,
       ),
       labelLarge: TextStyle(
-        color: scheme.onBackground,
+        color: scheme.onSurface,
         fontSize: 14,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
       ),
     );
   }

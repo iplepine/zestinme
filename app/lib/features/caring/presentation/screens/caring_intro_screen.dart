@@ -195,7 +195,9 @@ class _CaringIntroScreenState extends ConsumerState<CaringIntroScreen>
               duration: const Duration(milliseconds: 600),
               child: _showCard
                   ? SafeArea(child: _buildCardView())
-                  : _buildIntroContent(), // Intro is Absolutely Centered
+                  : SafeArea(
+                      child: _buildIntroContent(),
+                    ), // Keep intro content below cutouts
             ),
           ],
         ),

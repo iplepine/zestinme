@@ -70,7 +70,7 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
       case 'Comparison':
         return '비교';
       case 'Overload':
-        return '과부하';
+        return '벅참';
       case 'NoRest':
         return '휴식 부족';
       default:
@@ -93,7 +93,7 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
       case 'Fatigue':
         return '피로감';
       case 'LowEnergy':
-        return '무기력';
+        return '기운 없음';
       case 'Sleepy':
         return '졸림';
       case 'EyeStrain':
@@ -166,6 +166,7 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
   Widget build(BuildContext context) {
     final seedingState = ref.watch(seedingNotifierProvider);
     final l10n = AppLocalizations.of(context)!;
+    final isKo = Localizations.localeOf(context).languageCode == 'ko';
     final recommendedTags = ref
         .read(seedingNotifierProvider.notifier)
         .getRecommendedTags();
@@ -224,7 +225,7 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                 const SizedBox(height: 32),
 
                 Text(
-                  '강도',
+                  isKo ? '강도' : 'Intensity',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -261,7 +262,9 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                   ],
                 ),
                 Text(
-                  '지금 감정이 얼마나 강한지 1부터 10까지로 남겨요.',
+                  isKo
+                      ? '지금 상태가 얼마나 강한지 1부터 10까지로 남겨요.'
+                      : 'Score how strong this state feels from 1 to 10.',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.55),
                     fontSize: 13,
@@ -271,7 +274,7 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                 const SizedBox(height: 28),
 
                 Text(
-                  '상황',
+                  isKo ? '상황' : 'Context',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -279,7 +282,9 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '이 감정이 올라온 맥락을 최대 3개까지 골라요.',
+                  isKo
+                      ? '이 상태가 올라온 맥락을 최대 3개까지 골라요.'
+                      : 'Choose up to 3 contexts behind this state.',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.55),
                     fontSize: 13,
@@ -309,7 +314,7 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                 const SizedBox(height: 32),
 
                 Text(
-                  '몸 반응',
+                  isKo ? '몸 반응' : 'Body signals',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -317,7 +322,9 @@ class _EmotionSelectionSheetState extends ConsumerState<EmotionSelectionSheet> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '몸에서 느껴지는 신호를 최대 3개까지 골라요.',
+                  isKo
+                      ? '몸에서 느껴지는 신호를 최대 3개까지 골라요.'
+                      : 'Pick up to 3 signals your body is giving you.',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.55),
                     fontSize: 13,

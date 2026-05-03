@@ -38,10 +38,10 @@ class HistoryListItem extends StatelessWidget {
     final detailText =
         record.automaticThought ??
         record.activities?.join(', ') ??
-        'No details';
+        '추가 메모 없음';
 
     return Semantics(
-      label: "기록: $localizedEmotion, $detailText, 시간: $timeString",
+      label: "컨디션 기록: $localizedEmotion, $detailText, 시간: $timeString",
       button: true,
       onTap: onTap,
       child: ZestGlassCard(

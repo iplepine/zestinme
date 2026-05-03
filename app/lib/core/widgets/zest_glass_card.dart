@@ -2,9 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
-/// ZestInMe 앱의 공통 디자인 스타일 유틸리티
+/// Full Condition 앱의 공통 표면 스타일
 class ZestStyles {
-  /// Atmospheric Realism: 유리 질감 (Glassmorphism) 효과
   static BoxDecoration glassDecoration({
     Color? color,
     double? blur,
@@ -13,20 +12,19 @@ class ZestStyles {
     bool showBorder = true,
   }) {
     return BoxDecoration(
-      color: (color ?? AppColors.glassSurface).withOpacity(
-        opacity ?? AppColors.glassOpacity,
+      color: (color ?? AppColors.glassSurface).withValues(
+        alpha: opacity ?? AppColors.glassOpacity,
       ),
       borderRadius: borderRadius ?? BorderRadius.circular(AppColors.radiusMd),
       border: showBorder
           ? Border.all(
-              color: Colors.white.withOpacity(AppColors.glassBorderOpacity),
+              color: Colors.white.withValues(alpha: AppColors.glassBorderOpacity),
               width: 1,
             )
           : null,
     );
   }
 
-  /// Ambient Lighting: 발광 효과 (Glowing Shadow)
   static List<BoxShadow> glowingShadow({
     Color? color,
     double spread = 2.0,
@@ -34,16 +32,15 @@ class ZestStyles {
   }) {
     return [
       BoxShadow(
-        color: (color ?? AppColors.lemonPrimary).withOpacity(0.3),
+        color: (color ?? AppColors.lemonPrimary).withValues(alpha: 0.3),
         spreadRadius: spread,
         blurRadius: blur,
-        offset: const Offset(0, 0),
+        offset: const Offset(0, 10),
       ),
     ];
   }
 }
 
-/// Atmospheric Realism을 구현하는 핵심 유리 질감 컨테이너
 class ZestGlassCard extends StatelessWidget {
   final Widget child;
   final double? blur;

@@ -28,13 +28,12 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isKo = Localizations.localeOf(context).languageCode == 'ko';
 
     // Force Dark Theme for this screen as it has a specific dark aesthetic
     return Theme(
       data: AppTheme.darkTheme,
       child: Scaffold(
-        extendBody: true,
-        extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -53,11 +52,11 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
                   content: Text(
                     l10n.seeding_messagePlanted,
                     style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  backgroundColor: Colors.white,
+                  backgroundColor: const Color(0xFF141F33),
                   behavior: SnackBarBehavior.floating,
                   margin: const EdgeInsets.symmetric(
                     horizontal: 20,
@@ -65,6 +64,11 @@ class _SeedingScreenState extends ConsumerState<SeedingScreen> {
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
+                  ),
+                  action: SnackBarAction(
+                    label: isKo ? '확인' : 'OK',
+                    textColor: Colors.white,
+                    onPressed: () {},
                   ),
                 ),
               );

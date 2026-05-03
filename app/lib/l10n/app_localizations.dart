@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'ZestInMe'**
+  /// **'FullCon'**
   String get appTitle;
 
   /// No description provided for @coaching_answerNow.
@@ -323,25 +323,25 @@ abstract class AppLocalizations {
   /// No description provided for @home_caring.
   ///
   /// In en, this message translates to:
-  /// **'Pruning'**
+  /// **'Coaching'**
   String get home_caring;
 
   /// No description provided for @home_seeding.
   ///
   /// In en, this message translates to:
-  /// **'Record Mind'**
+  /// **'Check-in'**
   String get home_seeding;
 
   /// No description provided for @home_sleep.
   ///
   /// In en, this message translates to:
-  /// **'Sleep Diving'**
+  /// **'Recovery Log'**
   String get home_sleep;
 
   /// No description provided for @home_garden_title_format.
   ///
   /// In en, this message translates to:
-  /// **'{user}\'s Inner Garden'**
+  /// **'{user}\'s Condition Board'**
   String home_garden_title_format(Object user);
 
   /// No description provided for @home_question_default.
@@ -377,7 +377,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_step2Subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Write briefly, it will become a mind seed.'**
+  /// **'Write briefly. This becomes your first condition signal.'**
   String get onboarding_step2Subtitle;
 
   /// No description provided for @onboarding_hint.
@@ -389,7 +389,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_submit.
   ///
   /// In en, this message translates to:
-  /// **'Plant Mind'**
+  /// **'Save signal'**
   String get onboarding_submit;
 
   /// No description provided for @onboarding_instructionTitle.
@@ -407,19 +407,19 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_finish.
   ///
   /// In en, this message translates to:
-  /// **'Grow Together'**
+  /// **'Start coaching'**
   String get onboarding_finish;
 
   /// No description provided for @onboarding_transition_planted.
   ///
   /// In en, this message translates to:
-  /// **'The mind seed has been planted safely.'**
+  /// **'Your first check-in is saved.'**
   String get onboarding_transition_planted;
 
   /// No description provided for @onboarding_transition_entering.
   ///
   /// In en, this message translates to:
-  /// **'Now, guiding you to your sanctuary.'**
+  /// **'Taking you to today’s guidance.'**
   String get onboarding_transition_entering;
 
   /// No description provided for @onboarding_emotions_joy.
@@ -455,13 +455,13 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_identity_label.
   ///
   /// In en, this message translates to:
-  /// **'The owner of this space is...'**
+  /// **'Ready to start FullCon'**
   String get onboarding_identity_label;
 
   /// No description provided for @onboarding_identity_question.
   ///
   /// In en, this message translates to:
-  /// **'Whose heart is it?'**
+  /// **'What should I call you?'**
   String get onboarding_identity_question;
 
   /// No description provided for @onboarding_identity_hint.
@@ -473,37 +473,37 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_identity_submit.
   ///
   /// In en, this message translates to:
-  /// **'Confirm'**
+  /// **'Next'**
   String get onboarding_identity_submit;
 
   /// No description provided for @seeding_instruction.
   ///
   /// In en, this message translates to:
-  /// **'How is your mind weather today?'**
+  /// **'Where is your condition right now?'**
   String get seeding_instruction;
 
   /// No description provided for @seeding_promptTags.
   ///
   /// In en, this message translates to:
-  /// **'This feeling is...'**
+  /// **'The words that best describe this state'**
   String get seeding_promptTags;
 
   /// No description provided for @seeding_promptNote.
   ///
   /// In en, this message translates to:
-  /// **'Add a note (context)...'**
+  /// **'Leave a short note about why you feel this way...'**
   String get seeding_promptNote;
 
   /// No description provided for @seeding_buttonPlant.
   ///
   /// In en, this message translates to:
-  /// **'Plant Seed'**
+  /// **'Save check-in'**
   String get seeding_buttonPlant;
 
   /// No description provided for @seeding_messagePlanted.
   ///
   /// In en, this message translates to:
-  /// **'Seed planted! 🌱'**
+  /// **'Your condition check-in is saved.'**
   String get seeding_messagePlanted;
 
   /// No description provided for @seeding_mood_neutral.
@@ -749,37 +749,85 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_intro_message.
   ///
   /// In en, this message translates to:
-  /// **'In a corner of your heart,\nthere is a small garden\nforgotten for a long time.'**
+  /// **'Start your day\nwith today’s condition.'**
   String get onboarding_intro_message;
 
   /// No description provided for @onboarding_found_space_title.
   ///
   /// In en, this message translates to:
-  /// **'Found a mind space forgotten for a long time...\nIt is so foggy that I can\'t see clearly.'**
+  /// **'Check energy and recovery fast,\nthen get the next suggestion.'**
   String get onboarding_found_space_title;
 
   /// No description provided for @onboarding_space_cleared.
   ///
   /// In en, this message translates to:
-  /// **'The space is now clear!'**
+  /// **'Ready to begin'**
   String get onboarding_space_cleared;
+
+  /// No description provided for @onboarding_launch_cta.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get onboarding_launch_cta;
+
+  /// No description provided for @onboarding_launch_caption.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name and first check-in are enough to begin.'**
+  String get onboarding_launch_caption;
+
+  /// No description provided for @onboarding_preview_recovery_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery'**
+  String get onboarding_preview_recovery_title;
+
+  /// No description provided for @onboarding_preview_recovery_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Read sleep and wake quality to see your recovery flow.'**
+  String get onboarding_preview_recovery_body;
+
+  /// No description provided for @onboarding_preview_checkin_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in'**
+  String get onboarding_preview_checkin_title;
+
+  /// No description provided for @onboarding_preview_checkin_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with fast energy and recovery signals.'**
+  String get onboarding_preview_checkin_body;
+
+  /// No description provided for @onboarding_preview_coaching_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Coaching'**
+  String get onboarding_preview_coaching_title;
+
+  /// No description provided for @onboarding_preview_coaching_body.
+  ///
+  /// In en, this message translates to:
+  /// **'See what to do first today.'**
+  String get onboarding_preview_coaching_body;
 
   /// No description provided for @sleep_dive_title.
   ///
   /// In en, this message translates to:
-  /// **'Sleep Diving'**
+  /// **'Recovery Log'**
   String get sleep_dive_title;
 
   /// No description provided for @sleep_dive_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'How is my sleep rhythm?'**
+  /// **'Let’s read today’s recovery state.'**
   String get sleep_dive_subtitle;
 
   /// No description provided for @sleep_dive_description.
   ///
   /// In en, this message translates to:
-  /// **'Discover your golden sleep hour\nthrough a week of intentional observation.'**
+  /// **'Log your sleep and wake quality\nso tomorrow’s condition can be adjusted more precisely.'**
   String get sleep_dive_description;
 
   /// No description provided for @sleep_dive_bedtime_label.
@@ -827,7 +875,7 @@ abstract class AppLocalizations {
   /// No description provided for @sleep_dive_button_finish.
   ///
   /// In en, this message translates to:
-  /// **'Dive Complete'**
+  /// **'Save recovery log'**
   String get sleep_dive_button_finish;
 }
 

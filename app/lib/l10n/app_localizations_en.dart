@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'ZestInMe';
+  String get appTitle => 'FullCon';
 
   @override
   String get coaching_answerNow => 'Answer now';
@@ -121,17 +121,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_history => 'Archive';
 
   @override
-  String get home_caring => 'Pruning';
+  String get home_caring => 'Coaching';
 
   @override
-  String get home_seeding => 'Record Mind';
+  String get home_seeding => 'Check-in';
 
   @override
-  String get home_sleep => 'Sleep Diving';
+  String get home_sleep => 'Recovery Log';
 
   @override
   String home_garden_title_format(Object user) {
-    return '$user\'s Inner Garden';
+    return '$user\'s Condition Board';
   }
 
   @override
@@ -154,13 +154,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding_step2Subtitle =>
-      'Write briefly, it will become a mind seed.';
+      'Write briefly. This becomes your first condition signal.';
 
   @override
   String get onboarding_hint => 'Situation or reason...';
 
   @override
-  String get onboarding_submit => 'Plant Mind';
+  String get onboarding_submit => 'Save signal';
 
   @override
   String onboarding_instructionTitle(String emotion, String particle) {
@@ -172,15 +172,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'The honest heart you wrote\nis the only nutrient to bloom this child.';
 
   @override
-  String get onboarding_finish => 'Grow Together';
+  String get onboarding_finish => 'Start coaching';
 
   @override
-  String get onboarding_transition_planted =>
-      'The mind seed has been planted safely.';
+  String get onboarding_transition_planted => 'Your first check-in is saved.';
 
   @override
   String get onboarding_transition_entering =>
-      'Now, guiding you to your sanctuary.';
+      'Taking you to today’s guidance.';
 
   @override
   String get onboarding_emotions_joy => 'Joy';
@@ -198,31 +197,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboarding_emotions_peace => 'Peace';
 
   @override
-  String get onboarding_identity_label => 'The owner of this space is...';
+  String get onboarding_identity_label => 'Ready to start FullCon';
 
   @override
-  String get onboarding_identity_question => 'Whose heart is it?';
+  String get onboarding_identity_question => 'What should I call you?';
 
   @override
   String get onboarding_identity_hint => 'Enter name';
 
   @override
-  String get onboarding_identity_submit => 'Confirm';
+  String get onboarding_identity_submit => 'Next';
 
   @override
-  String get seeding_instruction => 'How is your mind weather today?';
+  String get seeding_instruction => 'Where is your condition right now?';
 
   @override
-  String get seeding_promptTags => 'This feeling is...';
+  String get seeding_promptTags => 'The words that best describe this state';
 
   @override
-  String get seeding_promptNote => 'Add a note (context)...';
+  String get seeding_promptNote =>
+      'Leave a short note about why you feel this way...';
 
   @override
-  String get seeding_buttonPlant => 'Plant Seed';
+  String get seeding_buttonPlant => 'Save check-in';
 
   @override
-  String get seeding_messagePlanted => 'Seed planted! 🌱';
+  String get seeding_messagePlanted => 'Your condition check-in is saved.';
 
   @override
   String get seeding_mood_neutral => 'Neutral';
@@ -346,24 +346,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding_intro_message =>
-      'In a corner of your heart,\nthere is a small garden\nforgotten for a long time.';
+      'Start your day\nwith today’s condition.';
 
   @override
   String get onboarding_found_space_title =>
-      'Found a mind space forgotten for a long time...\nIt is so foggy that I can\'t see clearly.';
+      'Check energy and recovery fast,\nthen get the next suggestion.';
 
   @override
-  String get onboarding_space_cleared => 'The space is now clear!';
+  String get onboarding_space_cleared => 'Ready to begin';
 
   @override
-  String get sleep_dive_title => 'Sleep Diving';
+  String get onboarding_launch_cta => 'Start';
 
   @override
-  String get sleep_dive_subtitle => 'How is my sleep rhythm?';
+  String get onboarding_launch_caption =>
+      'Your name and first check-in are enough to begin.';
+
+  @override
+  String get onboarding_preview_recovery_title => 'Recovery';
+
+  @override
+  String get onboarding_preview_recovery_body =>
+      'Read sleep and wake quality to see your recovery flow.';
+
+  @override
+  String get onboarding_preview_checkin_title => 'Check-in';
+
+  @override
+  String get onboarding_preview_checkin_body =>
+      'Start with fast energy and recovery signals.';
+
+  @override
+  String get onboarding_preview_coaching_title => 'Coaching';
+
+  @override
+  String get onboarding_preview_coaching_body => 'See what to do first today.';
+
+  @override
+  String get sleep_dive_title => 'Recovery Log';
+
+  @override
+  String get sleep_dive_subtitle => 'Let’s read today’s recovery state.';
 
   @override
   String get sleep_dive_description =>
-      'Discover your golden sleep hour\nthrough a week of intentional observation.';
+      'Log your sleep and wake quality\nso tomorrow’s condition can be adjusted more precisely.';
 
   @override
   String get sleep_dive_bedtime_label => 'In Bed Time';
@@ -387,5 +414,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sleep_dive_factors_title => 'Sleep Impact Factors';
 
   @override
-  String get sleep_dive_button_finish => 'Dive Complete';
+  String get sleep_dive_button_finish => 'Save recovery log';
 }

@@ -6,7 +6,7 @@
 | **Status** | Final Draft |
 | **Date** | 2025-12-18 |
 | **Author** | Mind-Gardener Committee |
-| **Related** | `spec/20-feature/04-sleep.md` |
+| **Related** | `features/04-sleep.md` |
 
 ## 1. 기획 의도 (Design Intent)
 > **"Sleep is the light of the garden."**

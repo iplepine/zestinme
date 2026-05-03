@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:zestinme/core/localization/app_localizations.dart' as legacy;
 import 'package:zestinme/l10n/app_localizations.dart' as new_l10n;
+import 'package:zestinme/core/constants/app_constants.dart';
 import 'package:zestinme/core/localization/locale_provider.dart';
 import 'routes/app_router.dart';
 import 'theme/app_theme.dart';
@@ -19,7 +20,9 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp.router(
       routerConfig: router,
-      title: 'ZestInMe',
+      title: AppConstants.appName,
+      onGenerateTitle: (context) =>
+          new_l10n.AppLocalizations.of(context)?.appTitle ?? AppConstants.appDisplayName,
       builder: (context, child) {
         final mediaQuery = MediaQuery.of(context);
         // Calculate the current scale factor

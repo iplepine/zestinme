@@ -249,7 +249,7 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
 
     if (hour >= 22 || hour < 6) {
       // 밤 시간대 (22시-6시)
-      title = '🌙 취침 준비';
+      title = '취침 전 기록';
       subtitle = '잠들기 전 기록하기';
       icon = Icons.nightlight_round;
       color = Colors.indigo;
@@ -274,7 +274,7 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
       };
     } else if (hour >= 6 && hour < 10) {
       // 아침 시간대 (6시-10시)
-      title = '🛌 아침 체크인';
+      title = '기상 후 회복 체크';
       subtitle = '기상 후 컨디션 기록';
       icon = Icons.wb_sunny;
       color = Colors.orange;
@@ -284,8 +284,8 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
       };
     } else {
       // 낮 시간대
-      title = '📊 수면 기록';
-      subtitle = '수면 확인하기';
+      title = '수면 리포트 보기';
+      subtitle = '수면 흐름 확인하기';
       icon = Icons.analytics;
       color = Colors.blue;
       onTap = () {
@@ -362,101 +362,107 @@ class _SleepHomePageState extends ConsumerState<SleepHomePage> {
     final state = ref.watch(sleepHomeControllerProvider);
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       extendBody: true,
-      appBar: AppBar(
-        title: const Text('수면 기록'),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        systemOverlayStyle: const SystemUiOverlayStyle(
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SleepGuidePage()),
-              );
-            },
-            tooltip: '수면기록 가이드',
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          // --- 기본 UI ---
-          Positioned.fill(
-            child: SafeArea(
-              child: Column(
-                children: [
-                  // 시간대별 CTA 버튼
-                  _buildTimeBasedCTA(),
-
-                  // 메인 콘텐츠
-                  Expanded(
-                    child: state.when(
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      data: (records) => SleepHomeContent(
-                        records: records,
-                        onBarLongPressed: (record) {
-                          _navigateToRecordScreen(context, ref, record: record);
-                        },
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 8, 12, 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '수면 기록',
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.help_outline),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SleepGuidePage(),
+                                ),
+                              );
+                            },
+                            tooltip: '수면기록 가이드',
+                          ),
+                        ],
                       ),
-                      error: (message) => Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              size: 64,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(height: 16),
-                            Text('오류가 발생했습니다: $message'),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () => ref
-                                  .read(sleepHomeControllerProvider.notifier)
-                                  .fetchRecords(),
-                              child: const Text('다시 시도'),
-                            ),
-                          ],
+                    ),
+                    _buildTimeBasedCTA(),
+                    Expanded(
+                      child: state.when(
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
+                        data: (records) => SleepHomeContent(
+                          records: records,
+                          onBarLongPressed: (record) {
+                            _navigateToRecordScreen(context, ref, record: record);
+                          },
+                        ),
+                        error: (message) => Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                size: 64,
+                                color: Colors.red,
+                              ),
+                              const SizedBox(height: 16),
+                              Text('오류가 발생했습니다: $message'),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () => ref
+                                    .read(sleepHomeControllerProvider.notifier)
+                                    .fetchRecords(),
+                                child: const Text('다시 시도'),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          // 하단 버튼 - 행복 기록과 동일한 위치
-          Positioned(
-            bottom: 32 + MediaQuery.of(context).padding.bottom, // 행복 기록과 동일한 위치
-            left: 0,
-            right: 0,
-            child: Center(
-              child: GestureDetector(
-                onPanStart: _handlePanStart,
-                onPanUpdate: _handlePanUpdate,
-                onPanEnd: _handlePanEnd,
-                dragStartBehavior: DragStartBehavior.down,
-                child: SizedBox(
-                  key: _buttonKey,
-                  width: 180, // 터치 영역 넓힘
-                  height: 180, // 터치 영역 넓힘
-                  child: Center(
-                    child: SleepAnimatedButton(selectedMode: _selectedMode),
+            Positioned(
+              bottom: 32 + MediaQuery.of(context).padding.bottom,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: GestureDetector(
+                  onPanStart: _handlePanStart,
+                  onPanUpdate: _handlePanUpdate,
+                  onPanEnd: _handlePanEnd,
+                  dragStartBehavior: DragStartBehavior.down,
+                  child: SizedBox(
+                    key: _buttonKey,
+                    width: 180,
+                    height: 180,
+                    child: Center(
+                      child: SleepAnimatedButton(selectedMode: _selectedMode),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

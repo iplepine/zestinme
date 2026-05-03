@@ -5,7 +5,7 @@
 | **Version** | 2.0 (Vibe Coding Edition) |
 | **Status** | Final Draft |
 | **Last Updated** | 2025-12-14 |
-| **Related UI** | `spec/50-ui/04-sleep-screen.md` |
+| **Related UI** | `ui/04-sleep-screen.md` |
 | **Tech Stack** | Flutter, Isar (Local DB), Riverpod |
 
 ## 1. 서론: 프로젝트 정의 및 개발 철학

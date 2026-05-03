@@ -34,7 +34,7 @@ GoRouter goRouter(GoRouterRef ref) {
   final notifier = _RouterNotifier(ref);
 
   return GoRouter(
-    initialLocation: '/dev',
+    initialLocation: '/',
     refreshListenable: notifier,
     redirect: (context, state) {
       // Developer Mode: Always allow /dev and debugging routes

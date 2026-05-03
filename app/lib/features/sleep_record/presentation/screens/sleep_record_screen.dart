@@ -55,6 +55,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
   Widget build(BuildContext context) {
     final sleepState = ref.watch(sleepNotifierProvider);
     final notifier = ref.read(sleepNotifierProvider.notifier);
+    final isKo = Localizations.localeOf(context).languageCode == 'ko';
 
     // Format times for display
     final timeFormat = DateFormat('HH:mm');
@@ -165,7 +166,9 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                   Column(
                     children: [
                       Text(
-                        '$durationHours시간 $durationMins분',
+                        isKo
+                            ? '$durationHours시간 $durationMins분'
+                            : '${durationHours}h ${durationMins}m',
                         style: TextStyle(
                           color: AppTheme.secondaryColor,
                           fontWeight: FontWeight.bold,
@@ -230,7 +233,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                         ),
                       ),
                       Text(
-                        _getLatencyLabel(sleepState.sleepLatencyMinutes),
+                        _getLatencyLabel(context, sleepState.sleepLatencyMinutes),
                         style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 16,
@@ -267,11 +270,11 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '바로 잠듦',
+                        isKo ? '바로 잠듦' : 'fell asleep fast',
                         style: TextStyle(color: Colors.white30, fontSize: 12),
                       ),
                       Text(
-                        '1시간 이상',
+                        isKo ? '1시간 이상' : 'over an hour',
                         style: TextStyle(color: Colors.white30, fontSize: 12),
                       ),
                     ],
@@ -307,7 +310,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                     ),
                   ),
                   Text(
-                    _getRefreshmentLabel(sleepState.selfRefreshmentScore),
+                    _getRefreshmentLabel(context, sleepState.selfRefreshmentScore),
                     style: const TextStyle(color: Colors.white70, fontSize: 16),
                   ),
                 ],
@@ -339,7 +342,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
 
               // 4.2 Wake Type
               Text(
-                '기상 상태',
+                isKo ? '기상 상태' : 'Wake state',
                 style: TextStyle(
                   color: AppTheme.secondaryColor,
                   fontSize: 16,
@@ -374,7 +377,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                         style: const TextStyle(color: Colors.white),
                       ),
                       subtitle: const Text(
-                        '다시 잠들지 않았어요 (No Snooze)',
+                        '알람을 끄고 다시 잠들지 않았어요.',
                         style: TextStyle(color: Colors.white54, fontSize: 12),
                       ),
                       value: sleepState.isImmediateWake,
@@ -464,7 +467,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('수면 기록이 저장되었습니다. ⚡️'),
+                                  content: Text('회복 로그를 저장했어요.'),
                                   backgroundColor: Color(0xFF1E2632),
                                 ),
                               );
@@ -527,6 +530,7 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
   }
 
   Widget _buildGoldenHourBanner(SleepState sleepState) {
+    final isKo = Localizations.localeOf(context).languageCode == 'ko';
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -556,7 +560,9 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                sleepState.isGoldenHour ? 'Golden Hour 달성! ✨' : '수면 사이클 확인',
+                sleepState.isGoldenHour
+                    ? (isKo ? '회복 리듬이 잘 맞았어요' : 'Recovery rhythm aligned')
+                    : (isKo ? '수면 사이클 확인' : 'Sleep cycle check'),
                 style: TextStyle(
                   color: sleepState.isGoldenHour
                       ? AppColors.seedingSun
@@ -567,7 +573,9 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
               ),
               const SizedBox(height: 2),
               Text(
-                '${sleepState.sleepCycles.toStringAsFixed(1)} 사이클 (약 ${(sleepState.sleepCycles * 90).round()}분)',
+                isKo
+                    ? '${sleepState.sleepCycles.toStringAsFixed(1)} 사이클 (약 ${(sleepState.sleepCycles * 90).round()}분)'
+                    : '${sleepState.sleepCycles.toStringAsFixed(1)} cycles (about ${(sleepState.sleepCycles * 90).round()} min)',
                 style: TextStyle(
                   color: sleepState.isGoldenHour
                       ? AppColors.seedingSun.withValues(alpha: 0.8)
@@ -582,19 +590,21 @@ class _SleepRecordScreenState extends ConsumerState<SleepRecordScreen> {
     );
   }
 
-  String _getRefreshmentLabel(int score) {
-    if (score >= 90) return '✨ 날아갈 것 같아요';
-    if (score >= 70) return '🙂 상쾌해요';
-    if (score >= 50) return '😐 괜찮아요';
-    if (score >= 30) return '😫 피곤해요';
-    return '🧟 좀비 상태...';
+  String _getRefreshmentLabel(BuildContext context, int score) {
+    final isKo = Localizations.localeOf(context).languageCode == 'ko';
+    if (score >= 90) return isKo ? '최상' : 'peak';
+    if (score >= 70) return isKo ? '좋음' : 'strong';
+    if (score >= 50) return isKo ? '보통' : 'steady';
+    if (score >= 30) return isKo ? '낮음' : 'low';
+    return isKo ? '방전' : 'drained';
   }
 
-  String _getLatencyLabel(int minutes) {
-    if (minutes <= 5) return '🚀 기절 (5분 미만)';
-    if (minutes <= 15) return '😌 양호 (15분)';
-    if (minutes <= 30) return '🤔 보통 (30분)';
-    return '😵 뒤척임 (1시간 이상)';
+  String _getLatencyLabel(BuildContext context, int minutes) {
+    final isKo = Localizations.localeOf(context).languageCode == 'ko';
+    if (minutes <= 5) return isKo ? '금방 잠듦' : 'fast';
+    if (minutes <= 15) return isKo ? '무난함' : 'good';
+    if (minutes <= 30) return isKo ? '조금 오래 걸림' : 'average';
+    return isKo ? '오래 걸림' : 'restless';
   }
 }
 
@@ -629,7 +639,7 @@ class _MemoSectionState extends State<_MemoSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '한줄 메모 (Optional)',
+          '메모 (선택)',
           style: TextStyle(
             color: AppTheme.secondaryColor,
             fontSize: 16,
@@ -640,7 +650,7 @@ class _MemoSectionState extends State<_MemoSection> {
         VoiceTextField(
           controller: _controller,
           onChanged: widget.onChanged,
-          hintText: '더 남기고 싶은 기록이 있나요?',
+          hintText: '기억해두고 싶은 점이 있나요?',
           maxLength: 200,
           style: const TextStyle(color: Colors.white),
         ),

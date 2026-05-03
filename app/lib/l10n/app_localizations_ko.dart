@@ -9,7 +9,7 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => 'ZestInMe';
+  String get appTitle => '풀컨';
 
   @override
   String get coaching_answerNow => '지금 답변하기';
@@ -117,20 +117,20 @@ class AppLocalizationsKo extends AppLocalizations {
   String get home_letGo => 'Let Go';
 
   @override
-  String get home_history => '아카이브';
+  String get home_history => '타임라인';
 
   @override
-  String get home_caring => '다듬기';
+  String get home_caring => '코칭';
 
   @override
-  String get home_seeding => '마음 기록';
+  String get home_seeding => '체크인';
 
   @override
-  String get home_sleep => '수면 다이빙';
+  String get home_sleep => '회복 로그';
 
   @override
   String home_garden_title_format(Object user) {
-    return '$user의 내면 정원';
+    return '$user의 컨디션 보드';
   }
 
   @override
@@ -151,13 +151,13 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get onboarding_step2Subtitle => '짧게 적어주시면, 마음의 씨앗이 됩니다.';
+  String get onboarding_step2Subtitle => '짧게 적어주시면 첫 컨디션 신호가 됩니다.';
 
   @override
   String get onboarding_hint => '이유나 상황을 적어주세요...';
 
   @override
-  String get onboarding_submit => '마음 담기';
+  String get onboarding_submit => '신호 저장';
 
   @override
   String onboarding_instructionTitle(String emotion, String particle) {
@@ -169,13 +169,13 @@ class AppLocalizationsKo extends AppLocalizations {
       '솔직하게 적어주신 그 마음이\n이 아이를 꽃피우게 할 유일한 영양분입니다.';
 
   @override
-  String get onboarding_finish => '함께 키워가기';
+  String get onboarding_finish => '코칭 시작';
 
   @override
-  String get onboarding_transition_planted => '마음의 씨앗이 무사히 심어졌습니다.';
+  String get onboarding_transition_planted => '첫 체크인을 저장했어요.';
 
   @override
-  String get onboarding_transition_entering => '이제, 당신만의 안식처로 안내합니다.';
+  String get onboarding_transition_entering => '이제 오늘 제안을 확인하러 이동합니다.';
 
   @override
   String get onboarding_emotions_joy => '기쁨';
@@ -193,31 +193,31 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboarding_emotions_peace => '평온';
 
   @override
-  String get onboarding_identity_label => '이 공간의 주인은...';
+  String get onboarding_identity_label => '풀컨 시작 준비';
 
   @override
-  String get onboarding_identity_question => '누구의 마음인가요?';
+  String get onboarding_identity_question => '어떻게 불러드릴까요?';
 
   @override
-  String get onboarding_identity_hint => '이름 입력';
+  String get onboarding_identity_hint => '이름이나 닉네임';
 
   @override
-  String get onboarding_identity_submit => '확인';
+  String get onboarding_identity_submit => '다음';
 
   @override
-  String get seeding_instruction => '지금 당신의 마음 날씨는 어떤가요?';
+  String get seeding_instruction => '지금 컨디션은 어디쯤인가요?';
 
   @override
-  String get seeding_promptTags => '이 감정은 마치...';
+  String get seeding_promptTags => '지금 상태를 가장 잘 설명하는 단어';
 
   @override
-  String get seeding_promptNote => '어떤 상황인지 기록해주세요...';
+  String get seeding_promptNote => '왜 이런 상태인지 짧게 남겨주세요...';
 
   @override
-  String get seeding_buttonPlant => '씨앗 심기';
+  String get seeding_buttonPlant => '체크인 저장';
 
   @override
-  String get seeding_messagePlanted => '마음의 씨앗을 심었습니다! 🌱';
+  String get seeding_messagePlanted => '컨디션 체크인을 저장했어요.';
 
   @override
   String get seeding_mood_neutral => '중립';
@@ -340,24 +340,48 @@ class AppLocalizationsKo extends AppLocalizations {
   String get seeding_quadrant_stress => '스트레스';
 
   @override
-  String get onboarding_intro_message =>
-      '당신의 마음 한구석,\n오랫동안 잊고 지낸\n작은 정원이 있습니다.';
+  String get onboarding_intro_message => '오늘 컨디션에 맞춰\n하루를 시작하세요.';
 
   @override
   String get onboarding_found_space_title =>
-      '오랫동안 잊고 지낸 마음 공간을 찾았습니다...\n안개가 자욱하여 앞이 잘 보이지 않네요.';
+      '에너지와 회복을 빠르게 체크하고\n지금 필요한 제안을 받아보세요.';
 
   @override
-  String get onboarding_space_cleared => '공간이 한결 맑아졌습니다!';
+  String get onboarding_space_cleared => '시작할 준비 완료';
 
   @override
-  String get sleep_dive_title => '수면 다이빙';
+  String get onboarding_launch_cta => '시작하기';
 
   @override
-  String get sleep_dive_subtitle => '내 수면 리듬은 어떨까요?';
+  String get onboarding_launch_caption => '이름과 첫 체크인만 마치면 됩니다.';
 
   @override
-  String get sleep_dive_description => '일주일간의 집중 관찰을 통해\n당신만의 황금 수면 시간을 찾아보세요.';
+  String get onboarding_preview_recovery_title => '회복';
+
+  @override
+  String get onboarding_preview_recovery_body => '수면과 기상 상태를 읽어 회복 흐름을 봅니다.';
+
+  @override
+  String get onboarding_preview_checkin_title => '체크인';
+
+  @override
+  String get onboarding_preview_checkin_body => '에너지와 회복부터 빠르게 체크합니다.';
+
+  @override
+  String get onboarding_preview_coaching_title => '제안';
+
+  @override
+  String get onboarding_preview_coaching_body => '오늘 먼저 할 일을 바로 제안합니다.';
+
+  @override
+  String get sleep_dive_title => '회복 로그';
+
+  @override
+  String get sleep_dive_subtitle => '어젯밤 회복 상태를 확인해볼까요?';
+
+  @override
+  String get sleep_dive_description =>
+      '수면과 기상 상태를 기록하면\n내일 컨디션을 더 정확하게 읽을 수 있어요.';
 
   @override
   String get sleep_dive_bedtime_label => '침대에 누운 시간';
@@ -369,17 +393,17 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sleep_dive_latency_title => '잠들기까지 걸린 시간';
 
   @override
-  String get sleep_dive_refreshment_title => '오늘 얼마나 개운한가요?';
+  String get sleep_dive_refreshment_title => '아침 컨디션은 어땠나요?';
 
   @override
-  String get sleep_dive_natural_wake => '알람 없이 일어났나요?';
+  String get sleep_dive_natural_wake => '알람 없이 깼나요?';
 
   @override
-  String get sleep_dive_immediate_wake => '알람 끄고 바로 일어났나요?';
+  String get sleep_dive_immediate_wake => '알람을 끄고 바로 일어났나요?';
 
   @override
-  String get sleep_dive_factors_title => '수면 영향 요인';
+  String get sleep_dive_factors_title => '수면에 영향을 준 요인';
 
   @override
-  String get sleep_dive_button_finish => '다이빙 완료';
+  String get sleep_dive_button_finish => '회복 로그 저장하기';
 }

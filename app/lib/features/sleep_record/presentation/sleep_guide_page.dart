@@ -385,7 +385,7 @@ class _SleepGuidePageState extends State<SleepGuidePage> {
                 const TextSpan(text: '언제 자고 일어나는가가 더 중요해요.\n'),
                 const TextSpan(text: '간단히 기록하면 '),
                 TextSpan(
-                  text: '나만의 수면 스윗스팟',
+                  text: '내게 맞는 수면 시간대',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.blue[700],
@@ -623,7 +623,7 @@ class _SleepGuidePageState extends State<SleepGuidePage> {
 
           // 헤드라인
           Text(
-            '7일만 기록하면 내 리듬이 보입니다!',
+            '7일만 기록해도 내 리듬이 보입니다.',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
               color: Colors.grey[900],
@@ -646,13 +646,13 @@ class _SleepGuidePageState extends State<SleepGuidePage> {
                 const TextSpan(text: '매일 아침·밤 10초 기록으로 시작하세요.\n'),
                 const TextSpan(text: '나만의 '),
                 TextSpan(
-                  text: '수면 스윗스팟',
+                  text: '수면 리듬',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.green[700],
                   ),
                 ),
-                const TextSpan(text: '과 간단한 루틴을 찾아드립니다.'),
+                const TextSpan(text: '과 맞는 루틴을 찾아보세요.'),
               ],
             ),
           ),
@@ -827,7 +827,7 @@ class _SleepGuidePageState extends State<SleepGuidePage> {
               ),
               const SizedBox(width: 12),
               Text(
-                '미니 약속',
+                '실천 설정',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: Colors.grey[800],
@@ -839,7 +839,7 @@ class _SleepGuidePageState extends State<SleepGuidePage> {
 
           // 토글 2개
           _buildToggleOption(
-            title: '취침 1시간 전 알림: 준비 시간 확보',
+            title: '취침 1시간 전 알림 받기',
             value: _bedtimeReminder,
             onChanged: (value) {
               setState(() {
@@ -851,7 +851,7 @@ class _SleepGuidePageState extends State<SleepGuidePage> {
           const SizedBox(height: 12),
 
           _buildToggleOption(
-            title: '아침 10초 체크인: 간단한 기분/수면 기록',
+            title: '아침 10초 체크인 받기',
             value: _morningCheckin,
             onChanged: (value) {
               setState(() {

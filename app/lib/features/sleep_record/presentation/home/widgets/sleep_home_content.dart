@@ -89,7 +89,7 @@ class SleepHomeContent extends StatelessWidget {
               Icon(Icons.trending_up, color: Colors.blue[600], size: 24),
               const SizedBox(width: 8),
               Text(
-                '오늘의 Δ 카드',
+                '오늘의 회복 요약',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class SleepHomeContent extends StatelessWidget {
                 final minutes = sleepDuration.inMinutes % 60;
 
                 return Text(
-                  '어젯밤 ${hours}h${minutes}m → 수면 품질 ${todayRecord.qualityScore}/5',
+                  '어젯밤 ${hours}h${minutes}m · 수면 점수 ${todayRecord.qualityScore}/5',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -134,7 +134,7 @@ class SleepHomeContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  '방해요인: ${todayRecord.tags.join(', ')}',
+                  '영향 요인: ${todayRecord.tags.join(', ')}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.orange[800],
@@ -144,12 +144,12 @@ class SleepHomeContent extends StatelessWidget {
               ),
           ] else ...[
             Text(
-              '아직 오늘의 수면 기록이 없어요',
+              '아직 오늘 수면 기록이 없어요.',
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
             Text(
-              '밤에 잠든 시간을 기록해보세요!',
+              '오늘 밤 잠든 시간을 남겨보세요.',
               style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             ),
           ],
@@ -170,20 +170,20 @@ class SleepHomeContent extends StatelessWidget {
 
     if (hour >= 22 || hour < 6) {
       // 밤 시간대 (22시-6시)
-      mission = '취침 1시간 전 스크린 Off 체크';
+      mission = '취침 1시간 전 화면 끄기';
       description = '잠들기 1시간 전에 스마트폰을 멀리 두세요';
       icon = Icons.phone_android;
       color = Colors.indigo;
     } else if (hour >= 6 && hour < 10) {
       // 아침 시간대 (6시-10시)
-      mission = '아침 상쾌도 체크';
-      description = '기상 후 컨디션을 기록해보세요';
+      mission = '아침 회복감 체크';
+      description = '기상 후 회복 상태를 기록해보세요';
       icon = Icons.wb_sunny;
       color = Colors.orange;
     } else {
       // 낮 시간대
-      mission = '오늘의 수면 목표 확인';
-      description = '오늘 밤의 수면 목표를 세워보세요';
+      mission = '오늘 밤 수면 목표 확인';
+      description = '오늘 밤 수면 목표를 가볍게 정해보세요';
       icon = Icons.flag;
       color = Colors.green;
     }
@@ -213,7 +213,7 @@ class SleepHomeContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '1분 미션',
+                  '오늘의 제안',
                   style: TextStyle(
                     fontSize: 12,
                     color: color,
@@ -241,7 +241,7 @@ class SleepHomeContent extends StatelessWidget {
               // 미션 완료 체크
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('$mission 완료! 🎉'),
+                  content: Text('$mission 실천 완료'),
                   backgroundColor: color,
                 ),
               );

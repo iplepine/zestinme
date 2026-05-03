@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:zestinme/core/models/condition_record.dart';
 import 'package:zestinme/core/models/emotion_record.dart';
 import 'package:zestinme/core/models/sleep_record.dart';
 import 'package:zestinme/features/onboarding/data/models/onboarding_data_model.dart';
@@ -11,10 +12,35 @@ class LocalDbService {
   Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
     _isar = await Isar.open([
+      ConditionRecordSchema,
       EmotionRecordSchema,
       OnboardingDataModelSchema,
       SleepRecordSchema,
     ], directory: dir.path);
+  }
+
+  // --- Condition Record ---
+
+  Future<void> saveConditionRecord(ConditionRecord record) async {
+    await _isar.writeTxn(() async {
+      await _isar.conditionRecords.put(record);
+    });
+  }
+
+  Future<ConditionRecord?> getLatestConditionRecord() async {
+    return await _isar.conditionRecords.where().sortByTimestampDesc().findFirst();
+  }
+
+  Future<List<ConditionRecord>> getConditionRecordsByDateRange(
+    DateTime start,
+    DateTime end,
+  ) async {
+    return await _isar.conditionRecords
+        .where()
+        .filter()
+        .timestampBetween(start, end)
+        .sortByTimestampDesc()
+        .findAll();
   }
 
   // --- Emotion Record ---

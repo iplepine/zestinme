@@ -6,7 +6,7 @@
 | **Status** | Concept Refined (No Pot) |
 | **Date** | 2026-01-21 |
 | **Author** | Mind-Gardener Committee |
-| **Related** | `spec/10-domain/20-core-mechanics.md` |
+| **Related** | `domain/20-core-mechanics.md` |
 
 ## 1. 기획 의도 (Design Intent)
 

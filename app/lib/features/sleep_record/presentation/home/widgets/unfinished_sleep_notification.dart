@@ -153,7 +153,7 @@ class _NotificationContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  '미완성 수면 기록',
+                  '마저 입력할 수면 기록',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -162,7 +162,7 @@ class _NotificationContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${record.inBedTime.hour.toString().padLeft(2, '0')}:${record.inBedTime.minute.toString().padLeft(2, '0')}에 잠든 기록이 있습니다',
+                  '${record.inBedTime.hour.toString().padLeft(2, '0')}:${record.inBedTime.minute.toString().padLeft(2, '0')}에 잠든 기록이 남아 있어요.',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],

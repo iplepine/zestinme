@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:intl/intl.dart';
 import 'package:zestinme/app/theme/app_theme.dart';
 import '../../../../core/models/emotion_record.dart';
 import '../providers/history_provider.dart';
@@ -64,13 +63,12 @@ class CalendarWidget extends ConsumerWidget {
       },
       calendarBuilders: CalendarBuilders(
         markerBuilder: (context, date, events) {
-          // Find record for this day
           final dayRecord = _getRecordForDay(date);
           if (dayRecord == null) return null;
 
           return Positioned(
             bottom: 1,
-            child: _buildEmotionMarker(context, dayRecord),
+            child: _buildConditionMarker(context, dayRecord),
           );
         },
       ),
@@ -78,32 +76,57 @@ class CalendarWidget extends ConsumerWidget {
   }
 
   EmotionRecord? _getRecordForDay(DateTime date) {
-    // Return the latest record for the day (or most intense based on logic)
-    // Here we just take the first one found for simplicity of MVP
-    try {
-      return records.firstWhere((r) => isSameDay(r.timestamp, date));
-    } catch (e) {
-      return null;
-    }
+    final matches = records.where((r) => isSameDay(r.timestamp, date)).toList();
+    if (matches.isEmpty) return null;
+
+    matches.sort((a, b) {
+      final aSleep = _isSleepEntry(a);
+      final bSleep = _isSleepEntry(b);
+      if (aSleep != bSleep) return aSleep ? 1 : -1;
+      return _conditionScore(b).compareTo(_conditionScore(a));
+    });
+
+    return matches.first;
   }
 
-  Widget _buildEmotionMarker(BuildContext context, EmotionRecord record) {
-    // Determine color based on valence
-    // High Valence (Pos) -> Secondary (Lime/Green)
-    // Low Valence (Neg) -> Tertiary/Blue (Use Primary for now or defined color)
+  Widget _buildConditionMarker(BuildContext context, EmotionRecord record) {
+    final score = _conditionScore(record);
     final colorScheme = Theme.of(context).colorScheme;
-    Color markerColor;
-    if ((record.valence ?? 0) > 0) {
-      markerColor = colorScheme.secondary; // Joyful (Lime)
-    } else {
-      markerColor = Colors.blueAccent; // Sad/Calm
-    }
+    final markerColor = _scoreColor(score, colorScheme);
+    final scoreLabel = score == 0 ? '--' : score.toStringAsFixed(0);
 
-    // Seed/Sprout Icon acting as marker
-    return Icon(
-      Icons.grass, // Sprout icon representing a planted memory
-      size: 8,
-      color: markerColor,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: markerColor.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        scoreLabel,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 9,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
+  }
+
+  bool _isSleepEntry(EmotionRecord record) {
+    final label = record.emotionLabel?.toLowerCase() ?? '';
+    return label.startsWith('sleep');
+  }
+
+  double _conditionScore(EmotionRecord record) {
+    final score = record.intensity?.toDouble() ?? 0.0;
+    if (score <= 0) return 0.0;
+    return score * 10;
+  }
+
+  Color _scoreColor(double score, ColorScheme colorScheme) {
+    if (score >= 80) return colorScheme.secondary;
+    if (score >= 65) return colorScheme.primary;
+    if (score >= 45) return Colors.amber;
+    return Colors.deepOrangeAccent;
   }
 }
