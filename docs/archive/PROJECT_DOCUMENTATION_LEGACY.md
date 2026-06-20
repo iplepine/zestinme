@@ -1,3 +1,12 @@
+<!-- COMMIT_STATUS START -->
+> **커밋 상태**
+> - 기준 커밋: `b0e0439333d8124f868b16da66c3849455b86f30` (`main`)
+> - 최근 커밋: `b0e0439333d8` feat: align FullCon core loop
+> - 커밋 일시: `2026-05-03T20:36:51+09:00`
+> - 워킹트리: `dirty (73 files)`
+> - 문서 갱신: `2026-06-20 22:34:20 +0900`
+<!-- COMMIT_STATUS END -->
+
 # FullCon 레거시 전환 참고 문서
 
 작성일: 2026-05-01  
@@ -57,7 +66,7 @@
 
 - 현재 FullCon 메인 루프는 `ConditionRecord`, `SleepRecord` 중심으로 읽는 것이 맞다
 - 동시에 과거 구조의 `EmotionRecord`도 코드와 일부 화면 흐름에 남아 있다
-- 수면은 `Isar` 직접 저장과 `Hive` repository 구조가 함께 남아 있는 하이브리드 상태다
+- 메인 수면 저장은 현재 `Isar` 단일 write path로 동작하고, `Hive` repository 구조는 레거시 코드로 남아 있다
 
 ### 3.3 화면/라우트 흔적
 
@@ -71,7 +80,7 @@
 
 - `assets/images/plants/`, `assets/images/pots/` 같은 자산이 남아 있다
 - `docs/archive/spec-meta/`, `docs/product/features/`, `docs/product/ui/` 하위에는 Mind-Gardener 시절 문서가 다수 남아 있다
-- `docs/archive/TODO.md`에도 식물/정원 중심 기술 부채 항목이 일부 남아 있다
+- `docs/archive/TODO.md`에는 과거 식물/정원 중심 TODO 보관본이 남아 있고, 현재 backlog는 `docs/work/TODO.md`에서 관리한다
 
 ## 4. 오래된 이름을 현재 의미로 읽는 방법
 
@@ -97,8 +106,8 @@
 
 - 라우터 `initialLocation`은 현재 `/`다
 - 온보딩 미완료 시 `/onboarding`으로 리다이렉트한다
-- 다만 `/dev`, `/seeding`, `/history`, `/sleep`, `/settings`, `/login`은 개발 편의상 우회 진입이 가능하다
-- 수면 저장은 단일화가 덜 끝났고, 이 부분이 가장 큰 구조적 기술 부채 중 하나다
+- 다만 `/dev`, `/dev/plant-setting`, `/login`은 내부/레거시 표면으로 우회 진입이 가능하다
+- 수면 저장 단일 write path 정리는 메인 플로우 기준 완료됐고, 남은 부채는 레거시 `Hive` 코드 제거 여부 판단이다
 
 ## 6. 현재 문서 체계에서의 위치
 
@@ -119,8 +128,7 @@
 
 우선순위가 높은 것은 아래 항목들이다.
 
-- 수면 저장 구조를 `Isar` 단일 write path로 정리
-- 일반 사용자 플로우에서 개발용 우회 라우트 의존 줄이기
+- dev-only 표면을 계속 둘지, 더 깊게 숨길지 판단
 - `MindGardener`, `garden`, `seeding`, `caring` 같은 네이밍 정리 방향 확정
 - 식물/정원 자산과 로직을 유지할지, 축소할지, 제거할지 결정
 - 레거시 문서와 현재 문서의 역할 경계를 더 명확히 하기

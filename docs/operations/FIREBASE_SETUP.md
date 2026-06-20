@@ -1,6 +1,29 @@
+<!-- COMMIT_STATUS START -->
+> **커밋 상태**
+> - 기준 커밋: `b0e0439333d8124f868b16da66c3849455b86f30` (`main`)
+> - 최근 커밋: `b0e0439333d8` feat: align FullCon core loop
+> - 커밋 일시: `2026-05-03T20:36:51+09:00`
+> - 워킹트리: `dirty (73 files)`
+> - 문서 갱신: `2026-06-20 22:34:20 +0900`
+<!-- COMMIT_STATUS END -->
+
 # Firebase 설정 가이드
 
-ZestInMe 앱에서 Firebase를 사용하기 위한 설정 가이드입니다.
+이 문서는 **현재 FullCon 메인 루프의 필수 설정 문서가 아니다.**
+온보딩, 홈, 체크인, 회복 로그, 타임라인의 핵심 루프는 Firebase 없이도 로컬 우선 구조로 동작한다.
+
+현재 이 문서는 Remote Config / Firestore / 테스트 페이지 같은 **선택적 인프라 참고 문서**로만 읽는다.
+
+## 현재 기준
+
+- 제품명은 `ZestInMe`가 아니라 `FullCon`이다.
+- Firebase Auth는 메인 제품 플로우의 필수 전제가 아니다.
+- `TestFirebasePage`는 레거시/개발용 테스트 표면이다.
+- Firebase 관련 변경은 `docs/work/`의 현재 roadmap과 충돌하지 않을 때만 진행한다.
+
+---
+
+FullCon 앱에서 Firebase를 보조적으로 사용하기 위한 설정 참고 가이드입니다.
 
 ## 1. Firebase 프로젝트 생성
 

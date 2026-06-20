@@ -37,15 +37,21 @@ dart run build_runner build --delete-conflicting-outputs
 
 ## 문서
 
+### 현재 문서
+
 - [문서 홈](./docs/README.md)
+- [현재 작업 관리](./docs/work/README.md)
+- [현재 TODO](./docs/work/TODO.md)
 - [현재 제품 스펙](./docs/product/current-spec/README.md)
 - [현재 구현 요약](./docs/operations/CURRENT_IMPLEMENTATION.md)
 - [MVP 현실화 정리](./docs/product/MVP_SCOPE.md)
-- [제품 핵심 콘셉트](./docs/archive/spec-meta/00-master-concept.md)
-- [디자인 시스템](./docs/product/ui/00-design-system.md)
 - [Isar 데이터 모델 설계](./docs/operations/data-model/10-isar-entities.md)
+
+### 레거시 참고
+
 - [레거시 전환 참고](./docs/archive/PROJECT_DOCUMENTATION_LEGACY.md)
-- [현재 TODO](./docs/archive/TODO.md)
+- [레거시 제품 핵심 콘셉트](./docs/archive/spec-meta/00-master-concept.md)
+- [레거시 TODO 보관본](./docs/archive/TODO.md)
 
 ## 저장소 구조
 
@@ -59,6 +65,6 @@ dart run build_runner build --delete-conflicting-outputs
 
 ## 현재 주의할 점
 
-- 수면 기록 저장 흐름은 Hive 기반 Repository와 Isar 기반 `LocalDbService`가 함께 존재합니다.
+- 메인 수면 기록 저장 흐름은 현재 `Isar` 단일 write path로 동작하고, `Hive` 코드는 레거시 정리 대상으로 남아 있습니다.
 - Firebase Auth는 아직 연결되지 않았고, 코칭 저장소의 사용자 ID는 임시값을 사용합니다.
 - 루트 `package.json`은 보조 Node 의존성용이며, Flutter 앱의 주 설정은 `app/pubspec.yaml`입니다.

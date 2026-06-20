@@ -1,3 +1,12 @@
+<!-- COMMIT_STATUS START -->
+> **커밋 상태**
+> - 기준 커밋: `b0e0439333d8124f868b16da66c3849455b86f30` (`main`)
+> - 최근 커밋: `b0e0439333d8` feat: align FullCon core loop
+> - 커밋 일시: `2026-05-03T20:36:51+09:00`
+> - 워킹트리: `dirty (73 files)`
+> - 문서 갱신: `2026-06-20 22:34:20 +0900`
+<!-- COMMIT_STATUS END -->
+
 # zestinme 문서 홈
 
 이 디렉터리는 zestinme 저장소의 현재 제품 판단을 빠르게 찾기 위한 문서 묶음이다. 기존 루트 문서와 `spec/` 문서는 표준 구조 아래로 이동했다.
@@ -26,5 +35,6 @@
 ## 지금 읽을 문서
 
 - `work/README.md`: 현재 목표, 로드맵, 작업 티켓
+- `work/TODO.md`: 현재 우선순위 TODO와 교차 기술 부채
 - `product/POSITIONING_DECISION.md`: FullCon 포지셔닝
 - `product/CORE_LOOP_SPEC.md`: 핵심 루프
