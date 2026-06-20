@@ -1,3 +1,12 @@
+<!-- COMMIT_STATUS START -->
+> **커밋 상태**
+> - 기준 커밋: `4a19cab93dfc60bebbcd001fbb8bbf196b447490` (`main`)
+> - 최근 커밋: `4a19cab93dfc` docs: refresh project documentation status
+> - 커밋 일시: `2026-06-20T22:38:59+09:00`
+> - 워킹트리: `dirty (12 files)`
+> - 문서 갱신: `2026-06-20 22:39:28 +0900`
+<!-- COMMIT_STATUS END -->
+
 # FullCon
 
 FullCon은 감정, 수면, 회고 데이터를 바탕으로 사용자의 컨디션 패턴을 읽고 먼저 제안하는 Flutter 기반 컨디션 코치 앱입니다. 기록을 쌓는 데서 멈추지 않고, 오늘 무엇을 조정하면 최상의 상태를 더 오래 유지할 수 있는지 보여주는 방향으로 제품을 재정의했습니다.
